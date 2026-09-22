@@ -1,83 +1,98 @@
 # 小毛蛋背英语
 
+一款基于 Kotlin + Jetpack Compose 开发的 CET-6 英语学习 Android 应用。
+
 ## 项目简介
 
-小毛蛋背英语是一款面向 CET-6 学习的 Android 词汇与练习应用，使用本地数据帮助用户进行词汇学习、拼写练习和学习记录管理。
+小毛蛋背英语是一个个人学习/自用项目，面向 CET-6 词汇学习与练习场景。应用使用本地词汇和本地数据库，提供词汇浏览、背诵、拼写练习、学习记录、单词本以及部分真题练习流程。
 
-## 项目定位
+## 核心功能
 
-这是一个以离线学习为主的个人学习工具。词汇、学习记录和单词本数据保存在设备本地，不依赖在线账号或远程服务。
-
-## 主要功能
-
-- CET-6 高频词汇（当前 781 词）
-- 单词搜索
-- 顺序与随机背诵
+- CET-6 词汇浏览
+- 英文单词 / 中文释义搜索
+- 顺序背诵
+- 随机背诵
 - 拼写练习
-- 学习记录与掌握度统计
+- 学习记录
+- 掌握度统计
 - 我的单词本
-- CET-6 历年真题入口、试卷详情和阅读专项练习
-- Jetpack Compose UI、Material 3、自定义底部导航与页面动效/UI 优化
+- CET-6 真题列表
+- 真题详情
+- 阅读专项练习
+- 阅读结果
+- 五项底部导航
+- 自定义 BottomBar 选中状态动画
+
+## 数据规模
+
+- 当前词汇库包含 781 个 CET-6 词汇
+- 词汇通过 `app/src/main/assets/cet6/` 下的本地 JSON 文件加载
+- 学习记录、背诵进度和单词本使用 Room 在本地持久化
 
 ## 技术栈
 
 - Kotlin 2.0.21
-- Android Gradle Plugin 8.5.2
-- Gradle Wrapper 8.10.2
-- Jetpack Compose（Compose BOM 2024.12.01）
+- Jetpack Compose
 - Material 3
 - Room 2.6.1
-- Android SDK compileSdk 35、targetSdk 35、minSdk 24
-
-## 开发环境
-
-- Android Studio（支持上述 Android Gradle Plugin 的版本）
+- Gradle 8.10.2
+- Android Gradle Plugin 8.5.2
+- `compileSdk 35`
+- `targetSdk 35`
+- `minSdk 24`
 - JDK 17
-- Android SDK Platform 35
-- Windows、macOS 或 Linux 均可，项目已包含 Gradle Wrapper
 
 ## 项目结构
 
 ```text
 .
-├── app/src/main/java/                 Kotlin 源码、数据层和 Compose 页面
-├── app/src/main/assets/cet6/          CET-6 词汇 JSON（公开，781 词）
-├── app/src/main/res/                  Android 资源与应用图标
-├── app/src/androidTest/               Android instrumentation 测试
-├── gradle/                            Gradle Wrapper 文件
-├── app/build.gradle.kts                App 模块构建配置
-└── settings.gradle.kts                 项目配置
+├── app/src/main/java/com/example/cet6vocabulary/
+│   ├── data/model/                 数据模型
+│   ├── data/local/                 Room 数据库、DAO 与 Entity
+│   ├── data/repository/            词汇、学习记录、背诵进度、单词本和真题 Repository
+│   ├── presentation/screens/        Compose 页面，包括词汇、背诵、拼写、单词本和真题页面
+│   └── ui/                          Compose 公共组件与主题
+├── app/src/main/assets/cet6/        公开的 CET-6 词汇 JSON 资源
+├── app/src/androidTest/             Android instrumentation 测试
+├── app/src/main/res/                Android 资源与应用图标
+├── gradle/                          Gradle Wrapper 文件
+├── app/build.gradle.kts              App 模块构建配置
+└── settings.gradle.kts               项目配置
 ```
 
-## 当前功能完成情况
+项目按 UI 层、数据模型、本地数据层和 Repository 组织；README 不将其描述为未在代码中明确实现的 MVVM 或 Clean Architecture。
 
-- 词汇加载、搜索、背诵、拼写练习：已实现
-- 学习记录、掌握度统计、我的单词本：已实现
-- 真题列表、详情和阅读专项流程：已实现
-- 写作、听力、翻译及整套真题的完整答题流程：当前仍为后续功能范围
+## 数据与版权说明
 
-## 构建方法
+781 个词汇 JSON 位于 `app/src/main/assets/cet6/`，这些文件属于应用运行时资源，会随公开仓库提供。
 
-Windows PowerShell：
+根目录 `词汇json文件/` 是原始词汇文件目录，不属于运行时资源，并且已经被 Git 忽略。
+
+真题 JSON 不随公开 GitHub 仓库提供。公开仓库包含真题功能相关源码，但原始真题资料因版权及再分发限制未上传，因此直接克隆公开仓库后，真题模块不会自带对应题目数据。
+
+## 开发环境
+
+- Android Studio
+- JDK 17
+- Android SDK Platform 35
+- 支持 Android Gradle Plugin 8.5.2 的构建环境
+
+项目已包含 Gradle Wrapper。
+
+## 构建
+
+在项目根目录执行：
 
 ```powershell
 .\gradlew.bat assembleDebug --no-daemon --max-workers=1 --console=plain
 ```
 
-APK 输出路径：`app/build/outputs/apk/debug/app-debug.apk`
+生成的 APK 位于 `app/build/outputs/apk/debug/app-debug.apk`。
 
-## 截图
+## 当前版本
 
-项目截图将在后续补充。
-
-## 数据说明
-
-公开词汇数据位于 `app/src/main/assets/cet6/`，由 6 个 JSON 文件组成，ID 连续覆盖 1--781。应用会在运行时枚举并合并这些文件。学习记录、背诵进度和单词本数据使用 Room 保存在本地设备中。
-
-## 真题资料说明
-
-真题资料可能涉及第三方或官方版权。当前公开仓库不包含 `真题json文件/2025-12/cet6_2025_12_set1.json`，也不包含真题 PDF、音频或答案等资料。需要真题功能数据的本地开发者应根据合法授权自行准备相应资料。
+`v1.0.0`，当前完整版本。
 
 ## License
 
-本项目当前尚未附带正式开源许可证。除明确标注为项目代码或公开词汇数据的内容外，请勿未经授权再分发第三方资料。
+License 待确定。
