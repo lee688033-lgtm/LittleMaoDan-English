@@ -1,0 +1,541 @@
+[
+  {
+    "id": 74,
+    "word": "repair",
+    "phonetic": "/rɪˈpeə/",
+    "partOfSpeech": "v.",
+    "meaning": "修理，修补"
+  },
+  {
+    "id": 75,
+    "word": "repeat",
+    "phonetic": "/rɪˈpiːt/",
+    "partOfSpeech": "v.",
+    "meaning": "重复"
+  },
+  {
+    "id": 76,
+    "word": "seek",
+    "phonetic": "/siːk/",
+    "partOfSpeech": "v.",
+    "meaning": "寻找"
+  },
+  {
+    "id": 77,
+    "word": "share",
+    "phonetic": "/ʃeə/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "股份；分享"
+  },
+  {
+    "id": 78,
+    "word": "solve",
+    "phonetic": "/sɒlv/",
+    "partOfSpeech": "v.",
+    "meaning": "解决，处理"
+  },
+  {
+    "id": 79,
+    "word": "suppose",
+    "phonetic": "/səˈpəʊz/",
+    "partOfSpeech": "v.",
+    "meaning": "假定，假设"
+  },
+  {
+    "id": 80,
+    "word": "wander",
+    "phonetic": "/ˈwɒndə/",
+    "partOfSpeech": "v.",
+    "meaning": "漫步，漫游"
+  },
+  {
+    "id": 81,
+    "word": "wonder",
+    "phonetic": "/ˈwʌndə/",
+    "partOfSpeech": "v.",
+    "meaning": "想知道；n.惊讶，奇迹"
+  },
+  {
+    "id": 82,
+    "word": "waste",
+    "phonetic": "/weɪst/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "浪费；浪费，垃圾"
+  },
+  {
+    "id": 83,
+    "word": "doubt",
+    "phonetic": "/daʊt/",
+    "partOfSpeech": "v.",
+    "meaning": "怀疑，不确定"
+  },
+  {
+    "id": 84,
+    "word": "count",
+    "phonetic": "/kaʊnt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "数数；总数"
+  },
+  {
+    "id": 85,
+    "word": "delight",
+    "phonetic": "/dɪˈlaɪt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "使高兴；高兴"
+  },
+  {
+    "id": 86,
+    "word": "welfare",
+    "phonetic": "/ˈwelfeə/",
+    "partOfSpeech": "n.",
+    "meaning": "幸福，福利"
+  },
+  {
+    "id": 87,
+    "word": "satisfy",
+    "phonetic": "/ˈsætɪsfaɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "使满意"
+  },
+  {
+    "id": 88,
+    "word": "ashamed",
+    "phonetic": "/əˈʃeɪmd/",
+    "partOfSpeech": "adj.",
+    "meaning": "惭愧的，羞耻的"
+  },
+  {
+    "id": 89,
+    "word": "sympathy",
+    "phonetic": "/ˈsɪmpəθi/",
+    "partOfSpeech": "n.",
+    "meaning": "同情，赞同"
+  },
+  {
+    "id": 90,
+    "word": "anxious",
+    "phonetic": "/ˈæŋkʃəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "焦虑的，急切的"
+  },
+  {
+    "id": 91,
+    "word": "despair",
+    "phonetic": "/dɪˈspeə/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "绝望"
+  },
+  {
+    "id": 92,
+    "word": "dull",
+    "phonetic": "/dʌl/",
+    "partOfSpeech": "adj.",
+    "meaning": "无聊的，迟钝的"
+  },
+  {
+    "id": 93,
+    "word": "weird",
+    "phonetic": "/wɪəd/",
+    "partOfSpeech": "adj.",
+    "meaning": "奇怪的"
+  },
+  {
+    "id": 94,
+    "word": "factor",
+    "phonetic": "/ˈfæktə(r)/",
+    "partOfSpeech": "n.",
+    "meaning": "因素"
+  },
+  {
+    "id": 95,
+    "word": "basis",
+    "phonetic": "/ˈbeɪsɪs/",
+    "partOfSpeech": "n.",
+    "meaning": "基础"
+  },
+  {
+    "id": 96,
+    "word": "annoy",
+    "phonetic": "/əˈnɔɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "使恼怒，使生气"
+  },
+  {
+    "id": 97,
+    "word": "afraid",
+    "phonetic": "/əˈfreɪd/",
+    "partOfSpeech": "adj.",
+    "meaning": "害怕的，担心的"
+  },
+  {
+    "id": 98,
+    "word": "sincere",
+    "phonetic": "/sɪnˈsɪə/",
+    "partOfSpeech": "adj.",
+    "meaning": "真诚的，诚实的"
+  },
+  {
+    "id": 99,
+    "word": "diligent",
+    "phonetic": "/ˈdɪlɪdʒənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "勤勉的，勤劳的"
+  },
+  {
+    "id": 100,
+    "word": "humble",
+    "phonetic": "/ˈhʌmbəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "谦逊的，卑微"
+  },
+  {
+    "id": 101,
+    "word": "optimism",
+    "phonetic": "/ˈɒptɪmɪzəm/",
+    "partOfSpeech": "n.",
+    "meaning": "乐观主义"
+  },
+  {
+    "id": 102,
+    "word": "active",
+    "phonetic": "/ˈæktɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "积极的"
+  },
+  {
+    "id": 103,
+    "word": "patient",
+    "phonetic": "/ˈpeɪʃənt/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "耐心的；病人"
+  },
+  {
+    "id": 104,
+    "word": "wise",
+    "phonetic": "/waɪz/",
+    "partOfSpeech": "adj.",
+    "meaning": "聪明的，明智的"
+  },
+  {
+    "id": 105,
+    "word": "tidy",
+    "phonetic": "/ˈtaɪdi/",
+    "partOfSpeech": "adj.",
+    "meaning": "整洁的"
+  },
+  {
+    "id": 106,
+    "word": "stupid",
+    "phonetic": "/ˈstjuːpɪd/",
+    "partOfSpeech": "adj.",
+    "meaning": "愚蠢的，糊涂的"
+  },
+  {
+    "id": 107,
+    "word": "lazy",
+    "phonetic": "/ˈleɪzi/",
+    "partOfSpeech": "adj.",
+    "meaning": "懒惰的"
+  },
+  {
+    "id": 108,
+    "word": "silent",
+    "phonetic": "/ˈsaɪlənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "沉默的，安静的"
+  },
+  {
+    "id": 109,
+    "word": "elegant",
+    "phonetic": "/ˈelɪɡənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "优雅的"
+  },
+  {
+    "id": 110,
+    "word": "slim",
+    "phonetic": "/slɪm/",
+    "partOfSpeech": "adj.",
+    "meaning": "苗条的"
+  },
+  {
+    "id": 111,
+    "word": "height",
+    "phonetic": "/haɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "高度"
+  },
+  {
+    "id": 112,
+    "word": "pregnant",
+    "phonetic": "/ˈpreɡnənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "怀孕的"
+  },
+  {
+    "id": 113,
+    "word": "blanket",
+    "phonetic": "/ˈblæŋkɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "毯子"
+  },
+  {
+    "id": 114,
+    "word": "curtain",
+    "phonetic": "/ˈkɜːtən/",
+    "partOfSpeech": "n.",
+    "meaning": "窗帘"
+  },
+  {
+    "id": 115,
+    "word": "broom",
+    "phonetic": "/bruːm/",
+    "partOfSpeech": "n.",
+    "meaning": "扫把"
+  },
+  {
+    "id": 116,
+    "word": "towel",
+    "phonetic": "/ˈtaʊəl/",
+    "partOfSpeech": "n.",
+    "meaning": "毛巾"
+  },
+  {
+    "id": 117,
+    "word": "mirror",
+    "phonetic": "/ˈmɪrə/",
+    "partOfSpeech": "n.",
+    "meaning": "镜子；反映"
+  },
+  {
+    "id": 118,
+    "word": "furniture",
+    "phonetic": "/ˈfɜːnɪtʃə(r)/",
+    "partOfSpeech": "n.",
+    "meaning": "家具"
+  },
+  {
+    "id": 119,
+    "word": "napkin",
+    "phonetic": "/ˈnæpkɪn/",
+    "partOfSpeech": "n.",
+    "meaning": "纸巾"
+  },
+  {
+    "id": 120,
+    "word": "diary",
+    "phonetic": "/ˈdaɪəri/",
+    "partOfSpeech": "n.",
+    "meaning": "日记"
+  },
+  {
+    "id": 121,
+    "word": "dictionary",
+    "phonetic": "/ˈdɪkʃənəri/",
+    "partOfSpeech": "n.",
+    "meaning": "字典"
+  },
+  {
+    "id": 122,
+    "word": "photograph",
+    "phonetic": "/ˈfəʊtəɡrɑːf/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "照片；拍照"
+  },
+  {
+    "id": 123,
+    "word": "handbook",
+    "phonetic": "/ˈhændbʊk/",
+    "partOfSpeech": "n.",
+    "meaning": "手册，指南"
+  },
+  {
+    "id": 124,
+    "word": "compass",
+    "phonetic": "/ˈkʌmpəs/",
+    "partOfSpeech": "n.",
+    "meaning": "指南针"
+  },
+  {
+    "id": 125,
+    "word": "board",
+    "phonetic": "/bɔːd/",
+    "partOfSpeech": "n.",
+    "meaning": "木板，董事会"
+  },
+  {
+    "id": 126,
+    "word": "wood",
+    "phonetic": "/wʊd/",
+    "partOfSpeech": "n.",
+    "meaning": "木头"
+  },
+  {
+    "id": 127,
+    "word": "cable",
+    "phonetic": "/ˈkeɪbəl/",
+    "partOfSpeech": "n.",
+    "meaning": "电缆"
+  },
+  {
+    "id": 128,
+    "word": "magnet",
+    "phonetic": "/ˈmæɡnɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "磁铁"
+  },
+  {
+    "id": 129,
+    "word": "candle",
+    "phonetic": "/ˈkændəl/",
+    "partOfSpeech": "n.",
+    "meaning": "蜡烛"
+  },
+  {
+    "id": 130,
+    "word": "cigarette",
+    "phonetic": "/ˌsɪɡəˈret/",
+    "partOfSpeech": "n.",
+    "meaning": "香烟"
+  },
+  {
+    "id": 131,
+    "word": "diet",
+    "phonetic": "/ˈdaɪət/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "节食"
+  },
+  {
+    "id": 132,
+    "word": "supper",
+    "phonetic": "/ˈsʌpə/",
+    "partOfSpeech": "n.",
+    "meaning": "晚饭，夜宵"
+  },
+  {
+    "id": 133,
+    "word": "snack",
+    "phonetic": "/snæk/",
+    "partOfSpeech": "n.",
+    "meaning": "点心，小吃"
+  },
+  {
+    "id": 134,
+    "word": "dessert",
+    "phonetic": "/dɪˈzɜːt/",
+    "partOfSpeech": "n.",
+    "meaning": "甜点，甜食"
+  },
+  {
+    "id": 135,
+    "word": "butter",
+    "phonetic": "/ˈbʌtə/",
+    "partOfSpeech": "n.",
+    "meaning": "黄油"
+  },
+  {
+    "id": 136,
+    "word": "acid",
+    "phonetic": "/ˈæsɪd/",
+    "partOfSpeech": "adj.",
+    "meaning": "酸的"
+  },
+  {
+    "id": 137,
+    "word": "flour",
+    "phonetic": "/ˈflaʊə/",
+    "partOfSpeech": "n.",
+    "meaning": "面粉"
+  },
+  {
+    "id": 138,
+    "word": "delicious",
+    "phonetic": "/dɪˈlɪʃəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "美味的"
+  },
+  {
+    "id": 139,
+    "word": "uniform",
+    "phonetic": "/ˈjuːnɪfɔːm/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "统一的；制服"
+  },
+  {
+    "id": 140,
+    "word": "suit",
+    "phonetic": "/suːt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "适合；套装"
+  },
+  {
+    "id": 141,
+    "word": "silk",
+    "phonetic": "/sɪlk/",
+    "partOfSpeech": "n.",
+    "meaning": "丝绸，蚕丝"
+  },
+  {
+    "id": 142,
+    "word": "belt",
+    "phonetic": "/belt/",
+    "partOfSpeech": "n.",
+    "meaning": "腰带，皮带"
+  },
+  {
+    "id": 143,
+    "word": "automobile",
+    "phonetic": "/ˈɔːtəməbiːl/",
+    "partOfSpeech": "n.",
+    "meaning": "汽车"
+  },
+  {
+    "id": 144,
+    "word": "voyage",
+    "phonetic": "/ˈvɔɪɪdʒ/",
+    "partOfSpeech": "n.",
+    "meaning": "旅行，远行"
+  },
+  {
+    "id": 145,
+    "word": "highway",
+    "phonetic": "/ˈhaɪweɪ/",
+    "partOfSpeech": "n.",
+    "meaning": "公路"
+  },
+  {
+    "id": 146,
+    "word": "island",
+    "phonetic": "/ˈaɪlənd/",
+    "partOfSpeech": "n.",
+    "meaning": "岛屿"
+  },
+  {
+    "id": 147,
+    "word": "harbor",
+    "phonetic": "/ˈhɑːbə/",
+    "partOfSpeech": "n.",
+    "meaning": "海港，港口"
+  },
+  {
+    "id": 148,
+    "word": "field",
+    "phonetic": "/fiːld/",
+    "partOfSpeech": "n.",
+    "meaning": "田地，领域"
+  },
+  {
+    "id": 149,
+    "word": "restaurant",
+    "phonetic": "/ˈrestərɒnt/",
+    "partOfSpeech": "n.",
+    "meaning": "餐厅"
+  },
+  {
+    "id": 150,
+    "word": "cafeteria",
+    "phonetic": "/ˌkæfəˈtɪəriə/",
+    "partOfSpeech": "n.",
+    "meaning": "自助餐厅"
+  }
+]

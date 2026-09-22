@@ -1,0 +1,513 @@
+[
+  {
+    "id": 1,
+    "word": "forehead",
+    "phonetic": "/ˈfɔːhed/",
+    "partOfSpeech": "n.",
+    "meaning": "前额"
+  },
+  {
+    "id": 2,
+    "word": "finger",
+    "phonetic": "/ˈfɪŋɡə(r)/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "手指；告发，拨弄"
+  },
+  {
+    "id": 3,
+    "word": "nerve",
+    "phonetic": "/nɜːv/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "神经；勇气"
+  },
+  {
+    "id": 4,
+    "word": "applaud",
+    "phonetic": "/əˈplɔːd/",
+    "partOfSpeech": "v.",
+    "meaning": "鼓掌，称赞"
+  },
+  {
+    "id": 5,
+    "word": "bless",
+    "phonetic": "/bles/",
+    "partOfSpeech": "v.",
+    "meaning": "祝福"
+  },
+  {
+    "id": 6,
+    "word": "admire",
+    "phonetic": "/ədˈmaɪə(r)/",
+    "partOfSpeech": "v.",
+    "meaning": "仰慕，赞赏"
+  },
+  {
+    "id": 7,
+    "word": "astonish",
+    "phonetic": "/əˈstɒnɪʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "使吃惊"
+  },
+  {
+    "id": 8,
+    "word": "awe",
+    "phonetic": "/ɔː/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "使敬畏；敬畏"
+  },
+  {
+    "id": 9,
+    "word": "assure",
+    "phonetic": "/əˈʃʊə/",
+    "partOfSpeech": "v.",
+    "meaning": "确保，向……保证"
+  },
+  {
+    "id": 10,
+    "word": "attain",
+    "phonetic": "/əˈteɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "获得，达到"
+  },
+  {
+    "id": 11,
+    "word": "betray",
+    "phonetic": "/bɪˈtreɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "背叛，泄露"
+  },
+  {
+    "id": 12,
+    "word": "deceive",
+    "phonetic": "/dɪˈsiːv/",
+    "partOfSpeech": "v.",
+    "meaning": "欺骗"
+  },
+  {
+    "id": 13,
+    "word": "stare",
+    "phonetic": "/steə/",
+    "partOfSpeech": "v.",
+    "meaning": "凝视，盯"
+  },
+  {
+    "id": 14,
+    "word": "glimpse",
+    "phonetic": "/ɡlɪmp(s)/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "一瞥；瞥见"
+  },
+  {
+    "id": 15,
+    "word": "dictate",
+    "phonetic": "/dɪkˈteɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "口述，支配，命令"
+  },
+  {
+    "id": 16,
+    "word": "complain",
+    "phonetic": "/kəmˈpleɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "抱怨"
+  },
+  {
+    "id": 17,
+    "word": "claim",
+    "phonetic": "/kleɪm/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "声称；声明，索赔"
+  },
+  {
+    "id": 18,
+    "word": "swallow",
+    "phonetic": "/ˈswɒləʊ/",
+    "partOfSpeech": "v.",
+    "meaning": "吞下，吞没"
+  },
+  {
+    "id": 19,
+    "word": "undo",
+    "phonetic": "/ʌnˈduː/",
+    "partOfSpeech": "v.",
+    "meaning": "解开，消除"
+  },
+  {
+    "id": 20,
+    "word": "bind",
+    "phonetic": "/baɪnd/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "捆绑；窘境"
+  },
+  {
+    "id": 21,
+    "word": "drag",
+    "phonetic": "/dræɡ/",
+    "partOfSpeech": "v.",
+    "meaning": "拖，拉；缓慢费力地移动"
+  },
+  {
+    "id": 22,
+    "word": "squeeze",
+    "phonetic": "/skwiːz/",
+    "partOfSpeech": "v.",
+    "meaning": "挤压"
+  },
+  {
+    "id": 23,
+    "word": "wipe",
+    "phonetic": "/waɪp/",
+    "partOfSpeech": "v.",
+    "meaning": "擦拭，抹掉"
+  },
+  {
+    "id": 24,
+    "word": "fetch",
+    "phonetic": "/fetʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "取来；售得，卖得"
+  },
+  {
+    "id": 25,
+    "word": "bend",
+    "phonetic": "/bend/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "弯曲；拱弯"
+  },
+  {
+    "id": 26,
+    "word": "raise",
+    "phonetic": "/reɪz/",
+    "partOfSpeech": "v.",
+    "meaning": "举起，提升，筹款，抚养"
+  },
+  {
+    "id": 27,
+    "word": "chase",
+    "phonetic": "/tʃeɪs/",
+    "partOfSpeech": "v.",
+    "meaning": "追求，追赶"
+  },
+  {
+    "id": 28,
+    "word": "flee",
+    "phonetic": "/fliː/",
+    "partOfSpeech": "v.",
+    "meaning": "逃离，逃跑"
+  },
+  {
+    "id": 29,
+    "word": "bargain",
+    "phonetic": "/ˈbɑːɡɪn/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "讨价还价；交易"
+  },
+  {
+    "id": 30,
+    "word": "delete",
+    "phonetic": "/dɪˈliːt/",
+    "partOfSpeech": "v.",
+    "meaning": "删除"
+  },
+  {
+    "id": 31,
+    "word": "hijack",
+    "phonetic": "/ˈhaɪdʒæk/",
+    "partOfSpeech": "v.",
+    "meaning": "劫持"
+  },
+  {
+    "id": 32,
+    "word": "adjust",
+    "phonetic": "/əˈdʒʌst/",
+    "partOfSpeech": "v.",
+    "meaning": "调整"
+  },
+  {
+    "id": 33,
+    "word": "immigrant",
+    "phonetic": "/ˈɪmɪɡrənt/",
+    "partOfSpeech": "n.",
+    "meaning": "移民，移居"
+  },
+  {
+    "id": 34,
+    "word": "adopt",
+    "phonetic": "/əˈdɒpt/",
+    "partOfSpeech": "v.",
+    "meaning": "收养，领养"
+  },
+  {
+    "id": 35,
+    "word": "adapt",
+    "phonetic": "/əˈdæpt/",
+    "partOfSpeech": "v.",
+    "meaning": "适应"
+  },
+  {
+    "id": 36,
+    "word": "adept",
+    "phonetic": "/əˈdept/",
+    "partOfSpeech": "adj.",
+    "meaning": "熟练的，擅长的"
+  },
+  {
+    "id": 37,
+    "word": "attach",
+    "phonetic": "/əˈtætʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "固定；附上，认为有重要性"
+  },
+  {
+    "id": 38,
+    "word": "approve",
+    "phonetic": "/əˈpruːv/",
+    "partOfSpeech": "v.",
+    "meaning": "认可；同意"
+  },
+  {
+    "id": 39,
+    "word": "disapprove",
+    "phonetic": "/ˌdɪsəˈpruːv/",
+    "partOfSpeech": "v.",
+    "meaning": "不赞成，反对"
+  },
+  {
+    "id": 40,
+    "word": "object",
+    "phonetic": "/ˈɒbdʒɪkt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "反对；物体，目标"
+  },
+  {
+    "id": 41,
+    "word": "depart",
+    "phonetic": "/dɪˈpɑːt/",
+    "partOfSpeech": "v.",
+    "meaning": "离开，离职"
+  },
+  {
+    "id": 42,
+    "word": "disguise",
+    "phonetic": "/dɪsˈɡaɪz/",
+    "partOfSpeech": "v.",
+    "meaning": "伪装，假装"
+  },
+  {
+    "id": 43,
+    "word": "enquire",
+    "phonetic": "/ɪnˈkwaɪə/",
+    "partOfSpeech": "v.",
+    "meaning": "询问，调查"
+  },
+  {
+    "id": 44,
+    "word": "exhaust",
+    "phonetic": "/ɪɡˈzɔːst/",
+    "partOfSpeech": "v.",
+    "meaning": "耗尽，使筋疲力尽"
+  },
+  {
+    "id": 45,
+    "word": "expend",
+    "phonetic": "/ɪkˈspend/",
+    "partOfSpeech": "v.",
+    "meaning": "花费"
+  },
+  {
+    "id": 46,
+    "word": "foresee",
+    "phonetic": "/fɔːˈsiː/",
+    "partOfSpeech": "v.",
+    "meaning": "预料，预知"
+  },
+  {
+    "id": 47,
+    "word": "hesitate",
+    "phonetic": "/ˈhezɪteɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "犹豫"
+  },
+  {
+    "id": 48,
+    "word": "rob",
+    "phonetic": "/rɒb/",
+    "partOfSpeech": "v.",
+    "meaning": "抢劫"
+  },
+  {
+    "id": 49,
+    "word": "spare",
+    "phonetic": "/speə/",
+    "partOfSpeech": "adj.",
+    "meaning": "备用的，闲置的"
+  },
+  {
+    "id": 50,
+    "word": "condemn",
+    "phonetic": "/kənˈdem/",
+    "partOfSpeech": "v.",
+    "meaning": "谴责"
+  },
+  {
+    "id": 51,
+    "word": "pretend",
+    "phonetic": "/prɪˈtend/",
+    "partOfSpeech": "v.",
+    "meaning": "假装"
+  },
+  {
+    "id": 52,
+    "word": "abandon",
+    "phonetic": "/əˈbændən/",
+    "partOfSpeech": "v.",
+    "meaning": "放弃，抛弃"
+  },
+  {
+    "id": 53,
+    "word": "achieve",
+    "phonetic": "/əˈtʃiːv/",
+    "partOfSpeech": "v.",
+    "meaning": "达到，完成"
+  },
+  {
+    "id": 54,
+    "word": "acquire",
+    "phonetic": "/əˈkwaɪə/",
+    "partOfSpeech": "v.",
+    "meaning": "获得，得到"
+  },
+  {
+    "id": 55,
+    "word": "afford",
+    "phonetic": "/əˈfɔːd/",
+    "partOfSpeech": "v.",
+    "meaning": "承担得起"
+  },
+  {
+    "id": 56,
+    "word": "apply",
+    "phonetic": "/əˈplaɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "应用，申请"
+  },
+  {
+    "id": 57,
+    "word": "consider",
+    "phonetic": "/kənˈsɪdə/",
+    "partOfSpeech": "v.",
+    "meaning": "仔细考虑，认为"
+  },
+  {
+    "id": 58,
+    "word": "contribute",
+    "phonetic": "/kənˈtrɪbjuːt/",
+    "partOfSpeech": "v.",
+    "meaning": "捐助；造成"
+  },
+  {
+    "id": 59,
+    "word": "debate",
+    "phonetic": "/dɪˈbeɪt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "辩论，讨论"
+  },
+  {
+    "id": 60,
+    "word": "design",
+    "phonetic": "/dɪˈzaɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "设计，制定"
+  },
+  {
+    "id": 61,
+    "word": "expect",
+    "phonetic": "/ɪkˈspekt/",
+    "partOfSpeech": "v.",
+    "meaning": "预期"
+  },
+  {
+    "id": 62,
+    "word": "feed",
+    "phonetic": "/fiːd/",
+    "partOfSpeech": "v.",
+    "meaning": "喂养"
+  },
+  {
+    "id": 63,
+    "word": "mysterious",
+    "phonetic": "/mɪˈstɪəriəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "神秘的"
+  },
+  {
+    "id": 64,
+    "word": "myth",
+    "phonetic": "/mɪθ/",
+    "partOfSpeech": "n.",
+    "meaning": "神话"
+  },
+  {
+    "id": 65,
+    "word": "hate",
+    "phonetic": "/heɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "憎恶，讨厌"
+  },
+  {
+    "id": 66,
+    "word": "hide",
+    "phonetic": "/haɪd/",
+    "partOfSpeech": "v.",
+    "meaning": "隐藏"
+  },
+  {
+    "id": 67,
+    "word": "ignore",
+    "phonetic": "/ɪɡˈnɔː/",
+    "partOfSpeech": "v.",
+    "meaning": "忽视，不予理睬"
+  },
+  {
+    "id": 68,
+    "word": "insist",
+    "phonetic": "/ɪnˈsɪst/",
+    "partOfSpeech": "v.",
+    "meaning": "坚持，坚决要求"
+  },
+  {
+    "id": 69,
+    "word": "interrupt",
+    "phonetic": "/ˌɪntəˈrʌpt/",
+    "partOfSpeech": "v.",
+    "meaning": "打断，打扰"
+  },
+  {
+    "id": 70,
+    "word": "introduce",
+    "phonetic": "/ˌɪntrəˈdjuːs/",
+    "partOfSpeech": "v.",
+    "meaning": "介绍，引进"
+  },
+  {
+    "id": 71,
+    "word": "obtain",
+    "phonetic": "/əbˈteɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "获得"
+  },
+  {
+    "id": 72,
+    "word": "obey",
+    "phonetic": "/əˈbeɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "服从，遵从"
+  },
+  {
+    "id": 73,
+    "word": "oppose",
+    "phonetic": "/əˈpəʊz/",
+    "partOfSpeech": "v.",
+    "meaning": "反对"
+  }
+]

@@ -1,0 +1,1668 @@
+[
+  {
+    "id": 388,
+    "word": "minimum",
+    "phonetic": "/ˈmɪnɪməm/",
+    "partOfSpeech": "adj.",
+    "meaning": "最低的"
+  },
+  {
+    "id": 389,
+    "word": "privilege",
+    "phonetic": "/ˈprɪvəlɪdʒ/",
+    "partOfSpeech": "n.",
+    "meaning": "特权，优惠"
+  },
+  {
+    "id": 390,
+    "word": "philosophy",
+    "phonetic": "/fɪˈlɒsəfi/",
+    "partOfSpeech": "n.",
+    "meaning": "哲学"
+  },
+  {
+    "id": 391,
+    "word": "sophisticated",
+    "phonetic": "/səˈfɪstɪkeɪtɪd/",
+    "partOfSpeech": "adj.",
+    "meaning": "老练的"
+  },
+  {
+    "id": 392,
+    "word": "campaign",
+    "phonetic": "/kæmˈpeɪn/",
+    "partOfSpeech": "n.",
+    "meaning": "运动，战役"
+  },
+  {
+    "id": 393,
+    "word": "reverse",
+    "phonetic": "/rɪˈvɜːs/",
+    "partOfSpeech": "v.",
+    "meaning": "使反转，撤销"
+  },
+  {
+    "id": 394,
+    "word": "convert",
+    "phonetic": "/kənˈvɜːt/",
+    "partOfSpeech": "v.",
+    "meaning": "转换，转变"
+  },
+  {
+    "id": 395,
+    "word": "prompt",
+    "phonetic": "/prɒmpt/",
+    "partOfSpeech": "v.; adj.",
+    "meaning": "促使；立即的"
+  },
+  {
+    "id": 396,
+    "word": "intelligent",
+    "phonetic": "/ɪnˈtelɪdʒənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "聪明的"
+  },
+  {
+    "id": 397,
+    "word": "interfere",
+    "phonetic": "/ˌɪntəˈfɪə/",
+    "partOfSpeech": "v.",
+    "meaning": "干预，妨碍"
+  },
+  {
+    "id": 398,
+    "word": "sensitive",
+    "phonetic": "/ˈsensətɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "敏感的，体贴的"
+  },
+  {
+    "id": 399,
+    "word": "embrace",
+    "phonetic": "/ɪmˈbreɪs/",
+    "partOfSpeech": "v.",
+    "meaning": "拥抱，欣然接受"
+  },
+  {
+    "id": 400,
+    "word": "enthusiasm",
+    "phonetic": "/ɪnˈθjuːziæzəm/",
+    "partOfSpeech": "n.",
+    "meaning": "热情"
+  },
+  {
+    "id": 401,
+    "word": "enroll",
+    "phonetic": "/ɪnˈrəʊl/",
+    "partOfSpeech": "v.",
+    "meaning": "登记，注册"
+  },
+  {
+    "id": 402,
+    "word": "ensure",
+    "phonetic": "/ɪnˈʃʊə/",
+    "partOfSpeech": "v.",
+    "meaning": "确保，保证"
+  },
+  {
+    "id": 403,
+    "word": "endure",
+    "phonetic": "/ɪnˈdjʊə/",
+    "partOfSpeech": "v.",
+    "meaning": "忍受，持续"
+  },
+  {
+    "id": 404,
+    "word": "enhance",
+    "phonetic": "/ɪnˈhɑːns/",
+    "partOfSpeech": "v.",
+    "meaning": "提高，增强"
+  },
+  {
+    "id": 405,
+    "word": "engage",
+    "phonetic": "/ɪnˈɡeɪdʒ/",
+    "partOfSpeech": "v.",
+    "meaning": "吸引，参与，雇用"
+  },
+  {
+    "id": 406,
+    "word": "endorse",
+    "phonetic": "/ɪnˈdɔːs/",
+    "partOfSpeech": "v.",
+    "meaning": "赞同，支持"
+  },
+  {
+    "id": 407,
+    "word": "entail",
+    "phonetic": "/ɪnˈteɪl/",
+    "partOfSpeech": "v.",
+    "meaning": "需要，牵涉"
+  },
+  {
+    "id": 408,
+    "word": "reluctant",
+    "phonetic": "/rɪˈlʌktənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "不情愿的"
+  },
+  {
+    "id": 409,
+    "word": "criticize",
+    "phonetic": "/ˈkrɪtɪsaɪz/",
+    "partOfSpeech": "v.",
+    "meaning": "批评"
+  },
+  {
+    "id": 410,
+    "word": "vulnerable",
+    "phonetic": "/ˈvʌlnərəbəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "脆弱的"
+  },
+  {
+    "id": 411,
+    "word": "available",
+    "phonetic": "/əˈveɪləbəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "可获得的"
+  },
+  {
+    "id": 412,
+    "word": "invisible",
+    "phonetic": "/ɪnˈvɪzəbəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "隐形的"
+  },
+  {
+    "id": 413,
+    "word": "flexible",
+    "phonetic": "/ˈfleksəbəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "灵活的"
+  },
+  {
+    "id": 414,
+    "word": "motivate",
+    "phonetic": "/ˈməʊtɪveɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "驱使，激励"
+  },
+  {
+    "id": 415,
+    "word": "incorporate",
+    "phonetic": "/ɪnˈkɔːpəreɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "将……包含在内"
+  },
+  {
+    "id": 416,
+    "word": "stimulate",
+    "phonetic": "/ˈstɪmjʊleɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "刺激，促使"
+  },
+  {
+    "id": 417,
+    "word": "exaggerate",
+    "phonetic": "/ɪɡˈzædʒəreɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "夸张，夸大"
+  },
+  {
+    "id": 418,
+    "word": "ultimate",
+    "phonetic": "/ˈʌltɪmət/",
+    "partOfSpeech": "adj.",
+    "meaning": "最后的，至高的"
+  },
+  {
+    "id": 419,
+    "word": "immediate",
+    "phonetic": "/ɪˈmiːdiət/",
+    "partOfSpeech": "adj.",
+    "meaning": "立即的"
+  },
+  {
+    "id": 420,
+    "word": "affluent",
+    "phonetic": "/ˈæfluənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "富裕的，丰富的"
+  },
+  {
+    "id": 421,
+    "word": "current",
+    "phonetic": "/ˈkʌrənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "当前的，流行的"
+  },
+  {
+    "id": 422,
+    "word": "fierce",
+    "phonetic": "/fɪəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "凶猛的，强烈的"
+  },
+  {
+    "id": 423,
+    "word": "fatigue",
+    "phonetic": "/fəˈtiːɡ/",
+    "partOfSpeech": "n.",
+    "meaning": "疲劳，劳累"
+  },
+  {
+    "id": 424,
+    "word": "surge",
+    "phonetic": "/sɜːdʒ/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "激增，上升"
+  },
+  {
+    "id": 425,
+    "word": "norm",
+    "phonetic": "/nɔːm/",
+    "partOfSpeech": "n.",
+    "meaning": "准则"
+  },
+  {
+    "id": 426,
+    "word": "accurate",
+    "phonetic": "/ˈækjərət/",
+    "partOfSpeech": "adj.",
+    "meaning": "精确的，准确的"
+  },
+  {
+    "id": 427,
+    "word": "regulate",
+    "phonetic": "/ˈreɡjʊleɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "管理，控制"
+  },
+  {
+    "id": 428,
+    "word": "transaction",
+    "phonetic": "/trænˈzækʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "交易"
+  },
+  {
+    "id": 429,
+    "word": "transfer",
+    "phonetic": "/trænsˈfɜː/",
+    "partOfSpeech": "v.",
+    "meaning": "转移，调动"
+  },
+  {
+    "id": 430,
+    "word": "transit",
+    "phonetic": "/ˈtrænzɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "运输"
+  },
+  {
+    "id": 431,
+    "word": "transmit",
+    "phonetic": "/trænzˈmɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "传递，传播"
+  },
+  {
+    "id": 432,
+    "word": "transform",
+    "phonetic": "/trænsˈfɔːm/",
+    "partOfSpeech": "v.",
+    "meaning": "改变"
+  },
+  {
+    "id": 433,
+    "word": "handicraft",
+    "phonetic": "/ˈhændɪkrɑːft/",
+    "partOfSpeech": "n.",
+    "meaning": "手工艺品"
+  },
+  {
+    "id": 434,
+    "word": "plain",
+    "phonetic": "/pleɪn/",
+    "partOfSpeech": "adj.",
+    "meaning": "清楚的；坦诚的"
+  },
+  {
+    "id": 435,
+    "word": "premium",
+    "phonetic": "/ˈpriːmiəm/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "优质的；保险费"
+  },
+  {
+    "id": 436,
+    "word": "prevent",
+    "phonetic": "/prɪˈvent/",
+    "partOfSpeech": "v.",
+    "meaning": "阻止，预防"
+  },
+  {
+    "id": 437,
+    "word": "proper",
+    "phonetic": "/ˈprɒpə/",
+    "partOfSpeech": "adj.",
+    "meaning": "适当的，恰当的"
+  },
+  {
+    "id": 438,
+    "word": "agent",
+    "phonetic": "/ˈeɪdʒənt/",
+    "partOfSpeech": "n.",
+    "meaning": "代理人，经纪人"
+  },
+  {
+    "id": 439,
+    "word": "frequent",
+    "phonetic": "/ˈfriːkwənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "频繁的"
+  },
+  {
+    "id": 440,
+    "word": "invest",
+    "phonetic": "/ɪnˈvest/",
+    "partOfSpeech": "v.",
+    "meaning": "投资，投入"
+  },
+  {
+    "id": 441,
+    "word": "volume",
+    "phonetic": "/ˈvɒljuːm/",
+    "partOfSpeech": "n.",
+    "meaning": "体积，（书籍的）卷"
+  },
+  {
+    "id": 442,
+    "word": "specific",
+    "phonetic": "/spəˈsɪfɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "明确的，特定的"
+  },
+  {
+    "id": 443,
+    "word": "perceive",
+    "phonetic": "/pəˈsiːv/",
+    "partOfSpeech": "v.",
+    "meaning": "意识到，察觉到"
+  },
+  {
+    "id": 444,
+    "word": "quarter",
+    "phonetic": "/ˈkwɔːtə/",
+    "partOfSpeech": "n.",
+    "meaning": "四分之一，季度"
+  },
+  {
+    "id": 445,
+    "word": "circumstance",
+    "phonetic": "/ˈsɜːkəmstæns/",
+    "partOfSpeech": "n.",
+    "meaning": "环境"
+  },
+  {
+    "id": 446,
+    "word": "obstacle",
+    "phonetic": "/ˈɒbstəkəl/",
+    "partOfSpeech": "n.",
+    "meaning": "障碍，障碍物"
+  },
+  {
+    "id": 447,
+    "word": "observe",
+    "phonetic": "/əbˈzɜːv/",
+    "partOfSpeech": "v.",
+    "meaning": "注意到，观察；遵守"
+  },
+  {
+    "id": 448,
+    "word": "occupy",
+    "phonetic": "/ˈɒkjʊpaɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "占用，居住"
+  },
+  {
+    "id": 449,
+    "word": "occupation",
+    "phonetic": "/ˌɒkjʊˈpeɪʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "工作"
+  },
+  {
+    "id": 450,
+    "word": "arise",
+    "phonetic": "/əˈraɪz/",
+    "partOfSpeech": "v.",
+    "meaning": "出现，发生"
+  },
+  {
+    "id": 451,
+    "word": "abundant",
+    "phonetic": "/əˈbʌndənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "大量的"
+  },
+  {
+    "id": 452,
+    "word": "abuse",
+    "phonetic": "/əˈbjuːz/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "滥用，虐待"
+  },
+  {
+    "id": 453,
+    "word": "accomplish",
+    "phonetic": "/əˈkʌmplɪʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "完成，实现"
+  },
+  {
+    "id": 454,
+    "word": "account",
+    "phonetic": "/əˈkaʊnt/",
+    "partOfSpeech": "n.",
+    "meaning": "账户，描述"
+  },
+  {
+    "id": 455,
+    "word": "accuse",
+    "phonetic": "/əˈkjuːz/",
+    "partOfSpeech": "v.",
+    "meaning": "指责，指控"
+  },
+  {
+    "id": 456,
+    "word": "acknowledge",
+    "phonetic": "/əkˈnɒlɪdʒ/",
+    "partOfSpeech": "v.",
+    "meaning": "承认；感谢"
+  },
+  {
+    "id": 457,
+    "word": "adverse",
+    "phonetic": "/ˈædvɜːs/",
+    "partOfSpeech": "adj.",
+    "meaning": "不利的，反面的"
+  },
+  {
+    "id": 458,
+    "word": "advocate",
+    "phonetic": "/ˈædvəkeɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "拥护，支持"
+  },
+  {
+    "id": 459,
+    "word": "adequate",
+    "phonetic": "/ˈædɪkwət/",
+    "partOfSpeech": "adj.",
+    "meaning": "足够的；合格的"
+  },
+  {
+    "id": 460,
+    "word": "appeal",
+    "phonetic": "/əˈpiːl/",
+    "partOfSpeech": "v.",
+    "meaning": "呼吁，有吸引力，申诉"
+  },
+  {
+    "id": 461,
+    "word": "appreciate",
+    "phonetic": "/əˈpriːʃieɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "欣赏，理解"
+  },
+  {
+    "id": 462,
+    "word": "approach",
+    "phonetic": "/əˈprəʊtʃ/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "方法；接近，处理"
+  },
+  {
+    "id": 463,
+    "word": "assume",
+    "phonetic": "/əˈsjuːm/",
+    "partOfSpeech": "v.",
+    "meaning": "假设；承担（责任）"
+  },
+  {
+    "id": 464,
+    "word": "assign",
+    "phonetic": "/əˈsaɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "分配；指派"
+  },
+  {
+    "id": 465,
+    "word": "attend",
+    "phonetic": "/əˈtend/",
+    "partOfSpeech": "v.",
+    "meaning": "参加；注意（~ to）"
+  },
+  {
+    "id": 466,
+    "word": "tempt",
+    "phonetic": "/tempt/",
+    "partOfSpeech": "v.",
+    "meaning": "引诱；诱惑"
+  },
+  {
+    "id": 467,
+    "word": "attempt",
+    "phonetic": "/əˈtempt/",
+    "partOfSpeech": "v.",
+    "meaning": "努力，试图"
+  },
+  {
+    "id": 468,
+    "word": "attribute",
+    "phonetic": "/əˈtrɪbjuːt/",
+    "partOfSpeech": "v.",
+    "meaning": "把……归因于"
+  },
+  {
+    "id": 469,
+    "word": "mass",
+    "phonetic": "/mæs/",
+    "partOfSpeech": "n.; adj.",
+    "meaning": "堆；大规模的"
+  },
+  {
+    "id": 470,
+    "word": "handle",
+    "phonetic": "/ˈhændəl/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "处理，应付；把手"
+  },
+  {
+    "id": 471,
+    "word": "aviation",
+    "phonetic": "/ˌeɪviˈeɪʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "航空"
+  },
+  {
+    "id": 472,
+    "word": "prospect",
+    "phonetic": "/ˈprɒspekt/",
+    "partOfSpeech": "n.",
+    "meaning": "前景"
+  },
+  {
+    "id": 473,
+    "word": "perspective",
+    "phonetic": "/pəˈspektɪv/",
+    "partOfSpeech": "n.",
+    "meaning": "观点，角度"
+  },
+  {
+    "id": 474,
+    "word": "attorney",
+    "phonetic": "/əˈtɜːni/",
+    "partOfSpeech": "n.",
+    "meaning": "律师，代理人"
+  },
+  {
+    "id": 475,
+    "word": "suspect",
+    "phonetic": "/səˈspekt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "怀疑；嫌疑人"
+  },
+  {
+    "id": 476,
+    "word": "fundamental",
+    "phonetic": "/ˌfʌndəˈmentəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "基础的"
+  },
+  {
+    "id": 477,
+    "word": "peak",
+    "phonetic": "/piːk/",
+    "partOfSpeech": "n.",
+    "meaning": "顶峰，山峰"
+  },
+  {
+    "id": 478,
+    "word": "identify",
+    "phonetic": "/aɪˈdentɪfaɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "确认，识别"
+  },
+  {
+    "id": 479,
+    "word": "simultaneous",
+    "phonetic": "/ˌsɪməlˈteɪniəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "同步的"
+  },
+  {
+    "id": 480,
+    "word": "fortune",
+    "phonetic": "/ˈfɔːtʃuːn/",
+    "partOfSpeech": "n.",
+    "meaning": "运气，财富"
+  },
+  {
+    "id": 481,
+    "word": "prestige",
+    "phonetic": "/preˈstiːʒ/",
+    "partOfSpeech": "n.",
+    "meaning": "声望，威望"
+  },
+  {
+    "id": 482,
+    "word": "brilliant",
+    "phonetic": "/ˈbrɪliənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "明亮的；巧妙的"
+  },
+  {
+    "id": 483,
+    "word": "preserve",
+    "phonetic": "/prɪˈzɜːv/",
+    "partOfSpeech": "v.",
+    "meaning": "维护，保护"
+  },
+  {
+    "id": 484,
+    "word": "previous",
+    "phonetic": "/ˈpriːviəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "先前的，以往的"
+  },
+  {
+    "id": 485,
+    "word": "prevail",
+    "phonetic": "/prɪˈveɪl/",
+    "partOfSpeech": "v.",
+    "meaning": "盛行；压倒"
+  },
+  {
+    "id": 486,
+    "word": "retain",
+    "phonetic": "/rɪˈteɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "保留，保持"
+  },
+  {
+    "id": 487,
+    "word": "maintain",
+    "phonetic": "/meɪnˈteɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "维持，维修；坚持"
+  },
+  {
+    "id": 488,
+    "word": "hinder",
+    "phonetic": "/ˈhɪndə/",
+    "partOfSpeech": "v.",
+    "meaning": "妨碍；牵制"
+  },
+  {
+    "id": 489,
+    "word": "diminish",
+    "phonetic": "/dɪˈmɪnɪʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "减少，减弱"
+  },
+  {
+    "id": 490,
+    "word": "distinct",
+    "phonetic": "/dɪˈstɪŋkt/",
+    "partOfSpeech": "adj.",
+    "meaning": "清晰的；有区别的"
+  },
+  {
+    "id": 491,
+    "word": "capacity",
+    "phonetic": "/kəˈpæsəti/",
+    "partOfSpeech": "n.",
+    "meaning": "能力；容积"
+  },
+  {
+    "id": 492,
+    "word": "principle",
+    "phonetic": "/ˈprɪnsəpəl/",
+    "partOfSpeech": "n.",
+    "meaning": "原则，原理"
+  },
+  {
+    "id": 493,
+    "word": "property",
+    "phonetic": "/ˈprɒpəti/",
+    "partOfSpeech": "n.",
+    "meaning": "财产；特性"
+  },
+  {
+    "id": 494,
+    "word": "beverage",
+    "phonetic": "/ˈbevərɪdʒ/",
+    "partOfSpeech": "n.",
+    "meaning": "饮料"
+  },
+  {
+    "id": 495,
+    "word": "journalism",
+    "phonetic": "/ˈdʒɜːnəlɪzəm/",
+    "partOfSpeech": "n.",
+    "meaning": "新闻工作"
+  },
+  {
+    "id": 496,
+    "word": "reputation",
+    "phonetic": "/ˌrepjʊˈteɪʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "名声，名誉"
+  },
+  {
+    "id": 497,
+    "word": "component",
+    "phonetic": "/kəmˈpəʊnənt/",
+    "partOfSpeech": "n.",
+    "meaning": "成分，部件"
+  },
+  {
+    "id": 498,
+    "word": "consistent",
+    "phonetic": "/kənˈsɪstənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "一致的"
+  },
+  {
+    "id": 499,
+    "word": "illiterate",
+    "phonetic": "/ɪˈlɪtərət/",
+    "partOfSpeech": "adj.",
+    "meaning": "文盲的，不识字的"
+  },
+  {
+    "id": 500,
+    "word": "imply",
+    "phonetic": "/ɪmˈplaɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "暗示，表明"
+  },
+  {
+    "id": 501,
+    "word": "infant",
+    "phonetic": "/ˈɪnfənt/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "初期的；婴儿，幼儿"
+  },
+  {
+    "id": 502,
+    "word": "inspire",
+    "phonetic": "/ɪnˈspaɪə/",
+    "partOfSpeech": "v.",
+    "meaning": "鼓励，激发"
+  },
+  {
+    "id": 503,
+    "word": "insight",
+    "phonetic": "/ˈɪnsaɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "洞察力；深刻见解"
+  },
+  {
+    "id": 504,
+    "word": "ingredient",
+    "phonetic": "/ɪnˈɡriːdiənt/",
+    "partOfSpeech": "n.",
+    "meaning": "成分；原料"
+  },
+  {
+    "id": 505,
+    "word": "intend",
+    "phonetic": "/ɪnˈtend/",
+    "partOfSpeech": "v.",
+    "meaning": "打算，意指"
+  },
+  {
+    "id": 506,
+    "word": "intensive",
+    "phonetic": "/ɪnˈtensɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "密集的，集中的"
+  },
+  {
+    "id": 507,
+    "word": "intense",
+    "phonetic": "/ɪnˈtens/",
+    "partOfSpeech": "adj.",
+    "meaning": "强烈的；热切的"
+  },
+  {
+    "id": 508,
+    "word": "intensify",
+    "phonetic": "/ɪnˈtensɪfaɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "增强"
+  },
+  {
+    "id": 509,
+    "word": "insure",
+    "phonetic": "/ɪnˈʃʊə/",
+    "partOfSpeech": "v.",
+    "meaning": "为……投保险"
+  },
+  {
+    "id": 510,
+    "word": "slip",
+    "phonetic": "/slɪp/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "滑；差错"
+  },
+  {
+    "id": 511,
+    "word": "employ",
+    "phonetic": "/ɪmˈplɔɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "雇用，采用"
+  },
+  {
+    "id": 512,
+    "word": "unemployment",
+    "phonetic": "/ˌʌnɪmˈplɔɪmənt/",
+    "partOfSpeech": "n.",
+    "meaning": "失业"
+  },
+  {
+    "id": 513,
+    "word": "graph",
+    "phonetic": "/ɡrɑːf/",
+    "partOfSpeech": "n.",
+    "meaning": "图表；曲线图"
+  },
+  {
+    "id": 514,
+    "word": "advent",
+    "phonetic": "/ˈædvent/",
+    "partOfSpeech": "n.",
+    "meaning": "到来，出现"
+  },
+  {
+    "id": 515,
+    "word": "necessity",
+    "phonetic": "/nəˈsesəti/",
+    "partOfSpeech": "n.",
+    "meaning": "必要；必需品"
+  },
+  {
+    "id": 516,
+    "word": "ideology",
+    "phonetic": "/ˌaɪdiˈɒlədʒi/",
+    "partOfSpeech": "n.",
+    "meaning": "意识形态，思想"
+  },
+  {
+    "id": 517,
+    "word": "trail",
+    "phonetic": "/treɪl/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "痕迹，踪迹；跟踪"
+  },
+  {
+    "id": 518,
+    "word": "levy",
+    "phonetic": "/ˈlevi/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "征税；税款"
+  },
+  {
+    "id": 519,
+    "word": "tolerate",
+    "phonetic": "/ˈtɒləreɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "容忍，忍耐"
+  },
+  {
+    "id": 520,
+    "word": "neglect",
+    "phonetic": "/nɪˈɡlekt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "忽视，忽略"
+  },
+  {
+    "id": 521,
+    "word": "intellectual",
+    "phonetic": "/ˌɪntəˈlektʃuəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "智力的"
+  },
+  {
+    "id": 522,
+    "word": "strive",
+    "phonetic": "/straɪv/",
+    "partOfSpeech": "v.",
+    "meaning": "努力，争取"
+  },
+  {
+    "id": 523,
+    "word": "incentive",
+    "phonetic": "/ɪnˈsentɪv/",
+    "partOfSpeech": "n.",
+    "meaning": "激励；动力"
+  },
+  {
+    "id": 524,
+    "word": "contrary",
+    "phonetic": "/ˈkɒntrəri/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "相反的；反面"
+  },
+  {
+    "id": 525,
+    "word": "vision",
+    "phonetic": "/ˈvɪʒən/",
+    "partOfSpeech": "n.",
+    "meaning": "视力，视觉"
+  },
+  {
+    "id": 526,
+    "word": "phenomenon",
+    "phonetic": "/fəˈnɒmɪnən/",
+    "partOfSpeech": "n.",
+    "meaning": "现象"
+  },
+  {
+    "id": 527,
+    "word": "emphasis",
+    "phonetic": "/ˈemfəsɪs/",
+    "partOfSpeech": "n.",
+    "meaning": "强调，重视"
+  },
+  {
+    "id": 528,
+    "word": "constitute",
+    "phonetic": "/ˈkɒnstɪtjuːt/",
+    "partOfSpeech": "v.",
+    "meaning": "构成，组成"
+  },
+  {
+    "id": 529,
+    "word": "institution",
+    "phonetic": "/ˌɪnstɪˈtjuːʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "机构，建立"
+  },
+  {
+    "id": 530,
+    "word": "generate",
+    "phonetic": "/ˈdʒenəreɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "产生，引起"
+  },
+  {
+    "id": 531,
+    "word": "commit",
+    "phonetic": "/kəˈmɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "犯（错/罪）；承诺"
+  },
+  {
+    "id": 532,
+    "word": "mislead",
+    "phonetic": "/ˌmɪsˈliːd/",
+    "partOfSpeech": "v.",
+    "meaning": "误导"
+  },
+  {
+    "id": 533,
+    "word": "laborious",
+    "phonetic": "/ləˈbɔːriəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "费力的"
+  },
+  {
+    "id": 534,
+    "word": "collapse",
+    "phonetic": "/kəˈlæps/",
+    "partOfSpeech": "v.",
+    "meaning": "倒塌，崩溃"
+  },
+  {
+    "id": 535,
+    "word": "comprehensive",
+    "phonetic": "/ˌkɒmprɪˈhensɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "全面的，综合性的"
+  },
+  {
+    "id": 536,
+    "word": "compel",
+    "phonetic": "/kəmˈpel/",
+    "partOfSpeech": "v.",
+    "meaning": "强迫，迫使"
+  },
+  {
+    "id": 537,
+    "word": "conflict",
+    "phonetic": "/ˈkɒnflɪkt/",
+    "partOfSpeech": "v.",
+    "meaning": "冲突"
+  },
+  {
+    "id": 538,
+    "word": "conduct",
+    "phonetic": "/kənˈdʌkt/",
+    "partOfSpeech": "v.",
+    "meaning": "引导，组织"
+  },
+  {
+    "id": 539,
+    "word": "confine",
+    "phonetic": "/kənˈfaɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "限制，限定"
+  },
+  {
+    "id": 540,
+    "word": "consume",
+    "phonetic": "/kənˈsjuːm/",
+    "partOfSpeech": "v.",
+    "meaning": "消耗，消费"
+  },
+  {
+    "id": 541,
+    "word": "content",
+    "phonetic": "/ˈkɒntent/",
+    "partOfSpeech": "n.",
+    "meaning": "内容"
+  },
+  {
+    "id": 542,
+    "word": "contact",
+    "phonetic": "/ˈkɒntækt/",
+    "partOfSpeech": "v.",
+    "meaning": "接触，联系"
+  },
+  {
+    "id": 543,
+    "word": "epidemic",
+    "phonetic": "/ˌepɪˈdemɪk/",
+    "partOfSpeech": "n.",
+    "meaning": "流行病，盛行"
+  },
+  {
+    "id": 544,
+    "word": "chronic",
+    "phonetic": "/ˈkrɒnɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "长期的，慢性的"
+  },
+  {
+    "id": 545,
+    "word": "dynamic",
+    "phonetic": "/daɪˈnæmɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "充满活力的"
+  },
+  {
+    "id": 546,
+    "word": "domestic",
+    "phonetic": "/dəˈmestɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "本国的；家用的"
+  },
+  {
+    "id": 547,
+    "word": "controversy",
+    "phonetic": "/ˈkɒntrəvɜːsi/",
+    "partOfSpeech": "n.",
+    "meaning": "争议"
+  },
+  {
+    "id": 548,
+    "word": "strategy",
+    "phonetic": "/ˈstrætədʒi/",
+    "partOfSpeech": "n.",
+    "meaning": "策略"
+  },
+  {
+    "id": 549,
+    "word": "scale",
+    "phonetic": "/skeɪl/",
+    "partOfSpeech": "n.",
+    "meaning": "规模，程度，等级"
+  },
+  {
+    "id": 550,
+    "word": "alien",
+    "phonetic": "/ˈeɪliən/",
+    "partOfSpeech": "adj.",
+    "meaning": "陌生的，国外的"
+  },
+  {
+    "id": 551,
+    "word": "secure",
+    "phonetic": "/sɪˈkjʊə/",
+    "partOfSpeech": "adj.",
+    "meaning": "安全的"
+  },
+  {
+    "id": 552,
+    "word": "fancy",
+    "phonetic": "/ˈfænsi/",
+    "partOfSpeech": "v.",
+    "meaning": "想做"
+  },
+  {
+    "id": 553,
+    "word": "pose",
+    "phonetic": "/pəʊz/",
+    "partOfSpeech": "v.",
+    "meaning": "造成，引起"
+  },
+  {
+    "id": 554,
+    "word": "expose",
+    "phonetic": "/ɪkˈspəʊz/",
+    "partOfSpeech": "v.",
+    "meaning": "暴露"
+  },
+  {
+    "id": 555,
+    "word": "impose",
+    "phonetic": "/ɪmˈpəʊz/",
+    "partOfSpeech": "v.",
+    "meaning": "把……强加于"
+  },
+  {
+    "id": 556,
+    "word": "exotic",
+    "phonetic": "/ɪɡˈzɒtɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "外来的，异国情调的"
+  },
+  {
+    "id": 557,
+    "word": "moderate",
+    "phonetic": "/ˈmɒdərət/",
+    "partOfSpeech": "adj.; v.",
+    "meaning": "适度的；缓和"
+  },
+  {
+    "id": 558,
+    "word": "modify",
+    "phonetic": "/ˈmɒdɪfaɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "修改，调整"
+  },
+  {
+    "id": 559,
+    "word": "severe",
+    "phonetic": "/sɪˈvɪə/",
+    "partOfSpeech": "adj.",
+    "meaning": "严重的"
+  },
+  {
+    "id": 560,
+    "word": "prime",
+    "phonetic": "/praɪm/",
+    "partOfSpeech": "adj.",
+    "meaning": "主要的，首要的"
+  },
+  {
+    "id": 561,
+    "word": "decent",
+    "phonetic": "/ˈdiːsənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "得体的，像样的"
+  },
+  {
+    "id": 562,
+    "word": "robust",
+    "phonetic": "/rəʊˈbʌst/",
+    "partOfSpeech": "adj.",
+    "meaning": "强健的，结实的"
+  },
+  {
+    "id": 563,
+    "word": "trigger",
+    "phonetic": "/ˈtrɪɡə/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "扳机；触发，引起"
+  },
+  {
+    "id": 564,
+    "word": "individual",
+    "phonetic": "/ˌɪndɪˈvɪdʒuəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "个人的"
+  },
+  {
+    "id": 565,
+    "word": "medium",
+    "phonetic": "/ˈmiːdiəm/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "中等的；媒介"
+  },
+  {
+    "id": 566,
+    "word": "medical",
+    "phonetic": "/ˈmedɪkəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "医疗的"
+  },
+  {
+    "id": 567,
+    "word": "transition",
+    "phonetic": "/trænˈzɪʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "过渡，转变"
+  },
+  {
+    "id": 568,
+    "word": "recession",
+    "phonetic": "/rɪˈseʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "退后；经济衰退"
+  },
+  {
+    "id": 569,
+    "word": "nutrition",
+    "phonetic": "/njuːˈtrɪʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "营养"
+  },
+  {
+    "id": 570,
+    "word": "tuition",
+    "phonetic": "/tjuːˈɪʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "学费；指导，讲授"
+  },
+  {
+    "id": 571,
+    "word": "initial",
+    "phonetic": "/ɪˈnɪʃəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "最初的，开始的"
+  },
+  {
+    "id": 572,
+    "word": "artificial",
+    "phonetic": "/ˌɑːtɪˈfɪʃəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "人工的，人造的"
+  },
+  {
+    "id": 573,
+    "word": "crucial",
+    "phonetic": "/ˈkruːʃəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "关键性的"
+  },
+  {
+    "id": 574,
+    "word": "potential",
+    "phonetic": "/pəˈtenʃəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "潜在的"
+  },
+  {
+    "id": 575,
+    "word": "represent",
+    "phonetic": "/ˌreprɪˈzent/",
+    "partOfSpeech": "v.",
+    "meaning": "展现，代表"
+  },
+  {
+    "id": 576,
+    "word": "regardless",
+    "phonetic": "/rɪˈɡɑːdləs/",
+    "partOfSpeech": "adv.",
+    "meaning": "不顾，不管"
+  },
+  {
+    "id": 577,
+    "word": "reproduce",
+    "phonetic": "/ˌriːprəˈdjuːs/",
+    "partOfSpeech": "v.",
+    "meaning": "复印，繁殖"
+  },
+  {
+    "id": 578,
+    "word": "commend",
+    "phonetic": "/kəˈmend/",
+    "partOfSpeech": "v.",
+    "meaning": "赞扬；表扬"
+  },
+  {
+    "id": 579,
+    "word": "recommend",
+    "phonetic": "/ˌrekəˈmend/",
+    "partOfSpeech": "v.",
+    "meaning": "推荐，介绍"
+  },
+  {
+    "id": 580,
+    "word": "respond",
+    "phonetic": "/rɪˈspɒnd/",
+    "partOfSpeech": "v.",
+    "meaning": "回复，作出反应"
+  },
+  {
+    "id": 581,
+    "word": "revenue",
+    "phonetic": "/ˈrevənjuː/",
+    "partOfSpeech": "n.",
+    "meaning": "收益，收入"
+  },
+  {
+    "id": 582,
+    "word": "recall",
+    "phonetic": "/rɪˈkɔːl/",
+    "partOfSpeech": "v.",
+    "meaning": "回忆起，记起"
+  },
+  {
+    "id": 583,
+    "word": "retrieve",
+    "phonetic": "/rɪˈtriːv/",
+    "partOfSpeech": "v.",
+    "meaning": "取回，找回"
+  },
+  {
+    "id": 584,
+    "word": "replace",
+    "phonetic": "/rɪˈpleɪs/",
+    "partOfSpeech": "v.",
+    "meaning": "代替，取代"
+  },
+  {
+    "id": 585,
+    "word": "recruit",
+    "phonetic": "/rɪˈkruːt/",
+    "partOfSpeech": "v.",
+    "meaning": "招聘，征募（新兵）"
+  },
+  {
+    "id": 586,
+    "word": "release",
+    "phonetic": "/rɪˈliːs/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "释放，发泄；发布"
+  },
+  {
+    "id": 587,
+    "word": "resist",
+    "phonetic": "/rɪˈzɪst/",
+    "partOfSpeech": "v.",
+    "meaning": "反对，抵制"
+  },
+  {
+    "id": 588,
+    "word": "retail",
+    "phonetic": "/ˈriːteɪl/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "零售"
+  },
+  {
+    "id": 589,
+    "word": "mortgage",
+    "phonetic": "/ˈmɔːɡɪdʒ/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "抵押"
+  },
+  {
+    "id": 590,
+    "word": "sample",
+    "phonetic": "/ˈsɑːmpəl/",
+    "partOfSpeech": "n.",
+    "meaning": "样本"
+  },
+  {
+    "id": 591,
+    "word": "predator",
+    "phonetic": "/ˈpredətə/",
+    "partOfSpeech": "n.",
+    "meaning": "捕食性动物"
+  },
+  {
+    "id": 592,
+    "word": "prior",
+    "phonetic": "/ˈpraɪə/",
+    "partOfSpeech": "adj.",
+    "meaning": "先前的，优先的"
+  },
+  {
+    "id": 593,
+    "word": "client",
+    "phonetic": "/ˈklaɪənt/",
+    "partOfSpeech": "n.",
+    "meaning": "客户，委托人"
+  },
+  {
+    "id": 594,
+    "word": "particular",
+    "phonetic": "/pəˈtɪkjʊlə/",
+    "partOfSpeech": "adj.",
+    "meaning": "特别的"
+  },
+  {
+    "id": 595,
+    "word": "establish",
+    "phonetic": "/ɪˈstæblɪʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "建立，确定"
+  },
+  {
+    "id": 596,
+    "word": "status",
+    "phonetic": "/ˈsteɪtəs/",
+    "partOfSpeech": "n.",
+    "meaning": "地位，状况"
+  },
+  {
+    "id": 597,
+    "word": "estate",
+    "phonetic": "/ɪˈsteɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "地产"
+  },
+  {
+    "id": 598,
+    "word": "sceptical",
+    "phonetic": "/ˈskeptɪkəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "怀疑的"
+  },
+  {
+    "id": 599,
+    "word": "subtle",
+    "phonetic": "/ˈsʌtəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "微妙的，细微的"
+  },
+  {
+    "id": 600,
+    "word": "substitute",
+    "phonetic": "/ˈsʌbstɪtjuːt/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "代替物；代替"
+  },
+  {
+    "id": 601,
+    "word": "sufficient",
+    "phonetic": "/səˈfɪʃənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "充足的"
+  },
+  {
+    "id": 602,
+    "word": "supplement",
+    "phonetic": "/ˈsʌplɪmənt/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "增刊；补充"
+  },
+  {
+    "id": 603,
+    "word": "eliminate",
+    "phonetic": "/ɪˈlɪmɪneɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "淘汰，消除"
+  },
+  {
+    "id": 604,
+    "word": "elite",
+    "phonetic": "/eɪˈliːt/",
+    "partOfSpeech": "n.",
+    "meaning": "精英"
+  },
+  {
+    "id": 605,
+    "word": "emerge",
+    "phonetic": "/ɪˈmɜːdʒ/",
+    "partOfSpeech": "v.",
+    "meaning": "出现，显现"
+  },
+  {
+    "id": 606,
+    "word": "enormous",
+    "phonetic": "/ɪˈnɔːməs/",
+    "partOfSpeech": "adj.",
+    "meaning": "巨大的"
+  },
+  {
+    "id": 607,
+    "word": "evolve",
+    "phonetic": "/ɪˈvɒlv/",
+    "partOfSpeech": "v.",
+    "meaning": "进化；逐渐发展"
+  },
+  {
+    "id": 608,
+    "word": "efficient",
+    "phonetic": "/ɪˈfɪʃənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "有效率的"
+  },
+  {
+    "id": 609,
+    "word": "exploit",
+    "phonetic": "/ɪkˈsplɔɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "开发，利用，剥削"
+  },
+  {
+    "id": 610,
+    "word": "extract",
+    "phonetic": "/ɪkˈstrækt/",
+    "partOfSpeech": "v.",
+    "meaning": "提取，摘录"
+  },
+  {
+    "id": 611,
+    "word": "extend",
+    "phonetic": "/ɪkˈstend/",
+    "partOfSpeech": "v.",
+    "meaning": "延伸，扩大"
+  },
+  {
+    "id": 612,
+    "word": "extent",
+    "phonetic": "/ɪkˈstent/",
+    "partOfSpeech": "n.",
+    "meaning": "程度，范围"
+  },
+  {
+    "id": 613,
+    "word": "cumulative",
+    "phonetic": "/ˈkjuːmjələtɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "累积的"
+  },
+  {
+    "id": 614,
+    "word": "momentum",
+    "phonetic": "/məˈmentəm/",
+    "partOfSpeech": "n.",
+    "meaning": "动力"
+  },
+  {
+    "id": 615,
+    "word": "curriculum",
+    "phonetic": "/kəˈrɪkjələm/",
+    "partOfSpeech": "n.",
+    "meaning": "课程"
+  },
+  {
+    "id": 616,
+    "word": "census",
+    "phonetic": "/ˈsensəs/",
+    "partOfSpeech": "n.",
+    "meaning": "（官方的）统计"
+  },
+  {
+    "id": 617,
+    "word": "stage",
+    "phonetic": "/steɪdʒ/",
+    "partOfSpeech": "n.",
+    "meaning": "阶段；舞台"
+  },
+  {
+    "id": 618,
+    "word": "sector",
+    "phonetic": "/ˈsektə/",
+    "partOfSpeech": "n.",
+    "meaning": "部门；领域"
+  },
+  {
+    "id": 619,
+    "word": "typical",
+    "phonetic": "/ˈtɪpɪkəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "典型的"
+  },
+  {
+    "id": 620,
+    "word": "exhibit",
+    "phonetic": "/ɪɡˈzɪbɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "展出；表现"
+  },
+  {
+    "id": 621,
+    "word": "forum",
+    "phonetic": "/ˈfɔːrəm/",
+    "partOfSpeech": "n.",
+    "meaning": "论坛"
+  },
+  {
+    "id": 622,
+    "word": "signal",
+    "phonetic": "/ˈsɪɡnəl/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "信号；预示"
+  },
+  {
+    "id": 623,
+    "word": "indigenous",
+    "phonetic": "/ɪnˈdɪdʒənəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "本地的"
+  },
+  {
+    "id": 624,
+    "word": "various",
+    "phonetic": "/ˈveəriəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "各种各样的"
+  },
+  {
+    "id": 625,
+    "word": "routine",
+    "phonetic": "/ruːˈtiːn/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "常规的；常规"
+  }
+]

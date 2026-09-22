@@ -1,0 +1,29 @@
+# Gradle and Android Studio local state
+.gradle/
+.kotlin/
+.idea/
+**/build/
+local.properties
+*.iml
+.cxx/
+.externalNativeBuild/
+
+# Build outputs and local diagnostics
+*.apk
+*.aab
+*.log
+*.hprof
+/app-home.png
+/desktop-after-install.png
+
+# Signing credentials and private key material
+*.jks
+*.keystore
+*.pem
+*.p12
+
+# Duplicate source vocabulary directory; the app copy under assets is tracked.
+/词汇json文件/
+
+# Third-party exam material excluded from the public repository.
+/真题json文件/

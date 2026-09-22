@@ -1,0 +1,555 @@
+[
+  {
+    "id": 151,
+    "word": "address",
+    "phonetic": "/əˈdres/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "地址；演讲，处理"
+  },
+  {
+    "id": 152,
+    "word": "balcony",
+    "phonetic": "/ˈbælkəni/",
+    "partOfSpeech": "n.",
+    "meaning": "阳台"
+  },
+  {
+    "id": 153,
+    "word": "access",
+    "phonetic": "/ˈækses/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "机会，通道；进入"
+  },
+  {
+    "id": 154,
+    "word": "campus",
+    "phonetic": "/ˈkæmpəs/",
+    "partOfSpeech": "n.",
+    "meaning": "（大学）校园"
+  },
+  {
+    "id": 155,
+    "word": "garage",
+    "phonetic": "/ɡəˈrɑːʒ/",
+    "partOfSpeech": "n.",
+    "meaning": "车库"
+  },
+  {
+    "id": 156,
+    "word": "zone",
+    "phonetic": "/zəʊn/",
+    "partOfSpeech": "n.",
+    "meaning": "区域，地带"
+  },
+  {
+    "id": 157,
+    "word": "shade",
+    "phonetic": "/ʃeɪd/",
+    "partOfSpeech": "n.",
+    "meaning": "阴凉处，阴影"
+  },
+  {
+    "id": 158,
+    "word": "headmaster",
+    "phonetic": "/ˌhedˈmɑːstə/",
+    "partOfSpeech": "n.",
+    "meaning": "校长"
+  },
+  {
+    "id": 159,
+    "word": "astronaut",
+    "phonetic": "/ˈæstrənɔːt/",
+    "partOfSpeech": "n.",
+    "meaning": "宇航员"
+  },
+  {
+    "id": 160,
+    "word": "captain",
+    "phonetic": "/ˈkæptɪn/",
+    "partOfSpeech": "n.",
+    "meaning": "船长，队长"
+  },
+  {
+    "id": 161,
+    "word": "expert",
+    "phonetic": "/ˈekspɜːt/",
+    "partOfSpeech": "n.; adj.",
+    "meaning": "专家；内行的"
+  },
+  {
+    "id": 162,
+    "word": "appoint",
+    "phonetic": "/əˈpɔɪnt/",
+    "partOfSpeech": "v.",
+    "meaning": "委任，任命"
+  },
+  {
+    "id": 163,
+    "word": "vocation",
+    "phonetic": "/vəʊˈkeɪʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "职业，工作"
+  },
+  {
+    "id": 164,
+    "word": "resign",
+    "phonetic": "/rɪˈzaɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "辞去，辞职"
+  },
+  {
+    "id": 165,
+    "word": "royal",
+    "phonetic": "/ˈrɔɪəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "皇家的"
+  },
+  {
+    "id": 166,
+    "word": "govern",
+    "phonetic": "/ˈɡʌvən/",
+    "partOfSpeech": "v.",
+    "meaning": "统治，支配"
+  },
+  {
+    "id": 167,
+    "word": "republic",
+    "phonetic": "/rɪˈpʌblɪk/",
+    "partOfSpeech": "n.",
+    "meaning": "共和国"
+  },
+  {
+    "id": 168,
+    "word": "boundary",
+    "phonetic": "/ˈbaʊndəri/",
+    "partOfSpeech": "n.",
+    "meaning": "边界，界限"
+  },
+  {
+    "id": 169,
+    "word": "capital",
+    "phonetic": "/ˈkæpɪtəl/",
+    "partOfSpeech": "n.",
+    "meaning": "首都，启动资金"
+  },
+  {
+    "id": 170,
+    "word": "civilian",
+    "phonetic": "/səˈvɪliən/",
+    "partOfSpeech": "n.; adj.",
+    "meaning": "平民；平民的"
+  },
+  {
+    "id": 171,
+    "word": "civil",
+    "phonetic": "/ˈsɪvəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "平民的，国民的"
+  },
+  {
+    "id": 172,
+    "word": "citizen",
+    "phonetic": "/ˈsɪtɪzən/",
+    "partOfSpeech": "n.",
+    "meaning": "公民"
+  },
+  {
+    "id": 173,
+    "word": "economy",
+    "phonetic": "/ɪˈkɒnəmi/",
+    "partOfSpeech": "n.",
+    "meaning": "经济"
+  },
+  {
+    "id": 174,
+    "word": "economical",
+    "phonetic": "/ˌiːkəˈnɒmɪkəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "节约的"
+  },
+  {
+    "id": 175,
+    "word": "economic",
+    "phonetic": "/ˌiːkəˈnɒmɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "经济上的"
+  },
+  {
+    "id": 176,
+    "word": "banknote",
+    "phonetic": "/ˈbæŋknəʊt/",
+    "partOfSpeech": "n.",
+    "meaning": "钞票，纸币"
+  },
+  {
+    "id": 177,
+    "word": "treasure",
+    "phonetic": "/ˈtreʒə/",
+    "partOfSpeech": "n.",
+    "meaning": "财富"
+  },
+  {
+    "id": 178,
+    "word": "industry",
+    "phonetic": "/ˈɪndəstri/",
+    "partOfSpeech": "n.",
+    "meaning": "工业，行业"
+  },
+  {
+    "id": 179,
+    "word": "agriculture",
+    "phonetic": "/ˈæɡrɪkʌltʃə/",
+    "partOfSpeech": "n.",
+    "meaning": "农业"
+  },
+  {
+    "id": 180,
+    "word": "tax",
+    "phonetic": "/tæks/",
+    "partOfSpeech": "n.",
+    "meaning": "税"
+  },
+  {
+    "id": 181,
+    "word": "credit",
+    "phonetic": "/ˈkredɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "信用，学分"
+  },
+  {
+    "id": 182,
+    "word": "stock",
+    "phonetic": "/stɒk/",
+    "partOfSpeech": "n.",
+    "meaning": "股票，库存；储存"
+  },
+  {
+    "id": 183,
+    "word": "reception",
+    "phonetic": "/rɪˈsepʃən/",
+    "partOfSpeech": "n.",
+    "meaning": "接待，招待"
+  },
+  {
+    "id": 184,
+    "word": "luxury",
+    "phonetic": "/ˈlʌkʃəri/",
+    "partOfSpeech": "n.",
+    "meaning": "奢华，奢侈"
+  },
+  {
+    "id": 185,
+    "word": "pastime",
+    "phonetic": "/ˈpɑːstaɪm/",
+    "partOfSpeech": "n.",
+    "meaning": "消遣，娱乐活动"
+  },
+  {
+    "id": 186,
+    "word": "video",
+    "phonetic": "/ˈvɪdiəʊ/",
+    "partOfSpeech": "n.",
+    "meaning": "录音，录像"
+  },
+  {
+    "id": 187,
+    "word": "pure",
+    "phonetic": "/pjʊə/",
+    "partOfSpeech": "adj.",
+    "meaning": "纯粹的，干净的"
+  },
+  {
+    "id": 188,
+    "word": "blow",
+    "phonetic": "/bləʊ/",
+    "partOfSpeech": "v.",
+    "meaning": "吹，刮"
+  },
+  {
+    "id": 189,
+    "word": "ferry",
+    "phonetic": "/ˈferi/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "渡船；运送，渡运"
+  },
+  {
+    "id": 190,
+    "word": "rent",
+    "phonetic": "/rent/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "租金；租借"
+  },
+  {
+    "id": 191,
+    "word": "guard",
+    "phonetic": "/ɡɑːd/",
+    "partOfSpeech": "v.",
+    "meaning": "守卫"
+  },
+  {
+    "id": 192,
+    "word": "judge",
+    "phonetic": "/dʒʌdʒ/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "判断；法官，裁判员"
+  },
+  {
+    "id": 193,
+    "word": "ban",
+    "phonetic": "/bæn/",
+    "partOfSpeech": "v.",
+    "meaning": "禁止"
+  },
+  {
+    "id": 194,
+    "word": "illegal",
+    "phonetic": "/ɪˈliːɡəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "非法的"
+  },
+  {
+    "id": 195,
+    "word": "abolish",
+    "phonetic": "/əˈbɒlɪʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "废除，废止"
+  },
+  {
+    "id": 196,
+    "word": "fever",
+    "phonetic": "/ˈfiːvə/",
+    "partOfSpeech": "n.",
+    "meaning": "发烧，发热"
+  },
+  {
+    "id": 197,
+    "word": "virus",
+    "phonetic": "/ˈvaɪrəs/",
+    "partOfSpeech": "n.",
+    "meaning": "病毒"
+  },
+  {
+    "id": 198,
+    "word": "ambulance",
+    "phonetic": "/ˈæmbjələns/",
+    "partOfSpeech": "n.",
+    "meaning": "救护车"
+  },
+  {
+    "id": 199,
+    "word": "injure",
+    "phonetic": "/ˈɪndʒə/",
+    "partOfSpeech": "v.",
+    "meaning": "伤害，使受伤"
+  },
+  {
+    "id": 200,
+    "word": "gray",
+    "phonetic": "/ɡreɪ/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "灰色的；灰色"
+  },
+  {
+    "id": 201,
+    "word": "silver",
+    "phonetic": "/ˈsɪlvə/",
+    "partOfSpeech": "n.; adj.",
+    "meaning": "银色；银色的"
+  },
+  {
+    "id": 202,
+    "word": "huge",
+    "phonetic": "/hjuːdʒ/",
+    "partOfSpeech": "adj.",
+    "meaning": "巨大的"
+  },
+  {
+    "id": 203,
+    "word": "amount",
+    "phonetic": "/əˈmaʊnt/",
+    "partOfSpeech": "n.",
+    "meaning": "数量，数额"
+  },
+  {
+    "id": 204,
+    "word": "million",
+    "phonetic": "/ˈmɪljən/",
+    "partOfSpeech": "n.",
+    "meaning": "百万"
+  },
+  {
+    "id": 205,
+    "word": "billion",
+    "phonetic": "/ˈbɪljən/",
+    "partOfSpeech": "n.",
+    "meaning": "十亿"
+  },
+  {
+    "id": 206,
+    "word": "double",
+    "phonetic": "/ˈdʌbəl/",
+    "partOfSpeech": "adj.; v.",
+    "meaning": "两倍的；加倍"
+  },
+  {
+    "id": 207,
+    "word": "resource",
+    "phonetic": "/rɪˈsɔːs/",
+    "partOfSpeech": "n.",
+    "meaning": "资源"
+  },
+  {
+    "id": 208,
+    "word": "fuel",
+    "phonetic": "/fjuːəl/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "燃料；给……加燃料；加强"
+  },
+  {
+    "id": 209,
+    "word": "oxygen",
+    "phonetic": "/ˈɒksɪdʒən/",
+    "partOfSpeech": "n.",
+    "meaning": "氧气"
+  },
+  {
+    "id": 210,
+    "word": "horizon",
+    "phonetic": "/həˈraɪzən/",
+    "partOfSpeech": "n.",
+    "meaning": "地平线；眼界"
+  },
+  {
+    "id": 211,
+    "word": "liquid",
+    "phonetic": "/ˈlɪkwɪd/",
+    "partOfSpeech": "n.",
+    "meaning": "液体"
+  },
+  {
+    "id": 212,
+    "word": "storm",
+    "phonetic": "/stɔːm/",
+    "partOfSpeech": "n.",
+    "meaning": "暴风雨"
+  },
+  {
+    "id": 213,
+    "word": "fog",
+    "phonetic": "/fɒɡ/",
+    "partOfSpeech": "n.",
+    "meaning": "雾"
+  },
+  {
+    "id": 214,
+    "word": "capture",
+    "phonetic": "/ˈkæptʃə(r)/",
+    "partOfSpeech": "v.",
+    "meaning": "捕捉"
+  },
+  {
+    "id": 215,
+    "word": "temperature",
+    "phonetic": "/ˈtemprətʃə(r)/",
+    "partOfSpeech": "n.",
+    "meaning": "温度"
+  },
+  {
+    "id": 216,
+    "word": "spring",
+    "phonetic": "/sprɪŋ/",
+    "partOfSpeech": "n.",
+    "meaning": "春天，弹簧"
+  },
+  {
+    "id": 217,
+    "word": "dawn",
+    "phonetic": "/dɔːn/",
+    "partOfSpeech": "n.",
+    "meaning": "黎明；开端"
+  },
+  {
+    "id": 218,
+    "word": "midday",
+    "phonetic": "/ˈmɪddeɪ/",
+    "partOfSpeech": "n.",
+    "meaning": "中午，正午"
+  },
+  {
+    "id": 219,
+    "word": "deadline",
+    "phonetic": "/ˈdedlaɪn/",
+    "partOfSpeech": "n.",
+    "meaning": "最后期限"
+  },
+  {
+    "id": 220,
+    "word": "ahead",
+    "phonetic": "/əˈhed/",
+    "partOfSpeech": "adv.",
+    "meaning": "提前，领先"
+  },
+  {
+    "id": 221,
+    "word": "present",
+    "phonetic": "/ˈprezənt/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "现在的，出席的；礼物"
+  },
+  {
+    "id": 222,
+    "word": "altitude",
+    "phonetic": "/ˈæltɪtjuːd/",
+    "partOfSpeech": "n.",
+    "meaning": "海拔"
+  },
+  {
+    "id": 223,
+    "word": "empty",
+    "phonetic": "/ˈempti/",
+    "partOfSpeech": "v.; adj.",
+    "meaning": "使空；空的"
+  },
+  {
+    "id": 224,
+    "word": "upstairs",
+    "phonetic": "/ˌʌpˈsteəz/",
+    "partOfSpeech": "adv.",
+    "meaning": "在楼上"
+  },
+  {
+    "id": 225,
+    "word": "sheep",
+    "phonetic": "/ʃiːp/",
+    "partOfSpeech": "n.",
+    "meaning": "绵羊"
+  },
+  {
+    "id": 226,
+    "word": "camel",
+    "phonetic": "/ˈkæməl/",
+    "partOfSpeech": "n.",
+    "meaning": "骆驼"
+  },
+  {
+    "id": 227,
+    "word": "herd",
+    "phonetic": "/hɜːd/",
+    "partOfSpeech": "n.",
+    "meaning": "兽群，牧群"
+  },
+  {
+    "id": 228,
+    "word": "mushroom",
+    "phonetic": "/ˈmʌʃruːm/",
+    "partOfSpeech": "n.",
+    "meaning": "蘑菇"
+  },
+  {
+    "id": 229,
+    "word": "branch",
+    "phonetic": "/brɑːntʃ/",
+    "partOfSpeech": "n.",
+    "meaning": "树枝，分支"
+  }
+]
