@@ -1,6 +1,7 @@
 package com.example.cet6vocabulary.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +33,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -51,12 +53,18 @@ fun PrimaryButton(
     icon: ImageVector? = null,
     loading: Boolean = false
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressScale = rememberPressScale(
+        interactionSource = interactionSource,
+        enabled = enabled && !loading
+    )
     Button(
         onClick = onClick,
-        modifier = modifier.height(48.dp),
+        modifier = modifier.pressScale(pressScale).height(48.dp),
         enabled = enabled && !loading,
         shape = MaterialTheme.shapes.medium,
-        contentPadding = ButtonDefaults.ContentPadding
+        contentPadding = ButtonDefaults.ContentPadding,
+        interactionSource = interactionSource
     ) {
         if (loading) {
             CircularProgressIndicator(
@@ -82,12 +90,15 @@ fun SecondaryButton(
     enabled: Boolean = true,
     icon: ImageVector? = null
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressScale = rememberPressScale(interactionSource = interactionSource, enabled = enabled)
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.height(48.dp),
+        modifier = modifier.pressScale(pressScale).height(48.dp),
         enabled = enabled,
         shape = MaterialTheme.shapes.medium,
-        contentPadding = ButtonDefaults.ContentPadding
+        contentPadding = ButtonDefaults.ContentPadding,
+        interactionSource = interactionSource
     ) {
         icon?.let {
             Icon(it, contentDescription = null)
@@ -206,7 +217,7 @@ fun CET6EmptyState(
     title: String,
     description: String,
     modifier: Modifier = Modifier,
-    icon: ImageVector = Icons.Default.MenuBook,
+    icon: ImageVector = Icons.AutoMirrored.Filled.MenuBook,
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null
 ) {

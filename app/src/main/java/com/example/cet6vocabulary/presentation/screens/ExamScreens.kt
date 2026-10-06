@@ -35,16 +35,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.cet6vocabulary.data.model.Exam
@@ -83,6 +84,8 @@ fun ExamListScreen(
         }
     }
     Scaffold(
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
                 title = { Text("CET-6 真题") },
@@ -90,7 +93,8 @@ fun ExamListScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
@@ -148,6 +152,8 @@ fun ExamDetailScreen(
     onStart: (ExamSection?) -> Unit
 ) {
     Scaffold(
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
                 title = { Text("真题详情") },
@@ -155,7 +161,8 @@ fun ExamDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
@@ -208,6 +215,8 @@ fun ExamPlaceholderScreen(
     onBack: () -> Unit
 ) {
     Scaffold(
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
                 title = { Text(title) },
@@ -215,7 +224,8 @@ fun ExamPlaceholderScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
@@ -260,24 +270,31 @@ private fun sectionPresentation(section: ExamSection): Pair<String, ImageVector>
 fun ReadingPracticeScreen(
     exam: Exam,
     answers: MutableMap<String, String>,
+    questionIndex: Int,
+    onQuestionIndexChange: (Int) -> Unit,
+    onOpenAnswerSheet: () -> Unit,
     onComplete: (Int) -> Unit,
     onBack: () -> Unit
 ) {
     val reading = exam.sections.first { it.section == ExamSection.READING }
     val questions = reading.questions
-    var questionIndex by remember { mutableIntStateOf(0) }
     var showUnansweredDialog by remember { mutableStateOf(false) }
-    val question = questions.getOrNull(questionIndex)
+    // The index lives above this screen, so a round trip through the answer sheet comes back to
+    // the same question with every selected answer intact.
+    val safeIndex = questionIndex.coerceIn(0, questions.lastIndex)
+    val question = questions.getOrNull(safeIndex)
 
     if (question == null) {
-        ReadingResultScreen(exam, answers.size, onRestart = { answers.clear(); questionIndex = 0 }, onBack = onBack)
+        ReadingResultScreen(exam, answers.size, onRestart = { answers.clear(); onQuestionIndexChange(0) }, onBack = onBack)
         return
     }
 
-    val canGoBack = questionIndex > 0
-    val isLast = questionIndex == questions.lastIndex
+    val canGoBack = safeIndex > 0
+    val isLast = safeIndex == questions.lastIndex
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
                 title = { Text("阅读 · ${sectionLabel(question.subsection)}") },
@@ -285,7 +302,11 @@ fun ReadingPracticeScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
-                }
+                },
+                actions = {
+                    TextButton(onClick = onOpenAnswerSheet) { Text("答题卡") }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
         bottomBar = {
@@ -293,7 +314,11 @@ fun ReadingPracticeScreen(
                 Modifier.fillMaxWidth().padding(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                OutlinedButton(onClick = { questionIndex-- }, enabled = canGoBack, modifier = Modifier.weight(1f)) {
+                OutlinedButton(
+                    onClick = { onQuestionIndexChange(safeIndex - 1) },
+                    enabled = canGoBack,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Text("上一题")
                 }
                 Button(
@@ -304,7 +329,7 @@ fun ReadingPracticeScreen(
                         } else if (!answers.containsKey(question.questionId)) {
                             showUnansweredDialog = true
                         } else {
-                            questionIndex++
+                            onQuestionIndexChange(safeIndex + 1)
                         }
                     },
                     modifier = Modifier.weight(1f)
@@ -317,7 +342,7 @@ fun ReadingPracticeScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Text("${question.number} / ${questions.last().number}", style = MaterialTheme.typography.titleLarge)
-            Text("第 ${questionIndex + 1} / ${questions.size} 题", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("第 ${safeIndex + 1} / ${questions.size} 题", color = MaterialTheme.colorScheme.onSurfaceVariant)
             ReadingMaterial(reading, question)
             Text(question.question.orEmpty(), style = MaterialTheme.typography.titleMedium)
             readingOptions(reading, question).toSortedMap().forEach { (key, value) ->
@@ -346,7 +371,7 @@ fun ReadingPracticeScreen(
             confirmButton = {
                 TextButton(onClick = {
                     showUnansweredDialog = false
-                    if (isLast) onComplete(answers.size) else questionIndex++
+                    if (isLast) onComplete(answers.size) else onQuestionIndexChange(safeIndex + 1)
                 }) { Text("继续") }
             },
             dismissButton = { TextButton(onClick = { showUnansweredDialog = false }) { Text("返回答题") } }
@@ -405,6 +430,8 @@ fun ReadingResultScreen(
     val total = exam.sections.first { it.section == ExamSection.READING }.questions.size
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
                 title = { Text("阅读结果") },
@@ -412,7 +439,8 @@ fun ReadingResultScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->

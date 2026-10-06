@@ -1,38 +1,42 @@
-﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.example.cet6vocabulary.presentation.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -46,10 +50,14 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -63,13 +71,30 @@ import com.example.cet6vocabulary.data.repository.WordRepository
 import com.example.cet6vocabulary.ui.components.CET6EmptyState
 import com.example.cet6vocabulary.ui.components.CET6ErrorState
 import com.example.cet6vocabulary.ui.components.CET6LoadingState
-import com.example.cet6vocabulary.ui.components.PrimaryButton
+import com.example.cet6vocabulary.ui.components.LucideNavigationIcons
+import com.example.cet6vocabulary.ui.components.LucideSpellingIcons
+import com.example.cet6vocabulary.ui.components.LucideWordIcons
+import com.example.cet6vocabulary.ui.components.MaoDanCard
+import com.example.cet6vocabulary.ui.components.MaoDanFeedbackBox
+import com.example.cet6vocabulary.ui.components.MaoDanFeedbackKind
+import com.example.cet6vocabulary.ui.components.MaoDanPrimaryButton
+import com.example.cet6vocabulary.ui.components.MaoDanSecondaryButton
+import com.example.cet6vocabulary.ui.components.rememberAnimatedProgress
+import com.example.cet6vocabulary.ui.theme.MaoDanDimens
+import com.example.cet6vocabulary.ui.theme.LocalReduceMotion
+import com.example.cet6vocabulary.ui.theme.MaoDanMotion
+import com.example.cet6vocabulary.ui.theme.MaoDanShapes
+import com.example.cet6vocabulary.ui.theme.MaoDanSuccess
+import com.example.cet6vocabulary.ui.theme.MaoDanTypography
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 private enum class SpellingMode { SEQUENTIAL, RANDOM }
 private enum class AnswerState { UNANSWERED, SUBMITTING, CORRECT, WRONG }
+
+/** Click-driven slide direction, deliberately decoupled from currentIndex. */
+private enum class SpellingTransitionDirection { NEXT, PREVIOUS }
 
 @Composable
 fun SpellingScreen(
@@ -84,6 +109,7 @@ fun SpellingScreen(
     var userInput by remember { mutableStateOf("") }
     var answerState by remember { mutableStateOf(AnswerState.UNANSWERED) }
     var emptyInput by remember { mutableStateOf(false) }
+    var transitionDirection by remember { mutableStateOf(SpellingTransitionDirection.NEXT) }
     val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
     val saveMutex = remember { Mutex() }
@@ -170,7 +196,11 @@ fun SpellingScreen(
         }
     }
 
-    Scaffold(contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0), topBar = { TopAppBar(title = { Text("CET6 拼写") }) }) { padding ->
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground
+    ) { padding ->
         when (val currentState = state) {
             SpellingUiState.Loading -> CET6LoadingState(Modifier.padding(padding), "正在加载词汇")
             SpellingUiState.Empty -> CET6EmptyState("暂无词汇", "当前没有可练习的词汇。", Modifier.fillMaxSize().padding(padding))
@@ -180,14 +210,12 @@ fun SpellingScreen(
                 if (words.isEmpty()) {
                     CET6EmptyState("暂无词汇", "当前模式没有可练习的词汇。", Modifier.fillMaxSize().padding(padding))
                 } else if (currentIndex >= words.size) {
-                    Column(Modifier.fillMaxSize().padding(padding).padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        Text("本轮拼写已完成", style = MaterialTheme.typography.titleLarge)
-                        Text("你已经完成当前词表。", style = MaterialTheme.typography.bodyMedium)
-                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            OutlinedButton(onClick = { currentIndex = words.lastIndex; resetAnswer(); enqueueSave(currentIndex) }) { Text("上一个") }
-                            PrimaryButton("从头开始", { currentIndex = 0; resetAnswer(); enqueueSave(0) })
-                        }
-                    }
+                    SpellingCompletionContent(
+                        totalWords = words.size,
+                        onPrevious = { currentIndex = words.lastIndex; resetAnswer(); enqueueSave(currentIndex) },
+                        onRestart = { currentIndex = 0; resetAnswer(); enqueueSave(0) },
+                        modifier = Modifier.fillMaxSize().padding(padding)
+                    )
                 } else {
                     SpellingContent(
                         words = words,
@@ -196,6 +224,7 @@ fun SpellingScreen(
                         input = userInput,
                         answer = answerState,
                         emptyInput = emptyInput,
+                        transitionDirection = transitionDirection,
                         onInput = { userInput = it; emptyInput = false },
                         onCheck = {
                             val currentWord = words[currentIndex]
@@ -240,12 +269,14 @@ fun SpellingScreen(
                             }
                         },
                         onPrevious = {
+                            transitionDirection = SpellingTransitionDirection.PREVIOUS
                             val nextIndex = (if (currentIndex == words.size) words.lastIndex else currentIndex - 1).coerceAtLeast(0)
                             currentIndex = nextIndex
                             resetAnswer()
                             enqueueSave(nextIndex)
                         },
                         onNext = {
+                            transitionDirection = SpellingTransitionDirection.NEXT
                             val nextIndex = (currentIndex + 1).coerceAtMost(words.size)
                             currentIndex = nextIndex
                             resetAnswer()
@@ -273,6 +304,7 @@ private fun SpellingContent(
     input: String,
     answer: AnswerState,
     emptyInput: Boolean,
+    transitionDirection: SpellingTransitionDirection,
     onInput: (String) -> Unit,
     onCheck: () -> Unit,
     onRetry: () -> Unit,
@@ -284,94 +316,552 @@ private fun SpellingContent(
     val word = words[index]
     val submissionLocked = answer != AnswerState.UNANSWERED
     Column(
-        Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = MaoDanDimens.pageHorizontal),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space16)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("拼写练习", style = MaterialTheme.typography.titleLarge)
-                Text("第 ${index + 1} / ${words.size} 词", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            TextButton(onClick = { onMode(SpellingMode.SEQUENTIAL) }) { Text("从头开始") }
+        Spacer(Modifier.height(MaoDanDimens.space8))
+        SpellingHeader()
+        SpellingProgress(currentIndex = index, totalWords = words.size)
+        SpellingModeToggle(mode = mode, onModeChange = onMode)
+        SpellingPromptCard(word = word, transitionDirection = transitionDirection)
+        SpellingAnswerInput(
+            input = input,
+            enabled = !submissionLocked,
+            emptyInput = emptyInput,
+            onInput = onInput,
+            onCheck = onCheck
+        )
+        SpellingAnswerAction(
+            answer = answer,
+            input = input,
+            word = word,
+            onCheck = onCheck,
+            onRetry = onRetry
+        )
+        SpellingNavigation(
+            canGoPrevious = index > 0,
+            canGoNext = index < words.size,
+            onPrevious = onPrevious,
+            onNext = onNext
+        )
+        Spacer(Modifier.height(MaoDanDimens.space24))
+    }
+}
+
+@Composable
+private fun SpellingHeader(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
+    ) {
+        Text(
+            "拼写训练",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            "根据提示拼写单词",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun SpellingProgress(
+    currentIndex: Int,
+    totalWords: Int,
+    modifier: Modifier = Modifier
+) {
+    val progress = rememberAnimatedProgress(
+        target = (currentIndex + 1).toFloat() / totalWords
+    )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "第 ${currentIndex + 1} 题",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                "${currentIndex + 1} / $totalWords",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
         LinearProgressIndicator(
-            progress = { (index + 1).toFloat() / words.size },
-            modifier = Modifier.fillMaxWidth()
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(MaoDanDimens.space4)
+                .clip(MaoDanShapes.small),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = mode == SpellingMode.SEQUENTIAL, onClick = { onMode(SpellingMode.SEQUENTIAL) }, label = { Text("顺序") })
-            FilterChip(selected = mode == SpellingMode.RANDOM, onClick = { onMode(SpellingMode.RANDOM) }, label = { Text("随机") })
+    }
+}
+
+@Composable
+private fun SpellingModeToggle(
+    mode: SpellingMode,
+    onModeChange: (SpellingMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    SingleChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth()) {
+        SegmentedButton(
+            selected = mode == SpellingMode.SEQUENTIAL,
+            onClick = { onModeChange(SpellingMode.SEQUENTIAL) },
+            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+            icon = { SegmentedButtonDefaults.Icon(active = mode == SpellingMode.SEQUENTIAL) }
+        ) {
+            Text("顺序")
         }
-        SpellingPromptCard(word)
+        SegmentedButton(
+            selected = mode == SpellingMode.RANDOM,
+            onClick = { onModeChange(SpellingMode.RANDOM) },
+            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+            icon = { SegmentedButtonDefaults.Icon(active = mode == SpellingMode.RANDOM) }
+        ) {
+            Text("随机")
+        }
+    }
+}
+
+@Composable
+private fun SpellingPromptCard(
+    word: Word,
+    transitionDirection: SpellingTransitionDirection,
+    modifier: Modifier = Modifier
+) {
+    val reduceMotion = LocalReduceMotion.current
+    val directionSign = if (transitionDirection == SpellingTransitionDirection.NEXT) 1 else -1
+    val slideDistancePx = with(LocalDensity.current) { MaoDanMotion.WordSwitchOffset.roundToPx() }
+    MaoDanCard(modifier = modifier.fillMaxWidth()) {
+        AnimatedContent(
+            targetState = word,
+            transitionSpec = {
+                // Only the word travels, by a few dp: the card frame stays put so the eye keeps its
+                // anchor while reading. Reduced motion degrades to a plain crossfade.
+                val distance = if (reduceMotion) 0 else slideDistancePx * directionSign
+                (slideInHorizontally(MaoDanMotion.normal()) { distance } + fadeIn(MaoDanMotion.normal()))
+                    .togetherWith(slideOutHorizontally(MaoDanMotion.normal()) { -distance } + fadeOut(MaoDanMotion.normal()))
+            },
+            label = "spellingPrompt"
+        ) { targetWord ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaoDanDimens.space20, vertical = MaoDanDimens.space24),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "请拼写这个单词",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        "NO.${targetWord.id}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                if (targetWord.phonetic.isNotBlank()) {
+                    Text(
+                        targetWord.phonetic,
+                        style = MaoDanTypography.promptDisplay,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                if (targetWord.partOfSpeech.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(MaoDanShapes.pill)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .padding(horizontal = MaoDanDimens.space12, vertical = MaoDanDimens.space4)
+                    ) {
+                        Text(
+                            targetWord.partOfSpeech,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
+                )
+                Text(
+                    targetWord.meaning,
+                    style = MaoDanTypography.meaning,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SpellingAnswerInput(
+    input: String,
+    enabled: Boolean,
+    emptyInput: Boolean,
+    onInput: (String) -> Unit,
+    onCheck: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
+    ) {
         OutlinedTextField(
             value = input,
             onValueChange = onInput,
             modifier = Modifier.fillMaxWidth(),
             label = { Text("请输入英文单词") },
-            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+            leadingIcon = {
+                Icon(
+                    imageVector = LucideNavigationIcons.Spell,
+                    contentDescription = null,
+                    tint = if (emptyInput) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
             singleLine = true,
-            enabled = !submissionLocked,
+            enabled = enabled,
             isError = emptyInput,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, capitalization = KeyboardCapitalization.None, imeAction = ImeAction.Done),
+            textStyle = MaoDanTypography.inputDisplay,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Ascii,
+                capitalization = KeyboardCapitalization.None,
+                imeAction = ImeAction.Done
+            ),
             keyboardActions = KeyboardActions(onDone = { onCheck() }),
-            shape = MaterialTheme.shapes.medium
+            shape = MaoDanShapes.large,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         )
-        if (emptyInput) Text("请输入英文单词", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
-        when (answer) {
-            AnswerState.UNANSWERED -> PrimaryButton("检查答案", onCheck, modifier = Modifier.fillMaxWidth(), icon = Icons.Default.CheckCircle)
-            AnswerState.SUBMITTING -> PrimaryButton("保存中", {}, modifier = Modifier.fillMaxWidth(), enabled = false, loading = true)
-            AnswerState.CORRECT -> ResultBlock("拼写正确", input, word.word, true)
-            AnswerState.WRONG -> ResultBlock("拼写错误", input, word.word, false)
-        }
-        if (answer == AnswerState.WRONG) {
-            OutlinedButton(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("再试一次") }
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onPrevious, enabled = index > 0, modifier = Modifier.weight(1f).height(48.dp)) { Text("上一个") }
-            PrimaryButton("下一词", onNext, modifier = Modifier.weight(1f), enabled = index < words.size)
+        if (emptyInput) {
+            Text(
+                "请输入英文单词",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
 
 @Composable
-private fun SpellingPromptCard(word: Word) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+private fun SpellingAnswerAction(
+    answer: AnswerState,
+    input: String,
+    word: Word,
+    onCheck: () -> Unit,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AnimatedContent(
+        targetState = answer,
+        transitionSpec = {
+            fadeIn(MaoDanMotion.fast()) togetherWith fadeOut(MaoDanMotion.fast())
+        },
+        label = "spellingAnswerAction",
+        modifier = modifier.fillMaxWidth()
+    ) { currentAnswer ->
+        when (currentAnswer) {
+            AnswerState.UNANSWERED -> MaoDanPrimaryButton(
+                text = "检查答案",
+                onClick = onCheck,
+                modifier = Modifier.fillMaxWidth(),
+                content = {
+                    Icon(
+                        imageVector = LucideSpellingIcons.Check,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(MaoDanDimens.space4))
+                    Text("检查答案", style = MaterialTheme.typography.labelLarge)
+                }
+            )
+            AnswerState.SUBMITTING -> MaoDanPrimaryButton(
+                text = "保存中",
+                onClick = {},
+                enabled = false,
+                modifier = Modifier.fillMaxWidth(),
+                content = {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                    Spacer(Modifier.width(MaoDanDimens.space4))
+                    Text("保存中", style = MaterialTheme.typography.labelLarge)
+                }
+            )
+            AnswerState.CORRECT -> MaoDanFeedbackBox(
+                kind = MaoDanFeedbackKind.SUCCESS,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SpellingResultCard(input = input, answer = word.word, correct = true)
+            }
+            AnswerState.WRONG -> Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space8)
+            ) {
+                MaoDanFeedbackBox(
+                    kind = MaoDanFeedbackKind.ERROR,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    SpellingResultCard(input = input, answer = word.word, correct = false)
+                }
+                MaoDanSecondaryButton(
+                    text = "再试一次",
+                    onClick = onRetry,
+                    modifier = Modifier.fillMaxWidth(),
+                    content = {
+                        Icon(
+                            imageVector = LucideSpellingIcons.RotateCcw,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(MaoDanDimens.space4))
+                        Text("再试一次", style = MaterialTheme.typography.labelLarge)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SpellingResultCard(
+    input: String,
+    answer: String,
+    correct: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val accent = if (correct) MaoDanSuccess else MaterialTheme.colorScheme.error
+    val container = if (correct) MaoDanSuccess.copy(alpha = 0.12f) else MaterialTheme.colorScheme.errorContainer
+    val titleColor = if (correct) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onErrorContainer
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaoDanShapes.large,
+        color = container,
+        border = BorderStroke(1.dp, accent.copy(alpha = 0.4f))
     ) {
         Column(
-            Modifier.fillMaxWidth().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaoDanDimens.cardContent),
+            verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space8)
         ) {
-            Text("NO.${word.id}", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-            if (word.phonetic.isNotBlank()) Text(word.phonetic, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (word.partOfSpeech.isNotBlank()) Text(word.partOfSpeech, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(word.meaning, style = MaterialTheme.typography.titleLarge)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MaoDanDimens.space8)
+            ) {
+                Icon(
+                    imageVector = if (correct) LucideSpellingIcons.CircleCheck else LucideSpellingIcons.CircleX,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = accent
+                )
+                Text(
+                    if (correct) "拼写正确" else "拼写错误",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = titleColor
+                )
+            }
+            SpellingResultRow(
+                label = "你的答案",
+                value = input,
+                valueColor = titleColor,
+                strikethrough = !correct
+            )
+            SpellingResultRow(
+                label = "标准答案",
+                value = answer,
+                valueColor = MaterialTheme.colorScheme.onSurface,
+                strikethrough = false
+            )
         }
     }
 }
 
 @Composable
-private fun ResultBlock(status: String, input: String, answer: String, correct: Boolean) {
-    val statusColor = if (correct) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (correct) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
-        ),
-        shape = MaterialTheme.shapes.large
+private fun SpellingResultRow(
+    label: String,
+    value: String,
+    valueColor: Color,
+    strikethrough: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaoDanDimens.space8)
     ) {
-        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(if (correct) Icons.Default.CheckCircle else Icons.Default.Close, contentDescription = null, tint = statusColor)
-                Text(status, color = statusColor, style = MaterialTheme.typography.titleLarge)
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            value,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.titleMedium,
+            color = valueColor,
+            textAlign = TextAlign.End,
+            textDecoration = if (strikethrough) TextDecoration.LineThrough else null
+        )
+    }
+}
+
+@Composable
+private fun SpellingNavigation(
+    canGoPrevious: Boolean,
+    canGoNext: Boolean,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+    ) {
+        MaoDanSecondaryButton(
+            text = "上一题",
+            onClick = onPrevious,
+            enabled = canGoPrevious,
+            modifier = Modifier.weight(1f),
+            content = {
+                Icon(
+                    imageVector = LucideWordIcons.ArrowLeft,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(MaoDanDimens.space4))
+                Text("上一题", style = MaterialTheme.typography.labelLarge)
             }
-            Text("你的答案：$input", style = MaterialTheme.typography.bodyMedium)
-            Text("标准答案：$answer", style = MaterialTheme.typography.bodyMedium)
+        )
+        MaoDanPrimaryButton(
+            text = "下一题",
+            onClick = onNext,
+            enabled = canGoNext,
+            modifier = Modifier.weight(1f),
+            content = {
+                Text("下一题", style = MaterialTheme.typography.labelLarge)
+                Spacer(Modifier.width(MaoDanDimens.space4))
+                Icon(
+                    imageVector = LucideSpellingIcons.ArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun SpellingCompletionContent(
+    totalWords: Int,
+    onPrevious: () -> Unit,
+    onRestart: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = MaoDanDimens.pageHorizontal),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = LucideSpellingIcons.CircleCheck,
+            contentDescription = null,
+            modifier = Modifier.size(MaoDanDimens.space48),
+            tint = MaoDanSuccess
+        )
+        Spacer(Modifier.height(MaoDanDimens.space16))
+        Text(
+            "本轮拼写已完成",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(Modifier.height(MaoDanDimens.space8))
+        Text(
+            "你已经完成当前词表。",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(MaoDanDimens.space4))
+        Text(
+            "共 $totalWords 个单词",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(Modifier.height(MaoDanDimens.space24))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+        ) {
+            MaoDanSecondaryButton(
+                text = "上一个",
+                onClick = onPrevious,
+                modifier = Modifier.weight(1f),
+                content = {
+                    Icon(
+                        imageVector = LucideWordIcons.ArrowLeft,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(MaoDanDimens.space4))
+                    Text("上一个", style = MaterialTheme.typography.labelLarge)
+                }
+            )
+            MaoDanPrimaryButton(
+                text = "从头开始",
+                onClick = onRestart,
+                modifier = Modifier.weight(1f),
+                content = {
+                    Icon(
+                        imageVector = LucideSpellingIcons.RotateCcw,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(MaoDanDimens.space4))
+                    Text("从头开始", style = MaterialTheme.typography.labelLarge)
+                }
+            )
         }
     }
 }
@@ -386,6 +876,7 @@ private fun SpellingPreview() {
         input = "aband",
         answer = AnswerState.UNANSWERED,
         emptyInput = false,
+        transitionDirection = SpellingTransitionDirection.NEXT,
         onInput = {},
         onCheck = {},
         onRetry = {},
@@ -394,4 +885,18 @@ private fun SpellingPreview() {
         onNext = {},
         padding = PaddingValues()
     )
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+private fun SpellingResultPreview() {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(MaoDanDimens.pageHorizontal),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+    ) {
+        SpellingResultCard(input = "aband", answer = "abandon", correct = true)
+        SpellingResultCard(input = "aband", answer = "abandon", correct = false)
+    }
 }

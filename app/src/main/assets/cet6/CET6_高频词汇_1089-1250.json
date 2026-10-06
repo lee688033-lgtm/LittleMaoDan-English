@@ -1,0 +1,1136 @@
+[
+  {
+    "id": 1089,
+    "word": "spur",
+    "phonetic": "/spɜː/",
+    "partOfSpeech": "v./n.",
+    "meaning": "激励；刺激"
+  },
+  {
+    "id": 1090,
+    "word": "steep",
+    "phonetic": "/stiːp/",
+    "partOfSpeech": "adj.",
+    "meaning": "陡峭的，急剧的"
+  },
+  {
+    "id": 1091,
+    "word": "stretch",
+    "phonetic": "/stretʃ/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "伸展；一段时间"
+  },
+  {
+    "id": 1092,
+    "word": "swing",
+    "phonetic": "/swɪŋ/",
+    "partOfSpeech": "n./v.",
+    "meaning": "摆动，改变"
+  },
+  {
+    "id": 1093,
+    "word": "tissue",
+    "phonetic": "/ˈtɪʃuː/",
+    "partOfSpeech": "n.",
+    "meaning": "（人/动植物细胞的）组织；纸巾"
+  },
+  {
+    "id": 1094,
+    "word": "weep",
+    "phonetic": "/wiːp/",
+    "partOfSpeech": "v./n.",
+    "meaning": "流泪，哭泣"
+  },
+  {
+    "id": 1095,
+    "word": "ditch",
+    "phonetic": "/dɪtʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "丢弃"
+  },
+  {
+    "id": 1096,
+    "word": "flock",
+    "phonetic": "/flɒk/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "聚集，蜂拥；(鸟、羊)群"
+  },
+  {
+    "id": 1097,
+    "word": "loop",
+    "phonetic": "/luːp/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "圈，循环；使绕成圈"
+  },
+  {
+    "id": 1098,
+    "word": "plead",
+    "phonetic": "/pliːd/",
+    "partOfSpeech": "v.",
+    "meaning": "祈求，恳求；为...辩护"
+  },
+  {
+    "id": 1099,
+    "word": "prey",
+    "phonetic": "/preɪ/",
+    "partOfSpeech": "n.",
+    "meaning": "猎物"
+  },
+  {
+    "id": 1100,
+    "word": "cruel",
+    "phonetic": "/ˈkruːəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "残忍的"
+  },
+  {
+    "id": 1101,
+    "word": "sink",
+    "phonetic": "/sɪŋk/",
+    "partOfSpeech": "v.",
+    "meaning": "下沉"
+  },
+  {
+    "id": 1102,
+    "word": "threshold",
+    "phonetic": "/ˈθreʃəʊld/",
+    "partOfSpeech": "n.",
+    "meaning": "门槛，起始点"
+  },
+  {
+    "id": 1103,
+    "word": "wither",
+    "phonetic": "/ˈwɪðə/",
+    "partOfSpeech": "v.",
+    "meaning": "枯萎"
+  },
+  {
+    "id": 1104,
+    "word": "dazzle",
+    "phonetic": "/ˈdæzl/",
+    "partOfSpeech": "v.",
+    "meaning": "使眼花缭乱，使目眩"
+  },
+  {
+    "id": 1105,
+    "word": "hamper",
+    "phonetic": "/ˈhæmpə/",
+    "partOfSpeech": "v.",
+    "meaning": "阻碍，阻止"
+  },
+  {
+    "id": 1106,
+    "word": "hurricane",
+    "phonetic": "/ˈhʌrɪk(ə)n/",
+    "partOfSpeech": "n.",
+    "meaning": "飓风"
+  },
+  {
+    "id": 1107,
+    "word": "loom",
+    "phonetic": "/luːm/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "迫近；织布机"
+  },
+  {
+    "id": 1108,
+    "word": "lure",
+    "phonetic": "/l(j)ʊə/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "诱惑，引诱；诱惑力"
+  },
+  {
+    "id": 1109,
+    "word": "blind",
+    "phonetic": "/blaɪnd/",
+    "partOfSpeech": "adj.",
+    "meaning": "失明的，盲目的"
+  },
+  {
+    "id": 1110,
+    "word": "blend",
+    "phonetic": "/blend/",
+    "partOfSpeech": "v.",
+    "meaning": "使混合，融合"
+  },
+  {
+    "id": 1111,
+    "word": "slack",
+    "phonetic": "/slæk/",
+    "partOfSpeech": "adj.",
+    "meaning": "松弛的，萧条的"
+  },
+  {
+    "id": 1112,
+    "word": "swamp",
+    "phonetic": "/swɒmp/",
+    "partOfSpeech": "n.",
+    "meaning": "沼泽"
+  },
+  {
+    "id": 1113,
+    "word": "glamour",
+    "phonetic": "/ˈglæmə/",
+    "partOfSpeech": "n.",
+    "meaning": "魅力，吸引力"
+  },
+  {
+    "id": 1114,
+    "word": "cuisine",
+    "phonetic": "/kwɪˈziːn/",
+    "partOfSpeech": "n.",
+    "meaning": "菜肴"
+  },
+  {
+    "id": 1115,
+    "word": "mature",
+    "phonetic": "/məˈtʃʊə/",
+    "partOfSpeech": "adj.; v.",
+    "meaning": "成熟的；发育成熟"
+  },
+  {
+    "id": 1116,
+    "word": "ceremony",
+    "phonetic": "/ˈserəməni/",
+    "partOfSpeech": "n.",
+    "meaning": "典礼，仪式"
+  },
+  {
+    "id": 1117,
+    "word": "scheme",
+    "phonetic": "/skiːm/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "计划；密谋"
+  },
+  {
+    "id": 1118,
+    "word": "vast",
+    "phonetic": "/vɑːst/",
+    "partOfSpeech": "adj.",
+    "meaning": "庞大的，大量的"
+  },
+  {
+    "id": 1119,
+    "word": "cast",
+    "phonetic": "/kɑːst/",
+    "partOfSpeech": "v.",
+    "meaning": "投射，向...抛"
+  },
+  {
+    "id": 1120,
+    "word": "flavor",
+    "phonetic": "/ˈfleɪvə/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "味道，特色；给...调味"
+  },
+  {
+    "id": 1121,
+    "word": "spoil",
+    "phonetic": "/spɔɪl/",
+    "partOfSpeech": "v.",
+    "meaning": "溺爱，破坏"
+  },
+  {
+    "id": 1122,
+    "word": "sole",
+    "phonetic": "/səʊl/",
+    "partOfSpeech": "adj.",
+    "meaning": "唯一的，独占的"
+  },
+  {
+    "id": 1123,
+    "word": "scarce",
+    "phonetic": "/skeəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "缺乏的，不足的"
+  },
+  {
+    "id": 1124,
+    "word": "stumble",
+    "phonetic": "/ˈstʌmb(ə)l/",
+    "partOfSpeech": "v.",
+    "meaning": "绊脚"
+  },
+  {
+    "id": 1125,
+    "word": "bald",
+    "phonetic": "/bɔːld/",
+    "partOfSpeech": "adj.",
+    "meaning": "秃顶的，直截了当的"
+  },
+  {
+    "id": 1126,
+    "word": "bolster",
+    "phonetic": "/ˈbəʊlstə/",
+    "partOfSpeech": "v.",
+    "meaning": "增强，加强"
+  },
+  {
+    "id": 1127,
+    "word": "cluster",
+    "phonetic": "/ˈklʌstə/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "聚集；群"
+  },
+  {
+    "id": 1128,
+    "word": "brochure",
+    "phonetic": "/brəʊˈʃʊə/",
+    "partOfSpeech": "n.",
+    "meaning": "小册子，指南"
+  },
+  {
+    "id": 1129,
+    "word": "etiquette",
+    "phonetic": "/ˈetɪket/",
+    "partOfSpeech": "n.",
+    "meaning": "礼仪，礼节"
+  },
+  {
+    "id": 1130,
+    "word": "stubborn",
+    "phonetic": "/ˈstʌbən/",
+    "partOfSpeech": "adj.",
+    "meaning": "固执的"
+  },
+  {
+    "id": 1131,
+    "word": "analyze",
+    "phonetic": "/ˈænəlaɪz/",
+    "partOfSpeech": "v.",
+    "meaning": "分析"
+  },
+  {
+    "id": 1132,
+    "word": "justice",
+    "phonetic": "/ˈdʒʌstɪs/",
+    "partOfSpeech": "n.",
+    "meaning": "公正，公平"
+  },
+  {
+    "id": 1133,
+    "word": "alter",
+    "phonetic": "/ˈɔːltə/",
+    "partOfSpeech": "v.",
+    "meaning": "改变"
+  },
+  {
+    "id": 1134,
+    "word": "document",
+    "phonetic": "/ˈdɒkjum(ə)nt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "记录；文件"
+  },
+  {
+    "id": 1135,
+    "word": "memorandum",
+    "phonetic": "/ˌmeməˈrændəm/",
+    "partOfSpeech": "n.",
+    "meaning": "备忘录"
+  },
+  {
+    "id": 1136,
+    "word": "contrast",
+    "phonetic": "/ˈkɒntrɑːst/",
+    "partOfSpeech": "n./v.",
+    "meaning": "对比"
+  },
+  {
+    "id": 1137,
+    "word": "planet",
+    "phonetic": "/ˈplænɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "星球"
+  },
+  {
+    "id": 1138,
+    "word": "mission",
+    "phonetic": "/ˈmɪʃ(ə)n/",
+    "partOfSpeech": "n.",
+    "meaning": "任务；使命"
+  },
+  {
+    "id": 1139,
+    "word": "conquer",
+    "phonetic": "/ˈkɒŋkə/",
+    "partOfSpeech": "v.",
+    "meaning": "战胜；征服"
+  },
+  {
+    "id": 1140,
+    "word": "ethnic",
+    "phonetic": "/ˈeθnɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "民族的；种族的"
+  },
+  {
+    "id": 1141,
+    "word": "plastic",
+    "phonetic": "/ˈplæstɪk/",
+    "partOfSpeech": "n.; adj.",
+    "meaning": "塑料；塑料的"
+  },
+  {
+    "id": 1142,
+    "word": "organic",
+    "phonetic": "/ɔːˈɡænɪk/",
+    "partOfSpeech": "adj.",
+    "meaning": "有机的"
+  },
+  {
+    "id": 1143,
+    "word": "witness",
+    "phonetic": "/ˈwɪtnəs/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "见证，目击；目击者"
+  },
+  {
+    "id": 1144,
+    "word": "tablet",
+    "phonetic": "/ˈtæblɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "药片"
+  },
+  {
+    "id": 1145,
+    "word": "hemisphere",
+    "phonetic": "/ˈhemɪsfɪə/",
+    "partOfSpeech": "n.",
+    "meaning": "半球"
+  },
+  {
+    "id": 1146,
+    "word": "formula",
+    "phonetic": "/ˈfɔːmjʊlə/",
+    "partOfSpeech": "n.",
+    "meaning": "公式，方案"
+  },
+  {
+    "id": 1147,
+    "word": "disorder",
+    "phonetic": "/dɪsˈɔːdə/",
+    "partOfSpeech": "n.",
+    "meaning": "骚乱，杂乱"
+  },
+  {
+    "id": 1148,
+    "word": "acupuncture",
+    "phonetic": "/əˈkjuːpʌŋk(t)ʃə/",
+    "partOfSpeech": "n.",
+    "meaning": "针灸"
+  },
+  {
+    "id": 1149,
+    "word": "sculpture",
+    "phonetic": "/ˈskʌlptʃə/",
+    "partOfSpeech": "n.",
+    "meaning": "雕塑品"
+  },
+  {
+    "id": 1150,
+    "word": "despite",
+    "phonetic": "/dɪˈspaɪt/",
+    "partOfSpeech": "prep.",
+    "meaning": "尽管"
+  },
+  {
+    "id": 1151,
+    "word": "delay",
+    "phonetic": "/dɪˈleɪ/",
+    "partOfSpeech": "v.",
+    "meaning": "延迟"
+  },
+  {
+    "id": 1152,
+    "word": "solar",
+    "phonetic": "/ˈsəʊlə/",
+    "partOfSpeech": "adj.",
+    "meaning": "太阳的；太阳能的"
+  },
+  {
+    "id": 1153,
+    "word": "determine",
+    "phonetic": "/dɪˈtɜːmɪn/",
+    "partOfSpeech": "v.",
+    "meaning": "决定"
+  },
+  {
+    "id": 1154,
+    "word": "parliament",
+    "phonetic": "/ˈpɑːləmənt/",
+    "partOfSpeech": "n.",
+    "meaning": "议会"
+  },
+  {
+    "id": 1155,
+    "word": "satellite",
+    "phonetic": "/ˈsætəlaɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "卫星，人造卫星"
+  },
+  {
+    "id": 1156,
+    "word": "coastal",
+    "phonetic": "/ˈkəʊstl/",
+    "partOfSpeech": "adj.",
+    "meaning": "海岸的"
+  },
+  {
+    "id": 1157,
+    "word": "enterprise",
+    "phonetic": "/ˈentəpraɪz/",
+    "partOfSpeech": "n.",
+    "meaning": "企业，事业"
+  },
+  {
+    "id": 1158,
+    "word": "cognitive",
+    "phonetic": "/ˈkɒgnɪtɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "认知的"
+  },
+  {
+    "id": 1159,
+    "word": "recognize",
+    "phonetic": "/ˈrekəɡnaɪz/",
+    "partOfSpeech": "v.",
+    "meaning": "认出，识别"
+  },
+  {
+    "id": 1160,
+    "word": "setting",
+    "phonetic": "/ˈsetɪŋ/",
+    "partOfSpeech": "n.",
+    "meaning": "环境"
+  },
+  {
+    "id": 1161,
+    "word": "illustrate",
+    "phonetic": "/ˈɪləstreɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "说明"
+  },
+  {
+    "id": 1162,
+    "word": "indicate",
+    "phonetic": "/ˈɪndɪkeɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "表示；指出"
+  },
+  {
+    "id": 1163,
+    "word": "celebrate",
+    "phonetic": "/ˈselɪbreɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "庆祝"
+  },
+  {
+    "id": 1164,
+    "word": "comment",
+    "phonetic": "/ˈkɒment/",
+    "partOfSpeech": "n./v.",
+    "meaning": "评论"
+  },
+  {
+    "id": 1165,
+    "word": "circus",
+    "phonetic": "/ˈsɜːkəs/",
+    "partOfSpeech": "n.",
+    "meaning": "马戏团"
+  },
+  {
+    "id": 1166,
+    "word": "purchase",
+    "phonetic": "/ˈpɜːtʃəs/",
+    "partOfSpeech": "v.",
+    "meaning": "购买"
+  },
+  {
+    "id": 1167,
+    "word": "clone",
+    "phonetic": "/kləʊn/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "克隆动/植物；克隆"
+  },
+  {
+    "id": 1168,
+    "word": "symptom",
+    "phonetic": "/ˈsɪmp(t)əm/",
+    "partOfSpeech": "n.",
+    "meaning": "症状；征兆"
+  },
+  {
+    "id": 1169,
+    "word": "tenant",
+    "phonetic": "/ˈtenənt/",
+    "partOfSpeech": "n.",
+    "meaning": "租户，房客"
+  },
+  {
+    "id": 1170,
+    "word": "significant",
+    "phonetic": "/sɪɡˈnɪfɪk(ə)nt/",
+    "partOfSpeech": "adj.",
+    "meaning": "有重大意义的；数量相当大的"
+  },
+  {
+    "id": 1171,
+    "word": "regarding",
+    "phonetic": "/rɪˈɡɑːdɪŋ/",
+    "partOfSpeech": "prep.",
+    "meaning": "关于"
+  },
+  {
+    "id": 1172,
+    "word": "undergraduate",
+    "phonetic": "/ˌʌndəˈɡrædʒuət/",
+    "partOfSpeech": "n.",
+    "meaning": "本科生"
+  },
+  {
+    "id": 1173,
+    "word": "flu",
+    "phonetic": "/fluː/",
+    "partOfSpeech": "n.",
+    "meaning": "流感"
+  },
+  {
+    "id": 1174,
+    "word": "persuade",
+    "phonetic": "/pəˈsweɪd/",
+    "partOfSpeech": "v.",
+    "meaning": "说服；使信服"
+  },
+  {
+    "id": 1175,
+    "word": "psychology",
+    "phonetic": "/saɪˈkɒlədʒi/",
+    "partOfSpeech": "n.",
+    "meaning": "心理学"
+  },
+  {
+    "id": 1176,
+    "word": "physics",
+    "phonetic": "/ˈfɪzɪks/",
+    "partOfSpeech": "n.",
+    "meaning": "物理学"
+  },
+  {
+    "id": 1177,
+    "word": "biology",
+    "phonetic": "/baɪˈɒlədʒi/",
+    "partOfSpeech": "n.",
+    "meaning": "生物学"
+  },
+  {
+    "id": 1178,
+    "word": "occasion",
+    "phonetic": "/əˈkeɪʒ(ə)n/",
+    "partOfSpeech": "n.",
+    "meaning": "场合；时机"
+  },
+  {
+    "id": 1179,
+    "word": "opposite",
+    "phonetic": "/ˈɒpəzɪt/",
+    "partOfSpeech": "adj.",
+    "meaning": "相反的，反面的"
+  },
+  {
+    "id": 1180,
+    "word": "accelerate",
+    "phonetic": "/əkˈseləreɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "加速；加快"
+  },
+  {
+    "id": 1181,
+    "word": "profile",
+    "phonetic": "/ˈprəʊfaɪl/",
+    "partOfSpeech": "n.; v.",
+    "meaning": "侧面轮廓；概述"
+  },
+  {
+    "id": 1182,
+    "word": "debt",
+    "phonetic": "/det/",
+    "partOfSpeech": "n.",
+    "meaning": "债务；借款"
+  },
+  {
+    "id": 1183,
+    "word": "grand",
+    "phonetic": "/ɡrænd/",
+    "partOfSpeech": "adj.",
+    "meaning": "宏大的，重大的"
+  },
+  {
+    "id": 1184,
+    "word": "diverse",
+    "phonetic": "/daɪˈvɜːs/",
+    "partOfSpeech": "adj.",
+    "meaning": "不同的，多种多样的"
+  },
+  {
+    "id": 1185,
+    "word": "distinguish",
+    "phonetic": "/dɪˈstɪŋɡgwɪʃ/",
+    "partOfSpeech": "v.",
+    "meaning": "区分，辨别"
+  },
+  {
+    "id": 1186,
+    "word": "community",
+    "phonetic": "/kəˈmjuːnəti/",
+    "partOfSpeech": "n.",
+    "meaning": "社区，界"
+  },
+  {
+    "id": 1187,
+    "word": "ancient",
+    "phonetic": "/ˈeɪnʃ(ə)nt/",
+    "partOfSpeech": "adj.",
+    "meaning": "古老的，古代的"
+  },
+  {
+    "id": 1188,
+    "word": "antibiotics",
+    "phonetic": "/ˌæntibaɪˈɒtɪks/",
+    "partOfSpeech": "n.(pl.)",
+    "meaning": "抗生素"
+  },
+  {
+    "id": 1189,
+    "word": "unique",
+    "phonetic": "/juːˈniːk/",
+    "partOfSpeech": "adj.",
+    "meaning": "独一无二的"
+  },
+  {
+    "id": 1190,
+    "word": "humid",
+    "phonetic": "/ˈhjuːmɪd/",
+    "partOfSpeech": "adj.",
+    "meaning": "温暖潮湿的"
+  },
+  {
+    "id": 1191,
+    "word": "interval",
+    "phonetic": "/ˈɪntəv(ə)l/",
+    "partOfSpeech": "n.",
+    "meaning": "间隔；间隙"
+  },
+  {
+    "id": 1192,
+    "word": "perpetual",
+    "phonetic": "/pəˈpetʃuəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "持续的；终身的"
+  },
+  {
+    "id": 1193,
+    "word": "transient",
+    "phonetic": "/ˈtrænziənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "短暂的"
+  },
+  {
+    "id": 1194,
+    "word": "clockwise",
+    "phonetic": "/ˈklɒkwaɪz/",
+    "partOfSpeech": "adj.; adv.",
+    "meaning": "顺时针方向的；顺时针方向"
+  },
+  {
+    "id": 1195,
+    "word": "intermediate",
+    "phonetic": "/ˌɪntəˈmiːdiət/",
+    "partOfSpeech": "adj.",
+    "meaning": "中间的，中级的"
+  },
+  {
+    "id": 1196,
+    "word": "organism",
+    "phonetic": "/ˈɔːɡənɪz(ə)m/",
+    "partOfSpeech": "n.",
+    "meaning": "生物"
+  },
+  {
+    "id": 1197,
+    "word": "parasite",
+    "phonetic": "/ˈpærəsaɪt/",
+    "partOfSpeech": "n.",
+    "meaning": "寄生虫"
+  },
+  {
+    "id": 1198,
+    "word": "vegetation",
+    "phonetic": "/ˌvedʒɪˈteɪʃ(ə)n/",
+    "partOfSpeech": "n.",
+    "meaning": "植物"
+  },
+  {
+    "id": 1199,
+    "word": "blossom",
+    "phonetic": "/ˈblɒs(ə)m/",
+    "partOfSpeech": "n.",
+    "meaning": "花朵；花簇"
+  },
+  {
+    "id": 1200,
+    "word": "erode",
+    "phonetic": "/ɪˈrəʊd/",
+    "partOfSpeech": "v.",
+    "meaning": "侵蚀；逐渐毁坏"
+  },
+  {
+    "id": 1201,
+    "word": "respective",
+    "phonetic": "/rɪˈspektɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "各自的"
+  },
+  {
+    "id": 1202,
+    "word": "punctual",
+    "phonetic": "/ˈpʌŋ(k)tʃuəl/",
+    "partOfSpeech": "adj.",
+    "meaning": "准时的"
+  },
+  {
+    "id": 1203,
+    "word": "spontaneous",
+    "phonetic": "/spɒnˈteɪniəs/",
+    "partOfSpeech": "adj.",
+    "meaning": "自发的，自然的"
+  },
+  {
+    "id": 1204,
+    "word": "superficial",
+    "phonetic": "/ˌsuːpəˈfɪʃ(ə)l/",
+    "partOfSpeech": "adj.",
+    "meaning": "肤浅的"
+  },
+  {
+    "id": 1205,
+    "word": "vertical",
+    "phonetic": "/ˈvɜːtɪk(ə)l/",
+    "partOfSpeech": "adj.",
+    "meaning": "垂直的，纵向的"
+  },
+  {
+    "id": 1206,
+    "word": "waterproof",
+    "phonetic": "/ˈwɔːtəpruːf/",
+    "partOfSpeech": "adj.",
+    "meaning": "防水的"
+  },
+  {
+    "id": 1207,
+    "word": "abrupt",
+    "phonetic": "/əˈbrʌpt/",
+    "partOfSpeech": "adj.",
+    "meaning": "突然的；唐突的"
+  },
+  {
+    "id": 1208,
+    "word": "composite",
+    "phonetic": "/ˈkɒmpəzɪt/",
+    "partOfSpeech": "adj.; n.",
+    "meaning": "合成的；合成物"
+  },
+  {
+    "id": 1209,
+    "word": "reinforce",
+    "phonetic": "/ˌriːɪnˈfɔːs/",
+    "partOfSpeech": "v.",
+    "meaning": "加强；加固"
+  },
+  {
+    "id": 1210,
+    "word": "besiege",
+    "phonetic": "/bɪˈsiːdʒ/",
+    "partOfSpeech": "v.",
+    "meaning": "包围；围困"
+  },
+  {
+    "id": 1211,
+    "word": "deduce",
+    "phonetic": "/dɪˈdjuːs/",
+    "partOfSpeech": "v.",
+    "meaning": "推论，推断"
+  },
+  {
+    "id": 1212,
+    "word": "escalate",
+    "phonetic": "/ˈeskəleɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "加剧；不断恶化"
+  },
+  {
+    "id": 1213,
+    "word": "stagnate",
+    "phonetic": "/ˈstæɡneɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "停滞；不发展"
+  },
+  {
+    "id": 1214,
+    "word": "predominate",
+    "phonetic": "/prɪˈdɒmɪneɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "（数量上）占大多数；占主导地位"
+  },
+  {
+    "id": 1215,
+    "word": "inherent",
+    "phonetic": "/ɪnˈhɪərənt/",
+    "partOfSpeech": "adj.",
+    "meaning": "固有的；内在的"
+  },
+  {
+    "id": 1216,
+    "word": "noteworthy",
+    "phonetic": "/ˈnəʊtwɜːði/",
+    "partOfSpeech": "adj.",
+    "meaning": "值得注意的"
+  },
+  {
+    "id": 1217,
+    "word": "plausible",
+    "phonetic": "/ˈplɔːzəb(ə)l/",
+    "partOfSpeech": "adj.",
+    "meaning": "有道理的"
+  },
+  {
+    "id": 1218,
+    "word": "solitary",
+    "phonetic": "/ˈsɒlɪt(ə)ri/",
+    "partOfSpeech": "adj.",
+    "meaning": "独处的，孤零零的"
+  },
+  {
+    "id": 1219,
+    "word": "consolidate",
+    "phonetic": "/kənˈsɒlɪdeɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "使加强"
+  },
+  {
+    "id": 1220,
+    "word": "admit",
+    "phonetic": "/ədˈmɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "承认"
+  },
+  {
+    "id": 1221,
+    "word": "capable",
+    "phonetic": "/ˈkeɪpəb(ə)l/",
+    "partOfSpeech": "adj.",
+    "meaning": "有能力的"
+  },
+  {
+    "id": 1222,
+    "word": "continent",
+    "phonetic": "/ˈkɒntɪnənt/",
+    "partOfSpeech": "n.",
+    "meaning": "大陆；洲"
+  },
+  {
+    "id": 1223,
+    "word": "inertia",
+    "phonetic": "/ɪnˈɜːʃə/",
+    "partOfSpeech": "n.",
+    "meaning": "惯性；惰性"
+  },
+  {
+    "id": 1224,
+    "word": "device",
+    "phonetic": "/dɪˈvaɪs/",
+    "partOfSpeech": "n.",
+    "meaning": "设备；装置"
+  },
+  {
+    "id": 1225,
+    "word": "devise",
+    "phonetic": "/dɪˈvaɪz/",
+    "partOfSpeech": "v.",
+    "meaning": "发明；设想"
+  },
+  {
+    "id": 1226,
+    "word": "collective",
+    "phonetic": "/kəˈlektɪv/",
+    "partOfSpeech": "adj.",
+    "meaning": "集体的，共同的"
+  },
+  {
+    "id": 1227,
+    "word": "contract",
+    "phonetic": "/ˈkɒntrækt/, /kənˈtrækt/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "缩小；感染；合同"
+  },
+  {
+    "id": 1228,
+    "word": "contest",
+    "phonetic": "/ˈkɒntest/",
+    "partOfSpeech": "n.",
+    "meaning": "比赛；竞赛"
+  },
+  {
+    "id": 1229,
+    "word": "congress",
+    "phonetic": "/ˈkɒŋɡres/",
+    "partOfSpeech": "n.",
+    "meaning": "代表大会；国会"
+  },
+  {
+    "id": 1230,
+    "word": "tactic",
+    "phonetic": "/ˈtæktɪk/",
+    "partOfSpeech": "n.",
+    "meaning": "策略；战术"
+  },
+  {
+    "id": 1231,
+    "word": "metropolitan",
+    "phonetic": "/ˌmetrəˈpɒlɪt(ə)n/",
+    "partOfSpeech": "adj.",
+    "meaning": "大城市的；大都会的"
+  },
+  {
+    "id": 1232,
+    "word": "rescue",
+    "phonetic": "/ˈreskjuː/",
+    "partOfSpeech": "v.",
+    "meaning": "救援；营救"
+  },
+  {
+    "id": 1233,
+    "word": "bureau",
+    "phonetic": "/ˈbjʊərəʊ/",
+    "partOfSpeech": "n.",
+    "meaning": "局；科"
+  },
+  {
+    "id": 1234,
+    "word": "maximum",
+    "phonetic": "/ˈmæksɪməm/",
+    "partOfSpeech": "n.; adj.",
+    "meaning": "最大量；最大的，最高的"
+  },
+  {
+    "id": 1235,
+    "word": "cope",
+    "phonetic": "/kəʊp/",
+    "partOfSpeech": "v.",
+    "meaning": "处理；应付"
+  },
+  {
+    "id": 1236,
+    "word": "route",
+    "phonetic": "/ruːt/",
+    "partOfSpeech": "n.",
+    "meaning": "固定路线"
+  },
+  {
+    "id": 1237,
+    "word": "raw",
+    "phonetic": "/rɔː/",
+    "partOfSpeech": "adj.",
+    "meaning": "未经加工的；原始的"
+  },
+  {
+    "id": 1238,
+    "word": "stale",
+    "phonetic": "/steɪl/",
+    "partOfSpeech": "adj.",
+    "meaning": "不新鲜的；老掉牙的"
+  },
+  {
+    "id": 1239,
+    "word": "pyramid",
+    "phonetic": "/ˈpɪrəmɪd/",
+    "partOfSpeech": "n.",
+    "meaning": "金字塔"
+  },
+  {
+    "id": 1240,
+    "word": "remote",
+    "phonetic": "/rɪˈməʊt/",
+    "partOfSpeech": "adj.",
+    "meaning": "遥远的"
+  },
+  {
+    "id": 1241,
+    "word": "ratio",
+    "phonetic": "/ˈreɪʃiəʊ/",
+    "partOfSpeech": "n.",
+    "meaning": "比率；比例"
+  },
+  {
+    "id": 1242,
+    "word": "rhythm",
+    "phonetic": "/ˈrɪðəm/",
+    "partOfSpeech": "n.",
+    "meaning": "节奏"
+  },
+  {
+    "id": 1243,
+    "word": "ventilate",
+    "phonetic": "/ˈventɪleɪt/",
+    "partOfSpeech": "v.",
+    "meaning": "使通风；公开表达（感情/意见）"
+  },
+  {
+    "id": 1244,
+    "word": "velocity",
+    "phonetic": "/vəˈlɒsəti/",
+    "partOfSpeech": "n.",
+    "meaning": "速度"
+  },
+  {
+    "id": 1245,
+    "word": "clarity",
+    "phonetic": "/ˈklærəti/",
+    "partOfSpeech": "n.",
+    "meaning": "清晰"
+  },
+  {
+    "id": 1246,
+    "word": "edible",
+    "phonetic": "/ˈedɪb(ə)l/",
+    "partOfSpeech": "adj.",
+    "meaning": "可食用的，能吃的"
+  },
+  {
+    "id": 1247,
+    "word": "incredible",
+    "phonetic": "/ɪnˈkredəb(ə)l/",
+    "partOfSpeech": "adj.",
+    "meaning": "难以置信的；极好的"
+  },
+  {
+    "id": 1248,
+    "word": "sinister",
+    "phonetic": "/ˈsɪnɪstə/",
+    "partOfSpeech": "adj.",
+    "meaning": "邪恶的；阴险的"
+  },
+  {
+    "id": 1249,
+    "word": "propel",
+    "phonetic": "/prəˈpel/",
+    "partOfSpeech": "v.",
+    "meaning": "推动；驱使"
+  },
+  {
+    "id": 1250,
+    "word": "trace",
+    "phonetic": "/treɪs/",
+    "partOfSpeech": "v.; n.",
+    "meaning": "追溯；踪迹"
+  }
+]

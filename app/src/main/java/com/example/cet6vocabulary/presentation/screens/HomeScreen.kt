@@ -1,11 +1,16 @@
 package com.example.cet6vocabulary.presentation.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,19 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,8 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cet6vocabulary.data.repository.LearningRecordRepository
@@ -46,10 +41,26 @@ import com.example.cet6vocabulary.data.repository.WordBookRepository
 import com.example.cet6vocabulary.data.repository.WordRepository
 import com.example.cet6vocabulary.presentation.model.LearningStatistics
 import com.example.cet6vocabulary.presentation.model.calculateLearningStatistics
-import com.example.cet6vocabulary.ui.components.CET6EmptyState
 import com.example.cet6vocabulary.ui.components.CET6ErrorState
 import com.example.cet6vocabulary.ui.components.CET6LoadingState
 import com.example.cet6vocabulary.ui.components.CET6SectionTitle
+import com.example.cet6vocabulary.ui.components.AnimatedEnterBox
+import com.example.cet6vocabulary.ui.components.LucideHomeIcons
+import com.example.cet6vocabulary.ui.components.LucideNavigationIcons
+import com.example.cet6vocabulary.ui.components.MaoDanCard
+import com.example.cet6vocabulary.ui.components.rememberTiltState
+import com.example.cet6vocabulary.ui.components.rememberMagneticState
+import com.example.cet6vocabulary.ui.components.magnetic
+import com.example.cet6vocabulary.ui.components.tilt
+import com.example.cet6vocabulary.ui.components.MaoDanOutlinedCard
+import com.example.cet6vocabulary.ui.components.MaoDanProgressBar
+import com.example.cet6vocabulary.ui.components.ShinyText
+import com.example.cet6vocabulary.ui.components.pressScale
+import com.example.cet6vocabulary.ui.components.rememberPressScale
+import com.example.cet6vocabulary.ui.theme.CET6VocabularyTheme
+import com.example.cet6vocabulary.ui.theme.MaoDanDimens
+import com.example.cet6vocabulary.ui.theme.MaoDanMotion
+import com.example.cet6vocabulary.ui.theme.MaoDanShapes
 
 private sealed interface HomeUiState {
     data object Loading : HomeUiState
@@ -113,172 +124,356 @@ private fun HomeContent(
     onOpenExams: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0)) { padding ->
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground
+    ) { padding ->
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .padding(horizontal = MaoDanDimens.space16, vertical = MaoDanDimens.space20),
+            verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space20)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("CET6 高频词汇", style = MaterialTheme.typography.headlineMedium)
-                Text("高频词汇，循序掌握", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            HomeHeader()
+            // The hero carries the page's one deliberate entrance; everything else arrives with the page.
+            AnimatedEnterBox(modifier = Modifier.fillMaxWidth()) {
+                HomeProgressHero(statistics)
             }
-            ProgressHeroCard(statistics)
-            CET6SectionTitle("快速开始")
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                QuickStartCard("背诵", "开始复习单词", Icons.AutoMirrored.Filled.MenuBook, onOpenStudy, Modifier.weight(1f))
-                QuickStartCard("拼写", "检查拼写能力", Icons.Default.Edit, onOpenSpelling, Modifier.weight(1f))
+            HomeQuickActions(onOpenStudy = onOpenStudy, onOpenSpelling = onOpenSpelling)
+            Column(verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)) {
+                HomeEntryCard(
+                    title = "词汇本",
+                    description = if (wordBookCount == 0) "还没有收藏单词" else "已收藏 $wordBookCount 个单词",
+                    icon = LucideHomeIcons.Bookmark,
+                    onClick = onOpenWordBook
+                )
+                HomeEntryCard(
+                    title = "真题训练",
+                    description = "CET-6 历年真题",
+                    icon = LucideHomeIcons.FileText,
+                    onClick = onOpenExams
+                )
             }
-            ExamHomeCard(onOpenExams)
-            CET6SectionTitle("我的单词本")
-            WordBookHomeCard(wordBookCount, onOpenWordBook)
-            CET6SectionTitle("学习统计")
-            LearningSummaryCard(statistics)
+            HomeStatsSection(statistics)
         }
     }
 }
 
 @Composable
-private fun ExamHomeCard(onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Description, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("真题训练", style = MaterialTheme.typography.titleMedium)
-                Text("CET-6 历年真题", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Text("开始练习", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-        }
+private fun HomeHeader() {
+    Column(verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)) {
+        // The page's one deliberate focal point; the subtitle below stays a plain label.
+        ShinyText(
+            "CET6 高频词汇",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            "高频词汇，循序掌握",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
 @Composable
-private fun ProgressHeroCard(statistics: LearningStatistics) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-    ) {
-        Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+private fun HomeProgressHero(statistics: LearningStatistics) {
+    // The hero is the one surface worth lighting up; the rest of the page stays flat on purpose.
+    MaoDanCard(modifier = Modifier.fillMaxWidth(), spotlightEnabled = true) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaoDanDimens.space20),
+            verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space16)
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.AutoMirrored.Filled.TrendingUp, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                Spacer(Modifier.width(8.dp))
-                Text("学习进度", style = MaterialTheme.typography.titleLarge)
+                HomeIconBadge(LucideHomeIcons.TrendingUp)
+                Spacer(Modifier.width(MaoDanDimens.space12))
+                Text(
+                    "学习进度",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
             Row(verticalAlignment = Alignment.Bottom) {
-                Text(statistics.learnedWords.toString(), style = MaterialTheme.typography.displayLarge, color = MaterialTheme.colorScheme.primary)
-                Text(" / ${statistics.totalWords}", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 5.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.width(8.dp))
-                Text("已学习", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(bottom = 6.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    statistics.learnedWords.toString(),
+                    style = MaterialTheme.typography.displayLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    " / ${statistics.totalWords} 词",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = MaoDanDimens.space4)
+                )
             }
-            LinearProgressIndicator(
-                progress = { statistics.learningProgress },
+            MaoDanProgressBar(progress = statistics.learningProgress)
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    "已完成 ${statistics.learnedPercent}%",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    "剩余 ${statistics.unlearnedWords} 词",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeQuickActions(onOpenStudy: () -> Unit, onOpenSpelling: () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)) {
+        CET6SectionTitle("开始学习")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+        ) {
+            HomeQuickActionCard(
+                title = "背诵",
+                description = "开始复习单词",
+                icon = LucideNavigationIcons.Study,
+                onClick = onOpenStudy,
+                modifier = Modifier.weight(1f),
+                shineTitle = true,
+                tiltEnabled = true
             )
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                ProgressStat("已学习", statistics.learnedWords.toString())
-                ProgressStat("待学习", statistics.unlearnedWords.toString())
-                ProgressStat("进度", "${statistics.learnedPercent}%")
+            HomeQuickActionCard(
+                title = "拼写",
+                description = "检查拼写能力",
+                icon = LucideNavigationIcons.Spell,
+                onClick = onOpenSpelling,
+                modifier = Modifier.weight(1f),
+                magneticEnabled = true
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeQuickActionCard(
+    title: String,
+    description: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    shineTitle: Boolean = false,
+    tiltEnabled: Boolean = false,
+    magneticEnabled: Boolean = false
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressScale = rememberPressScale(
+        interactionSource = interactionSource,
+        pressedScale = MaoDanMotion.CardPressedScale
+    )
+    val tiltState = rememberTiltState(tiltEnabled)
+    val magneticState = rememberMagneticState(magneticEnabled)
+    MaoDanOutlinedCard(
+        modifier = modifier
+            .magnetic(magneticState)
+            .tilt(tiltState)
+            .pressScale(pressScale)
+            .clip(MaoDanShapes.large)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = onClick
+            ),
+        spotlightEnabled = true
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = MaoDanDimens.iconButtonSize)
+                .padding(MaoDanDimens.space16),
+            verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+        ) {
+            HomeIconBadge(icon)
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                // The primary action follows the page title by one beat; the other cards keep
+                // enabled = false, which renders exactly like the plain Text it replaces.
+                ShinyText(
+                    text = title,
+                    enabled = shineTitle,
+                    delayMillis = MaoDanMotion.ShineDelayMillis + MaoDanMotion.EnterStaggerMillis,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    description,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ProgressStat(label: String, value: String) {
-    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(value, style = MaterialTheme.typography.titleMedium)
-        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-@Composable
-private fun QuickStartCard(title: String, description: String, icon: ImageVector, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier.clickable(onClick = onClick),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+private fun HomeEntryCard(
+    title: String,
+    description: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressScale = rememberPressScale(
+        interactionSource = interactionSource,
+        pressedScale = MaoDanMotion.CardPressedScale
+    )
+    MaoDanOutlinedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .pressScale(pressScale)
+            .clip(MaoDanShapes.large)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = onClick
+            ),
+        spotlightEnabled = true
     ) {
-        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Icon(icon, contentDescription = null, modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.primary)
-            Text(title, style = MaterialTheme.typography.titleLarge)
-            Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-    }
-}
-
-@Composable
-private fun WordBookHomeCard(count: Int, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Star, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("我的单词本", style = MaterialTheme.typography.titleMedium)
-                Text(if (count == 0) "还没有收藏单词" else "$count 个单词", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = MaoDanDimens.iconButtonSize)
+                .padding(MaoDanDimens.space16),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            HomeIconBadge(icon)
+            Spacer(Modifier.width(MaoDanDimens.space12))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    description,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
-            Text("查看", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Spacer(Modifier.width(MaoDanDimens.space8))
+            Icon(
+                imageVector = LucideHomeIcons.ChevronRight,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
 
 @Composable
-private fun LearningSummaryCard(statistics: LearningStatistics) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+private fun HomeStatsSection(statistics: LearningStatistics) {
+    Column(verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)) {
+        CET6SectionTitle("学习统计")
+        MaoDanCard(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = MaoDanDimens.space16),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HomeStatItem(
+                    label = "待学习",
+                    value = statistics.unlearnedWords.toString(),
+                    modifier = Modifier.weight(1f)
+                )
+                HomeStatDivider()
+                HomeStatItem(
+                    label = "正确率",
+                    value = "${statistics.accuracyPercent}%",
+                    modifier = Modifier.weight(1f)
+                )
+                HomeStatDivider()
+                HomeStatItem(
+                    label = "错误次数",
+                    value = statistics.wrongCount.toString(),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeStatItem(label: String, value: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
     ) {
-        Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-            HomeStat("已学习", statistics.learnedWords.toString())
-            HomeStat("正确率", "${statistics.accuracyPercent}%")
-            HomeStat("错误次数", statistics.wrongCount.toString())
-        }
+        Text(
+            value,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
 @Composable
-private fun HomeStat(label: String, value: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
-        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun HomeStatDivider() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .height(28.dp)
+            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
+    )
+}
+
+@Composable
+private fun HomeIconBadge(icon: ImageVector, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .clip(MaoDanShapes.medium)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 760)
 @Composable
 private fun HomePreview() {
-    HomeContent(
-        statistics = calculateLearningStatistics(
-            wordIds = setOf(1, 2, 3, 4, 5),
-            records = emptyList()
-        ),
-        wordBookCount = 0,
-        onOpenStudy = {},
-        onOpenSpelling = {},
-        onOpenWordBook = {},
-        onOpenExams = {}
-    )
+    CET6VocabularyTheme {
+        HomeContent(
+            statistics = calculateLearningStatistics(
+                wordIds = (1..781).toSet(),
+                records = emptyList()
+            ).copy(learnedWords = 3, unlearnedWords = 778),
+            wordBookCount = 5,
+            onOpenStudy = {},
+            onOpenSpelling = {},
+            onOpenWordBook = {},
+            onOpenExams = {}
+        )
+    }
 }

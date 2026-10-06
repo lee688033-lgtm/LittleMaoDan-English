@@ -1,14 +1,24 @@
 ﻿plugins { id("com.android.application"); id("org.jetbrains.kotlin.android"); id("org.jetbrains.kotlin.plugin.compose"); kotlin("kapt") }
 
+// Real exam papers live in the ignored top-level exam directory, so injecting them into the
+// APK is opt-in. Without the property the exam module simply shows its empty state, which is
+// exactly what a fresh clone from the public repository gets.
+val localExamAssetsEnabled = providers.gradleProperty("cet6.localExamAssets").orNull.toBoolean()
+
 android { namespace = "com.example.cet6vocabulary"; compileSdk = 35
     sourceSets {
         getByName("main") {
-            assets.srcDir(rootProject.file("真题json文件"))
+            // Exam papers are opt-in only: a published artifact must never carry them.
+            // Local exam testing: .\gradlew.bat assembleDebug "-Pcet6.localExamAssets=true"
+            // Release builds and any artifact intended for publication must be built without it.
+            if (localExamAssetsEnabled) {
+                assets.srcDir(rootProject.file("真题json文件"))
+            }
         }
     }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
-    defaultConfig { applicationId = "com.example.cet6vocabulary"; minSdk = 24; targetSdk = 35; versionCode = 1; versionName = "1.0.0"; testInstrumentationRunner = "com.example.cet6vocabulary.data.PersistenceInstrumentation" }
+    defaultConfig { applicationId = "com.example.cet6vocabulary"; minSdk = 24; targetSdk = 35; versionCode = 2; versionName = "1.1.0"; testInstrumentationRunner = "com.example.cet6vocabulary.data.PersistenceInstrumentation" }
 }
 
 dependencies {

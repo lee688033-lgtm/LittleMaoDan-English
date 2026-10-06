@@ -1,13 +1,22 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.example.cet6vocabulary.presentation.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,23 +25,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -44,9 +45,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -59,13 +62,25 @@ import com.example.cet6vocabulary.data.repository.WordRepository
 import com.example.cet6vocabulary.ui.components.CET6EmptyState
 import com.example.cet6vocabulary.ui.components.CET6ErrorState
 import com.example.cet6vocabulary.ui.components.CET6LoadingState
-import com.example.cet6vocabulary.ui.components.PrimaryButton
-import com.example.cet6vocabulary.ui.components.SecondaryButton
+import com.example.cet6vocabulary.ui.components.LucideHomeIcons
+import com.example.cet6vocabulary.ui.components.LucideWordIcons
+import com.example.cet6vocabulary.ui.components.MaoDanCard
+import com.example.cet6vocabulary.ui.components.MaoDanOutlinedCard
+import com.example.cet6vocabulary.ui.components.MaoDanPrimaryButton
+import com.example.cet6vocabulary.ui.components.MaoDanSecondaryButton
+import com.example.cet6vocabulary.ui.components.MaoDanTextButton
+import com.example.cet6vocabulary.ui.components.rememberAnimatedProgress
+import com.example.cet6vocabulary.ui.theme.LocalReduceMotion
+import com.example.cet6vocabulary.ui.theme.MaoDanDimens
+import com.example.cet6vocabulary.ui.theme.MaoDanMotion
+import com.example.cet6vocabulary.ui.theme.MaoDanShapes
+import com.example.cet6vocabulary.ui.theme.MaoDanTypography
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-private enum class StudyMode { SEQUENTIAL, RANDOM }
+ private enum class StudyMode { SEQUENTIAL, RANDOM }
+ private enum class StudyTransitionDirection { NEXT, PREVIOUS }
 private sealed interface StudyUiState {
     data object Loading : StudyUiState
     data object Empty : StudyUiState
@@ -84,6 +99,7 @@ fun StudyScreen(
     var mode by remember { mutableStateOf(StudyMode.SEQUENTIAL) }
     var currentIndex by remember { mutableIntStateOf(0) }
     var showMeaning by remember { mutableStateOf(false) }
+    var transitionDirection by remember { mutableStateOf(StudyTransitionDirection.NEXT) }
     var randomWords by remember { mutableStateOf(emptyList<Word>()) }
     var wordBookIds by remember { mutableStateOf(emptySet<Int>()) }
     var initialized by remember { mutableStateOf(false) }
@@ -108,15 +124,10 @@ fun StudyScreen(
 
     suspend fun saveProgress(progress: StudyProgressEntity?) {
         if (progress == null) return
-        progressSaveMutex.withLock {
-            studyProgressRepository.saveProgress(progress)
-        }
+        progressSaveMutex.withLock { studyProgressRepository.saveProgress(progress) }
     }
 
-    fun enqueueProgressSave(
-        index: Int = currentIndex,
-        progressMode: StudyMode = mode
-    ) {
+    fun enqueueProgressSave(index: Int = currentIndex, progressMode: StudyMode = mode) {
         val progress = createProgressSnapshot(index, progressMode) ?: return
         scope.launch { saveProgress(progress) }
     }
@@ -169,11 +180,15 @@ fun StudyScreen(
         }
     }
 
-    Scaffold(contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0), topBar = { TopAppBar(title = { Text(if (wordBookMode) "我的单词本·背诵" else "CET6 背诵") }) }) { padding ->
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
+        contentColor = MaterialTheme.colorScheme.onBackground
+    ) { padding ->
         when (val currentState = state) {
             StudyUiState.Loading -> CET6LoadingState(Modifier.padding(padding), "正在加载词汇")
             StudyUiState.Empty -> CET6EmptyState(
-                title = if (wordBookMode) "单词本还是空的" else "暂无词汇",
+                title = if (wordBookMode) "单词本还是空的" else "暂无可背诵词汇",
                 description = if (wordBookMode) "在背诵时收藏需要重点记忆的单词。" else "当前没有可学习的词汇。",
                 modifier = Modifier.fillMaxSize().padding(padding)
             )
@@ -192,92 +207,85 @@ fun StudyScreen(
                     val displayIndex = currentIndex.coerceIn(0, activeWords.lastIndex)
                     val word = activeWords[displayIndex]
                     if (isComplete) {
-                        Column(
-                            Modifier.fillMaxSize().padding(padding).padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text("本轮背诵已完成", style = MaterialTheme.typography.titleLarge)
-                            Text("你已经完成当前词表。", style = MaterialTheme.typography.bodyMedium)
-                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                OutlinedButton(onClick = {
-                                    val nextIndex = activeWords.lastIndex
-                                    currentIndex = nextIndex
-                                    showMeaning = false
-                                enqueueProgressSave(nextIndex)
-                                }) { Text("上一个") }
-                                PrimaryButton("从头开始", {
-                                    currentIndex = 0
-                                    showMeaning = false
-                                    enqueueProgressSave(0)
-                                })
-                            }
-                        }
-                    } else
-                    StudyContent(
-                        words = activeWords,
-                        currentIndex = displayIndex,
-                        mode = mode,
-                        showMeaning = showMeaning,
-                        isInWordBook = word.id in wordBookIds,
-                        onModeChange = { nextMode ->
-                            if (nextMode == mode) return@StudyContent
-                            val previousProgress = createProgressSnapshot()
-                            scope.launch {
-                                saveProgress(previousProgress)
-                                if (nextMode == StudyMode.RANDOM) {
-                                    val progress = studyProgressRepository.getProgress(
-                                        StudyProgressKeys.forMode(wordBookMode, random = true)
-                                    )
-                                    val restored = restoreStudyProgress(currentState.words.map { it.id }, progress, random = true)
-                                    randomWords = restored.randomOrder.mapNotNull { id -> currentState.words.firstOrNull { it.id == id } }
-                                    currentIndex = restored.currentIndex
-                                } else {
-                                    val progress = studyProgressRepository.getProgress(
-                                        StudyProgressKeys.forMode(wordBookMode, random = false)
-                                    )
-                                    currentIndex = restoreStudyProgress(
-                                        currentState.words.map { it.id },
-                                        progress,
-                                        random = false
-                                    ).currentIndex
-                                    randomWords = emptyList()
-                                }
-                                mode = nextMode
+                        StudyCompletionContent(
+                            totalWords = activeWords.size,
+                            onRestart = {
+                                currentIndex = 0
                                 showMeaning = false
-                            }
-                        },
-                        onShowMeaningChange = { showMeaning = it },
-                        onToggleWordBook = {
-                            scope.launch {
-                                if (word.id in wordBookIds) {
-                                    wordBookRepository.removeWord(word.id)
-                                    wordBookIds = wordBookIds - word.id
-                                } else {
-                                    wordBookRepository.addWord(word.id)
-                                    wordBookIds = wordBookIds + word.id
+                                enqueueProgressSave(0)
+                            },
+                            modifier = Modifier.fillMaxSize().padding(padding)
+                        )
+                    } else {
+                        StudyContent(
+                            words = activeWords,
+                            currentIndex = displayIndex,
+                            mode = mode,
+                            showMeaning = showMeaning,
+                            isInWordBook = word.id in wordBookIds,
+                            wordBookMode = wordBookMode,
+                            transitionDirection = transitionDirection,
+                            onModeChange = { nextMode ->
+                                if (nextMode == mode) return@StudyContent
+                                val previousProgress = createProgressSnapshot()
+                                scope.launch {
+                                    saveProgress(previousProgress)
+                                    if (nextMode == StudyMode.RANDOM) {
+                                        val progress = studyProgressRepository.getProgress(
+                                            StudyProgressKeys.forMode(wordBookMode, random = true)
+                                        )
+                                        val restored = restoreStudyProgress(currentState.words.map { it.id }, progress, random = true)
+                                        randomWords = restored.randomOrder.mapNotNull { id -> currentState.words.firstOrNull { it.id == id } }
+                                        currentIndex = restored.currentIndex
+                                    } else {
+                                        val progress = studyProgressRepository.getProgress(
+                                            StudyProgressKeys.forMode(wordBookMode, random = false)
+                                        )
+                                        currentIndex = restoreStudyProgress(
+                                            currentState.words.map { it.id },
+                                            progress,
+                                            random = false
+                                        ).currentIndex
+                                        randomWords = emptyList()
+                                    }
+                                    mode = nextMode
+                                    showMeaning = false
                                 }
-                            }
-                        },
-                        onPrevious = {
-                            val nextIndex = (if (currentIndex == activeWords.size) activeWords.lastIndex else currentIndex - 1).coerceAtLeast(0)
-                            currentIndex = nextIndex
-                            showMeaning = false
-                            enqueueProgressSave(nextIndex)
-                        },
-                        onNext = {
-                            val nextIndex = (currentIndex + 1).coerceAtMost(activeWords.size)
-                            currentIndex = nextIndex
-                            showMeaning = false
-                            enqueueProgressSave(nextIndex)
-                        },
-                        onRestart = {
-                            currentIndex = 0
-                            showMeaning = false
-                            enqueueProgressSave(0)
-                        },
-                        modifier = Modifier.fillMaxSize().padding(padding)
-                    )
+                            },
+                            onShowMeaningChange = { showMeaning = it },
+                            onToggleWordBook = {
+                                scope.launch {
+                                    if (word.id in wordBookIds) {
+                                        wordBookRepository.removeWord(word.id)
+                                        wordBookIds = wordBookIds - word.id
+                                    } else {
+                                        wordBookRepository.addWord(word.id)
+                                        wordBookIds = wordBookIds + word.id
+                                    }
+                                }
+                            },
+                            onPrevious = {
+                                transitionDirection = StudyTransitionDirection.PREVIOUS
+                                val nextIndex = (if (currentIndex == activeWords.size) activeWords.lastIndex else currentIndex - 1).coerceAtLeast(0)
+                                currentIndex = nextIndex
+                                showMeaning = false
+                                enqueueProgressSave(nextIndex)
+                            },
+                            onNext = {
+                                transitionDirection = StudyTransitionDirection.NEXT
+                                val nextIndex = (currentIndex + 1).coerceAtMost(activeWords.size)
+                                currentIndex = nextIndex
+                                showMeaning = false
+                                enqueueProgressSave(nextIndex)
+                            },
+                            onRestart = {
+                                currentIndex = 0
+                                showMeaning = false
+                                enqueueProgressSave(0)
+                            },
+                            modifier = Modifier.padding(padding)
+                        )
+                    }
                 }
             }
         }
@@ -291,6 +299,8 @@ private fun StudyContent(
     mode: StudyMode,
     showMeaning: Boolean,
     isInWordBook: Boolean,
+    transitionDirection: StudyTransitionDirection,
+    wordBookMode: Boolean,
     onModeChange: (StudyMode) -> Unit,
     onShowMeaningChange: (Boolean) -> Unit,
     onToggleWordBook: () -> Unit,
@@ -299,74 +309,381 @@ private fun StudyContent(
     onRestart: () -> Unit,
     modifier: Modifier
 ) {
-    val word = words[currentIndex]
     Column(
-        modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = MaoDanDimens.pageHorizontal),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space16)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("学习进度", style = MaterialTheme.typography.titleLarge)
-                Text("${currentIndex + 1} / ${words.size}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            TextButton(onClick = onRestart) { Text("从头开始") }
+        Spacer(Modifier.height(MaoDanDimens.space8))
+        StudyHeader(
+            title = if (wordBookMode) "我的单词本·背诵" else "CET6 背诵",
+            currentIndex = currentIndex,
+            totalWords = words.size,
+            onRestart = onRestart
+        )
+        StudyProgress(currentIndex = currentIndex, totalWords = words.size)
+        StudyModeToggle(mode = mode, onModeChange = onModeChange)
+        StudyWordCard(
+            word = words[currentIndex],
+            showMeaning = showMeaning,
+            transitionDirection = transitionDirection
+        )
+        StudyActionColumn(
+            showMeaning = showMeaning,
+            isInWordBook = isInWordBook,
+            onShowMeaningChange = onShowMeaningChange,
+            onToggleWordBook = onToggleWordBook
+        )
+        StudyNavigation(
+            canGoPrevious = currentIndex > 0,
+            canGoNext = currentIndex < words.size,
+            onPrevious = onPrevious,
+            onNext = onNext
+        )
+        Spacer(Modifier.height(MaoDanDimens.space24))
+    }
+}
+
+@Composable
+private fun StudyHeader(
+    title: String,
+    currentIndex: Int,
+    totalWords: Int,
+    onRestart: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                "当前进度 ${currentIndex + 1} / $totalWords",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        MaoDanTextButton(
+            text = "从头开始",
+            onClick = onRestart
+        )
+    }
+}
+
+@Composable
+private fun StudyProgress(
+    currentIndex: Int,
+    totalWords: Int,
+    modifier: Modifier = Modifier
+) {
+    val progress = rememberAnimatedProgress(
+        target = (currentIndex + 1).toFloat() / totalWords
+    )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "学习进度",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                "${currentIndex + 1} / $totalWords",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
         LinearProgressIndicator(
-            progress = { (currentIndex + 1).toFloat() / words.size },
-            modifier = Modifier.fillMaxWidth()
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .clip(MaoDanShapes.small),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = mode == StudyMode.SEQUENTIAL, onClick = { onModeChange(StudyMode.SEQUENTIAL) }, label = { Text("顺序") })
-            FilterChip(selected = mode == StudyMode.RANDOM, onClick = { onModeChange(StudyMode.RANDOM) }, label = { Text("随机") })
+    }
+}
+
+@Composable
+private fun StudyModeToggle(
+    mode: StudyMode,
+    onModeChange: (StudyMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    SingleChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth()) {
+        SegmentedButton(
+            selected = mode == StudyMode.SEQUENTIAL,
+            onClick = { onModeChange(StudyMode.SEQUENTIAL) },
+            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+            icon = { SegmentedButtonDefaults.Icon(active = mode == StudyMode.SEQUENTIAL) }
+        ) {
+            Text("顺序")
         }
-        StudyWordCard(word, showMeaning, isInWordBook, onShowMeaningChange, onToggleWordBook)
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onPrevious, enabled = currentIndex > 0, modifier = Modifier.weight(1f).height(48.dp)) { Text("上一个") }
-            PrimaryButton("下一个", onNext, modifier = Modifier.weight(1f), enabled = currentIndex < words.size)
+        SegmentedButton(
+            selected = mode == StudyMode.RANDOM,
+            onClick = { onModeChange(StudyMode.RANDOM) },
+            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+            icon = { SegmentedButtonDefaults.Icon(active = mode == StudyMode.RANDOM) }
+        ) {
+            Text("随机")
         }
     }
 }
+
 
 @Composable
 private fun StudyWordCard(
     word: Word,
     showMeaning: Boolean,
-    isInWordBook: Boolean,
-    onShowMeaningChange: (Boolean) -> Unit,
-    onToggleWordBook: () -> Unit
+    transitionDirection: StudyTransitionDirection,
+    modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    val reduceMotion = LocalReduceMotion.current
+    val directionSign = if (transitionDirection == StudyTransitionDirection.NEXT) 1 else -1
+    val slideDistancePx = with(LocalDensity.current) { MaoDanMotion.WordSwitchOffset.roundToPx() }
+    MaoDanCard(
+        modifier = modifier.fillMaxWidth()
     ) {
-        Column(
-            Modifier.fillMaxWidth().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text("NO.${word.id}", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-            Text(word.word, style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold)
-            if (word.phonetic.isNotBlank()) Text(word.phonetic, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (word.partOfSpeech.isNotBlank()) Text(word.partOfSpeech, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (showMeaning) {
-                Text(word.meaning, style = MaterialTheme.typography.bodyLarge)
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                SecondaryButton(if (showMeaning) "隐藏释义" else "显示释义", { onShowMeaningChange(!showMeaning) })
-                SecondaryButton(
-                    text = if (isInWordBook) "移出单词本" else "加入单词本",
-                    onClick = onToggleWordBook,
-                    icon = Icons.Default.Star
+        AnimatedContent(
+            targetState = word,
+            transitionSpec = {
+                // Only the word travels, and only by a few dp, so the card frame stays put as an
+                // anchor while reading. Matches the spelling page; reduced motion is a crossfade.
+                val distance = if (reduceMotion) 0 else slideDistancePx * directionSign
+                (slideInHorizontally(MaoDanMotion.normal()) { distance } + fadeIn(MaoDanMotion.normal()))
+                    .togetherWith(slideOutHorizontally(MaoDanMotion.normal()) { -distance } + fadeOut(MaoDanMotion.normal()))
+            },
+            label = "wordCard"
+        ) { targetWord ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MaoDanDimens.space24, vertical = MaoDanDimens.space24),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space8)
+            ) {
+                Text(
+                    "NO.${targetWord.id}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                Spacer(Modifier.height(MaoDanDimens.space8))
+                Text(
+                    targetWord.word,
+                    style = MaoDanTypography.wordDisplay,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+                if (targetWord.phonetic.isNotBlank()) {
+                    Text(
+                        targetWord.phonetic,
+                        style = MaoDanTypography.phonetic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                if (targetWord.partOfSpeech.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .clip(MaoDanShapes.pill)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .padding(horizontal = MaoDanDimens.space12, vertical = MaoDanDimens.space4)
+                    ) {
+                        Text(
+                            targetWord.partOfSpeech,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                StudyMeaningReveal(word = targetWord, showMeaning = showMeaning)
             }
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 760)
+@Composable
+private fun StudyMeaningReveal(
+    word: Word,
+    showMeaning: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val reduceMotion = LocalReduceMotion.current
+    // Revealing the meaning changes the card height, so the expand keeps a token duration and only
+    // runs shorter when the system asks for less motion; the fade stays either way.
+    val revealSpec = remember(reduceMotion) {
+        if (reduceMotion) MaoDanMotion.fast<IntSize>() else MaoDanMotion.normal<IntSize>()
+    }
+    AnimatedVisibility(
+        visible = showMeaning,
+        enter = fadeIn(MaoDanMotion.fast()) + expandVertically(
+            animationSpec = revealSpec,
+            expandFrom = Alignment.Top
+        ),
+        exit = fadeOut(MaoDanMotion.fast()) + shrinkVertically(
+            animationSpec = revealSpec,
+            shrinkTowards = Alignment.Top
+        )
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = MaoDanDimens.space16),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space8)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(MaterialTheme.colorScheme.outlineVariant)
+            )
+            Text(
+                word.meaning,
+                style = MaoDanTypography.meaning,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = MaoDanDimens.space8)
+            )
+        }
+    }
+}
+
+@Composable
+private fun StudyActionColumn(
+    showMeaning: Boolean,
+    isInWordBook: Boolean,
+    onShowMeaningChange: (Boolean) -> Unit,
+    onToggleWordBook: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space8)
+    ) {
+        MaoDanPrimaryButton(
+            text = if (showMeaning) "隐藏释义" else "查看释义",
+            onClick = { onShowMeaningChange(!showMeaning) },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            MaoDanTextButton(
+                text = if (isInWordBook) "已加入单词本" else "加入单词本",
+                onClick = onToggleWordBook,
+                content = {
+                    Icon(
+                        imageVector = LucideHomeIcons.Bookmark,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                        tint = if (isInWordBook) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.width(MaoDanDimens.space4))
+                    Text(
+                        if (isInWordBook) "已加入单词本" else "加入单词本",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = if (isInWordBook) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun StudyNavigation(
+    canGoPrevious: Boolean,
+    canGoNext: Boolean,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+    ) {
+        MaoDanSecondaryButton(
+            text = "上一个",
+            onClick = onPrevious,
+            enabled = canGoPrevious,
+            modifier = Modifier.weight(1f),
+            content = {
+                Icon(
+                    imageVector = LucideWordIcons.ArrowLeft,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(MaoDanDimens.space4))
+                Text("上一个", style = MaterialTheme.typography.labelLarge)
+            }
+        )
+        MaoDanPrimaryButton(
+            text = "下一个",
+            onClick = onNext,
+            enabled = canGoNext,
+            modifier = Modifier.weight(1f),
+            content = {
+                Text("下一个", style = MaterialTheme.typography.labelLarge)
+                Spacer(Modifier.width(MaoDanDimens.space4))
+                Icon(
+                    imageVector = LucideHomeIcons.ChevronRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun StudyCompletionContent(
+    totalWords: Int,
+    onRestart: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = MaoDanDimens.pageHorizontal),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            "本轮背诵已完成",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(Modifier.height(MaoDanDimens.space8))
+        Text(
+            "已完成 $totalWords 个单词的学习",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(MaoDanDimens.space24))
+        MaoDanPrimaryButton(
+            text = "从头开始",
+            onClick = onRestart
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true, widthDp = 360, heightDp = 760)
 @Composable
 private fun StudyPreview() {
     StudyContent(
@@ -375,6 +692,8 @@ private fun StudyPreview() {
         mode = StudyMode.SEQUENTIAL,
         showMeaning = true,
         isInWordBook = false,
+        wordBookMode = false,
+        transitionDirection = StudyTransitionDirection.NEXT,
         onModeChange = {},
         onShowMeaningChange = {},
         onToggleWordBook = {},

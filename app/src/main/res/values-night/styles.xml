@@ -1,0 +1,13 @@
+<resources>
+    <!--
+      Night-only override of the Android theme. Compose already draws
+      colorScheme.background = #121417 in dark mode, but the window Android paints before the
+      first Compose frame still came from Theme.Material.Light, so a dark-mode cold start showed
+      a white screen while Room and the vocabulary JSON loaded. Only the window background is
+      overridden; the light theme and every other attribute stay exactly as they were.
+    -->
+    <style name="Theme.CET6Vocabulary" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#FF121417</item>
+        <item name="android:colorBackground">#FF121417</item>
+    </style>
+</resources>

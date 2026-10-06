@@ -23,6 +23,7 @@ import com.example.cet6vocabulary.data.repository.WordBookRepository
 import com.example.cet6vocabulary.data.repository.WordRepository
 import com.example.cet6vocabulary.presentation.screens.*
 import com.example.cet6vocabulary.ui.theme.CET6VocabularyTheme
+import com.example.cet6vocabulary.ui.components.AnimatedPageContent
 import com.example.cet6vocabulary.ui.components.BrandAvatarIcon
 import com.example.cet6vocabulary.ui.components.BrandBottomBar
 import com.example.cet6vocabulary.ui.components.BrandDictionaryIcon
@@ -30,6 +31,8 @@ import com.example.cet6vocabulary.ui.components.BrandEggIcon
 import com.example.cet6vocabulary.ui.components.BrandMemoryIcon
 import com.example.cet6vocabulary.ui.components.BrandSpellingIcon
 import com.example.cet6vocabulary.ui.components.CET6NavigationItem
+import com.example.cet6vocabulary.ui.components.MaoDanAuroraBackground
+import com.example.cet6vocabulary.ui.components.MaoDanParticleBackground
 
 data class NavItem(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
 
@@ -38,6 +41,7 @@ private enum class ExamRoute {
     DETAIL,
     PLACEHOLDER,
     READING,
+    READING_SHEET,
     READING_RESULT
 }
 
@@ -68,6 +72,9 @@ fun Cet6VocabularyApp() {
     var examRoute by remember { mutableStateOf<ExamRoute?>(null) }
     var selectedExamId by remember { mutableStateOf<String?>(null) }
     val readingAnswers = remember { mutableStateMapOf<String, String>() }
+    // Reading session state lives here so the practice screen and the answer sheet share one
+    // in-memory copy; switching between the two routes cannot recreate it.
+    var readingQuestionIndex by remember { mutableIntStateOf(0) }
     var readingAnsweredCount by remember { mutableIntStateOf(0) }
     var placeholderTitle by remember { mutableStateOf("真题练习") }
     var myRefreshKey by remember { mutableIntStateOf(0) }
@@ -91,6 +98,7 @@ fun Cet6VocabularyApp() {
         when (examRoute) {
             ExamRoute.PLACEHOLDER -> examRoute = ExamRoute.DETAIL
             ExamRoute.READING -> examRoute = ExamRoute.DETAIL
+            ExamRoute.READING_SHEET -> examRoute = ExamRoute.READING
             ExamRoute.READING_RESULT -> examRoute = ExamRoute.DETAIL
             ExamRoute.DETAIL -> examRoute = ExamRoute.LIST
             ExamRoute.LIST -> {
@@ -99,6 +107,13 @@ fun Cet6VocabularyApp() {
             }
             null -> Unit
         }
+    }
+
+    // Identifies the visible destination so the page-enter animation replays on navigation only,
+    // never on in-page reloads. Mirrors the precedence of the destination switch below.
+    val pageKey = when (val route = examRoute) {
+        null -> if (showWordBook) "wordBook" else "tab:$selected"
+        else -> if (showWordBook) "wordBook" else "exam:${route.name}:$selectedExamId"
     }
 
     CET6VocabularyTheme {
@@ -114,60 +129,89 @@ fun Cet6VocabularyApp() {
             }
             }
         ) { padding ->
+            // Ambient light for the whole app, with a layer of dust over it. Scaffold measures
+            // every root of this lambda against the full window and places them all at (0, 0) in
+            // emission order, so these paint behind the content below; the bottom bar is a later
+            // slot, so its own opaque surface still covers both.
+            MaoDanAuroraBackground(Modifier.fillMaxSize())
+            MaoDanParticleBackground(Modifier.fillMaxSize())
             Box(Modifier.fillMaxSize().padding(if (showWordBook) PaddingValues() else padding)) {
-                when {
-                    !showWordBook && examRoute == ExamRoute.LIST -> ExamListScreen(
-                        repository = examRepository,
-                        onBack = { examRoute = null; selected = 0 },
-                        onOpenExam = { examId -> selectedExamId = examId; examRoute = ExamRoute.DETAIL }
-                    )
-                    !showWordBook && examRoute == ExamRoute.DETAIL -> {
-                        val exam = selectedExamId?.let(examRepository::getExam)
-                        if (exam == null) {
-                            ExamPlaceholderScreen("真题详情", onBack = { examRoute = ExamRoute.LIST })
-                        } else {
-                            ExamDetailScreen(
+                AnimatedPageContent(pageKey = pageKey) {
+                    when {
+                        !showWordBook && examRoute == ExamRoute.LIST -> ExamListScreen(
+                            repository = examRepository,
+                            onBack = { examRoute = null; selected = 0 },
+                            onOpenExam = { examId -> selectedExamId = examId; examRoute = ExamRoute.DETAIL }
+                        )
+                        !showWordBook && examRoute == ExamRoute.DETAIL -> {
+                            val exam = selectedExamId?.let(examRepository::getExam)
+                            if (exam == null) {
+                                ExamPlaceholderScreen("真题详情", onBack = { examRoute = ExamRoute.LIST })
+                            } else {
+                                ExamDetailScreen(
+                                    exam = exam,
+                                    onBack = { examRoute = ExamRoute.LIST },
+                                    onStart = { section ->
+                                        placeholderTitle = when (section) {
+                                            null -> "整套练习"
+                                            com.example.cet6vocabulary.data.model.ExamSection.WRITING -> "写作"
+                                            com.example.cet6vocabulary.data.model.ExamSection.LISTENING -> "听力"
+                                            com.example.cet6vocabulary.data.model.ExamSection.READING -> "阅读"
+                                            com.example.cet6vocabulary.data.model.ExamSection.TRANSLATION -> "翻译"
+                                        }
+                                        if (section == com.example.cet6vocabulary.data.model.ExamSection.READING) {
+                                            readingAnswers.clear()
+                                            readingQuestionIndex = 0
+                                            examRoute = ExamRoute.READING
+                                        } else {
+                                            examRoute = ExamRoute.PLACEHOLDER
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                        !showWordBook && examRoute == ExamRoute.READING -> {
+                            val exam = selectedExamId?.let(examRepository::getExam)
+                            if (exam == null) ExamPlaceholderScreen(title = placeholderTitle, onBack = { examRoute = ExamRoute.DETAIL })
+                            else ReadingPracticeScreen(
                                 exam = exam,
-                                onBack = { examRoute = ExamRoute.LIST },
-                                onStart = { section ->
-                                    placeholderTitle = when (section) {
-                                        null -> "整套练习"
-                                        com.example.cet6vocabulary.data.model.ExamSection.WRITING -> "写作"
-                                        com.example.cet6vocabulary.data.model.ExamSection.LISTENING -> "听力"
-                                        com.example.cet6vocabulary.data.model.ExamSection.READING -> "阅读"
-                                        com.example.cet6vocabulary.data.model.ExamSection.TRANSLATION -> "翻译"
-                                    }
-                                    if (section == com.example.cet6vocabulary.data.model.ExamSection.READING) {
-                                        readingAnswers.clear()
-                                        examRoute = ExamRoute.READING
-                                    } else {
-                                        examRoute = ExamRoute.PLACEHOLDER
-                                    }
-                                }
+                                answers = readingAnswers,
+                                questionIndex = readingQuestionIndex,
+                                onQuestionIndexChange = { readingQuestionIndex = it },
+                                onOpenAnswerSheet = { examRoute = ExamRoute.READING_SHEET },
+                                onComplete = { count -> readingAnsweredCount = count; examRoute = ExamRoute.READING_RESULT },
+                                onBack = { examRoute = ExamRoute.DETAIL }
                             )
                         }
+                        !showWordBook && examRoute == ExamRoute.READING_SHEET -> {
+                            val exam = selectedExamId?.let(examRepository::getExam)
+                            if (exam == null) ExamPlaceholderScreen(title = placeholderTitle, onBack = { examRoute = ExamRoute.DETAIL })
+                            else ReadingAnswerSheetScreen(
+                                exam = exam,
+                                answers = readingAnswers,
+                                currentIndex = readingQuestionIndex,
+                                onSelectQuestion = { index -> readingQuestionIndex = index; examRoute = ExamRoute.READING },
+                                onFinish = { count -> readingAnsweredCount = count; examRoute = ExamRoute.READING_RESULT },
+                                onBack = { examRoute = ExamRoute.READING }
+                            )
+                        }
+                        !showWordBook && examRoute == ExamRoute.READING_RESULT -> {
+                            val exam = selectedExamId?.let(examRepository::getExam)
+                            if (exam == null) ExamPlaceholderScreen(title = placeholderTitle, onBack = { examRoute = ExamRoute.DETAIL })
+                            else ReadingResultScreen(exam, readingAnsweredCount, { readingAnswers.clear(); readingQuestionIndex = 0; examRoute = ExamRoute.READING }, { examRoute = ExamRoute.DETAIL })
+                        }
+                        !showWordBook && examRoute == ExamRoute.PLACEHOLDER -> ExamPlaceholderScreen(
+                            title = placeholderTitle,
+                            onBack = { examRoute = ExamRoute.DETAIL }
+                        )
+                        showWordBook -> WordBookScreen(wordRepository, wordBook, onStartStudy = { showWordBook = false; selected = 2; studyWordBook = true }, onBack = { showWordBook = false; selected = 4; studyWordBook = false; myRefreshKey++ })
+                        selected == 0 -> HomeScreen(wordRepository, learningRecords, wordBook, refreshKey = myRefreshKey, onOpenStudy = { selected = 2; studyWordBook = false }, onOpenSpelling = { selected = 3; studyWordBook = false }, onOpenWordBook = { showWordBook = true }, onOpenExams = { selected = 0; examRoute = ExamRoute.LIST })
+                        selected == 1 -> WordScreen(wordRepository)
+                        selected == 2 -> StudyScreen(wordRepository, wordBook, studyProgress, studyWordBook)
+                        selected == 3 -> SpellingScreen(wordRepository, learningRecords, studyProgress)
+                        selected == 4 -> MyScreen(wordRepository, learningRecords, wordBook, onOpenWordBook = { showWordBook = true }, refreshKey = myRefreshKey)
+                        else -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) { Text(items[selected].label, style = MaterialTheme.typography.headlineMedium); Spacer(Modifier.height(12.dp)); Text("功能将在后续阶段逐步加入") }
                     }
-                    !showWordBook && examRoute == ExamRoute.READING -> {
-                        val exam = selectedExamId?.let(examRepository::getExam)
-                        if (exam == null) ExamPlaceholderScreen(title = placeholderTitle, onBack = { examRoute = ExamRoute.DETAIL })
-                        else ReadingPracticeScreen(exam, readingAnswers, { count -> readingAnsweredCount = count; examRoute = ExamRoute.READING_RESULT }, { examRoute = ExamRoute.DETAIL })
-                    }
-                    !showWordBook && examRoute == ExamRoute.READING_RESULT -> {
-                        val exam = selectedExamId?.let(examRepository::getExam)
-                        if (exam == null) ExamPlaceholderScreen(title = placeholderTitle, onBack = { examRoute = ExamRoute.DETAIL })
-                        else ReadingResultScreen(exam, readingAnsweredCount, { readingAnswers.clear(); examRoute = ExamRoute.READING }, { examRoute = ExamRoute.DETAIL })
-                    }
-                    !showWordBook && examRoute == ExamRoute.PLACEHOLDER -> ExamPlaceholderScreen(
-                        title = placeholderTitle,
-                        onBack = { examRoute = ExamRoute.DETAIL }
-                    )
-                    showWordBook -> WordBookScreen(wordRepository, wordBook, onStartStudy = { showWordBook = false; selected = 2; studyWordBook = true }, onBack = { showWordBook = false; selected = 4; studyWordBook = false; myRefreshKey++ })
-                    selected == 0 -> HomeScreen(wordRepository, learningRecords, wordBook, refreshKey = myRefreshKey, onOpenStudy = { selected = 2; studyWordBook = false }, onOpenSpelling = { selected = 3; studyWordBook = false }, onOpenWordBook = { showWordBook = true }, onOpenExams = { selected = 0; examRoute = ExamRoute.LIST })
-                    selected == 1 -> WordScreen(wordRepository)
-                    selected == 2 -> StudyScreen(wordRepository, wordBook, studyProgress, studyWordBook)
-                    selected == 3 -> SpellingScreen(wordRepository, learningRecords, studyProgress)
-                    selected == 4 -> MyScreen(wordRepository, learningRecords, wordBook, onOpenWordBook = { showWordBook = true }, refreshKey = myRefreshKey)
-                    else -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) { Text(items[selected].label, style = MaterialTheme.typography.headlineMedium); Spacer(Modifier.height(12.dp)); Text("功能将在后续阶段逐步加入") }
                 }
             }
         }

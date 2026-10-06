@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -59,11 +60,11 @@ private val Cet6DarkColorScheme = darkColorScheme(
 )
 
 private val Cet6Shapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(10.dp),
-    medium = RoundedCornerShape(14.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(20.dp)
+    extraSmall = MaoDanShapes.small,
+    small = MaoDanShapes.small,
+    medium = MaoDanShapes.medium,
+    large = MaoDanShapes.large,
+    extraLarge = MaoDanShapes.extraLarge
 )
 
 @Composable
@@ -84,6 +85,10 @@ fun CET6VocabularyTheme(
         colorScheme = colorScheme,
         typography = Cet6Typography,
         shapes = Cet6Shapes,
-        content = content
-    )
+    ) {
+        // One switch for the whole app: animated surfaces read it and fall back to a cut or a fade.
+        CompositionLocalProvider(LocalReduceMotion provides rememberSystemReduceMotion()) {
+            content()
+        }
+    }
 }

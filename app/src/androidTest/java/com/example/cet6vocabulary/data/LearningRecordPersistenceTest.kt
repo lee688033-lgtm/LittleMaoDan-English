@@ -16,6 +16,11 @@ import com.example.cet6vocabulary.data.repository.ExamRepository
 import com.example.cet6vocabulary.data.repository.LearningRecordRepository
 import com.example.cet6vocabulary.data.repository.WordRepository
 import com.example.cet6vocabulary.presentation.model.calculateLearningStatistics
+import com.example.cet6vocabulary.presentation.model.ReadingSheet
+import com.example.cet6vocabulary.presentation.model.ReadingSheetItem
+import com.example.cet6vocabulary.presentation.model.ReadingSheetSection
+import com.example.cet6vocabulary.presentation.model.ReadingSheetStatus
+import com.example.cet6vocabulary.presentation.model.buildReadingSheet
 import kotlinx.coroutines.runBlocking
 
 class PersistenceInstrumentation : Instrumentation() {
@@ -42,6 +47,8 @@ class PersistenceInstrumentation : Instrumentation() {
     private suspend fun verifyPersistence() {
         val context = targetContext
         verifyExamData(context)
+        verifyReadingAnswerSheet(context)
+        verifyReadingStageHasNoPersistence(context)
         verifyVocabulary(context)
         verifyStatistics(context)
         val databaseName = "learning_record_restart_test"
@@ -144,6 +151,115 @@ class PersistenceInstrumentation : Instrumentation() {
         check(sectionC.questions.all { it.correctAnswer != null && it.correctAnswer in setOf("A", "B", "C", "D") })
     }
 
+    /** Stage 10.4: the answer sheet reports answered / unanswered / current, derived from real data. */
+    private fun verifyReadingAnswerSheet(context: android.content.Context) {
+        val exam = ExamRepository(context).getExam("cet6_2025_12_set1") ?: error("2025-12 set1 not found")
+        val reading = exam.sections.first { it.section == ExamSection.READING }
+        val answers = linkedMapOf<String, String>()
+
+        var sheet = buildReadingSheet(reading, answers, 0)
+        check(sheet.total == 30)
+        check(sheet.answered == 0 && sheet.unanswered == 30)
+        check(sheet.items.map { it.number } == (26..55).toList())
+        check(sheet.items.map { it.index } == (0..29).toList())
+        check(sheet.items.map { it.questionId } == reading.questions.map { it.questionId })
+        check(ReadingSheetStatus.entries.size == 3)
+
+        // Subsections and their number ranges come from the JSON, not from hardcoded counts.
+        check(sheet.sections.size == 3)
+        check(sheet.sections.map { it.key } == listOf("sectionA", "sectionB", "sectionC"))
+        check(sheet.sections.map { it.label } == listOf("Section A", "Section B", "Section C"))
+        check(sheet.sections.map { it.items.size } == listOf(10, 10, 10))
+        check(sheet.sections[0].firstNumber == 26 && sheet.sections[0].lastNumber == 35)
+        check(sheet.sections[1].firstNumber == 36 && sheet.sections[1].lastNumber == 45)
+        check(sheet.sections[2].firstNumber == 46 && sheet.sections[2].lastNumber == 55)
+        check(sheet.sections.sumOf { it.answeredCount } == 0)
+
+        // Fresh sheet: question 26 is current, every other question is unanswered.
+        check(sheet.items.first().status == ReadingSheetStatus.CURRENT)
+        check(sheet.items.drop(1).all { it.status == ReadingSheetStatus.UNANSWERED })
+
+        // Answering 26 while staying on it: the current marker wins, the answer is still counted.
+        answers["reading_26"] = "H"
+        sheet = buildReadingSheet(reading, answers, 0)
+        check(sheet.answered == 1 && sheet.unanswered == 29)
+        check(sheet.items.first().status == ReadingSheetStatus.CURRENT)
+        check(sheet.sections[0].answeredCount == 1)
+
+        // Jumping to 40 (index 14) moves the current marker and turns 26 into answered.
+        answers["reading_40"] = "A"
+        sheet = buildReadingSheet(reading, answers, 14)
+        check(sheet.answered == 2 && sheet.unanswered == 28)
+        check(sheet.items[14].number == 40 && sheet.items[14].status == ReadingSheetStatus.CURRENT)
+        check(sheet.items.first().status == ReadingSheetStatus.ANSWERED)
+        check(sheet.sections[0].answeredCount == 1 && sheet.sections[1].answeredCount == 1)
+        check(sheet.sections[2].answeredCount == 0)
+
+        // Changing an answer keeps the question answered.
+        answers["reading_40"] = "C"
+        sheet = buildReadingSheet(reading, answers, 14)
+        check(sheet.answered == 2 && sheet.unanswered == 28)
+        check(sheet.items[14].status == ReadingSheetStatus.CURRENT)
+        check(sheet.items.first().status == ReadingSheetStatus.ANSWERED)
+
+        // Jumping back to the first question keeps both answers.
+        sheet = buildReadingSheet(reading, answers, 0)
+        check(sheet.items.first().status == ReadingSheetStatus.CURRENT)
+        check(sheet.items[14].status == ReadingSheetStatus.ANSWERED)
+        check(sheet.answered == 2 && sheet.unanswered == 28)
+
+        // Restart clears everything back to unanswered.
+        answers.clear()
+        sheet = buildReadingSheet(reading, answers, 0)
+        check(sheet.answered == 0 && sheet.unanswered == 30)
+        check(sheet.items.drop(1).all { it.status == ReadingSheetStatus.UNANSWERED })
+
+        // A fully answered sheet finishes with 30 answered / 0 unanswered.
+        reading.questions.forEach { answers[it.questionId] = "A" }
+        sheet = buildReadingSheet(reading, answers, 29)
+        check(sheet.answered == 30 && sheet.unanswered == 0)
+        check(sheet.items.last().status == ReadingSheetStatus.CURRENT)
+        check(sheet.sections.sumOf { it.answeredCount } == 30)
+
+        // An out-of-range index simply marks nothing current instead of crashing the sheet.
+        sheet = buildReadingSheet(reading, answers, 99)
+        check(sheet.answered == 30 && sheet.items.none { it.status == ReadingSheetStatus.CURRENT })
+    }
+
+    /** Stage 10.4 keeps answers in memory only: no scoring surface and no Room change. */
+    private suspend fun verifyReadingStageHasNoPersistence(context: android.content.Context) {
+        val sheetFields = listOf(
+            ReadingSheet::class.java,
+            ReadingSheetSection::class.java,
+            ReadingSheetItem::class.java
+        ).flatMap { type -> type.declaredFields.map { it.name.lowercase() } }
+        check(sheetFields.none { it.contains("correct") || it.contains("score") || it.contains("accuracy") || it.contains("wrong") })
+
+        // @Database cannot be read on device (only kotlin.Metadata survives D8), so the Room
+        // surface is probed directly: DAO methods, generated impl, entity classes, and the schema
+        // a freshly created database actually has.
+        check(AppDatabase::class.java.declaredMethods
+            .filter { java.lang.reflect.Modifier.isAbstract(it.modifiers) }
+            .map { it.name }.toSet() == setOf("learningRecordDao", "wordBookDao", "studyProgressDao"))
+        check(runCatching { Class.forName("com.example.cet6vocabulary.data.local.database.AppDatabase_Impl") }.isSuccess)
+        check(runCatching { Class.forName("com.example.cet6vocabulary.data.local.entity.ExamAnswerEntity") }.isFailure)
+        check(runCatching { Class.forName("com.example.cet6vocabulary.data.local.entity.ExamProgressEntity") }.isFailure)
+
+        val databaseName = "room_schema_probe_test"
+        context.deleteDatabase(databaseName)
+        val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName).build()
+        val sqlite = database.openHelper.writableDatabase
+        check(sqlite.compileStatement("PRAGMA user_version").use { it.simpleQueryForLong() } == 3L)
+        val tables = mutableListOf<String>()
+        sqlite.query("SELECT name FROM sqlite_master WHERE type = 'table'").use { cursor ->
+            while (cursor.moveToNext()) tables.add(cursor.getString(0))
+        }
+        check(tables.none { it.contains("exam", ignoreCase = true) }) { "unexpected exam table in $tables" }
+        check(tables.containsAll(listOf("learning_records", "word_book", "study_progress"))) { "missing tables in $tables" }
+        database.close()
+        context.deleteDatabase(databaseName)
+    }
+
     private suspend fun verifyWordBookMigration(context: android.content.Context) {
         val databaseName = "word_book_migration_test"
         context.deleteDatabase(databaseName)
@@ -200,15 +316,34 @@ class PersistenceInstrumentation : Instrumentation() {
     }
     private fun verifyVocabulary(context: android.content.Context) {
         val words = WordRepository(context).getAllWords()
-        check(words.size == 781)
-        check(words.map { it.id } == (1..781).toList())
-        check(words.map { it.id }.toSet().size == 781)
+        val retiredIds = listOf(1251, 1252, 1253, 1254, 1255)
+        check(words.size == 1495)
+        check(words.map { it.id } == ((1..1500).toList() - retiredIds))
+        check(words.map { it.id }.toSet().size == 1495)
+        check(words.none { it.id in 1251..1255 })
         check(words.none { it.word.isBlank() })
         check(words.all { it.phonetic.isNotBlank() && it.partOfSpeech.isNotBlank() && it.meaning.isNotBlank() })
         check(words.any { it.id == 626 && it.word == "fiscal" })
         check(words.any { it.id == 781 && it.word == "subordinate" })
+        check(words.any { it.id == 782 && it.word == "submit" })
+        check(words.any { it.id == 936 && it.word == "basement" })
+        check(words.any { it.id == 937 && it.word == "mortal" })
+        check(words.any { it.id == 1088 && it.word == "slide" })
+        check(words.any { it.id == 1089 && it.word == "spur" })
+        check(words.any { it.id == 1250 && it.word == "trace" })
+        check(words.any { it.id == 1256 && it.word == "testify" })
+        check(words.any { it.id == 1500 && it.word == "intuition" })
         check(WordRepository(context).searchWords("fiscal").any { it.id == 626 })
         check(WordRepository(context).searchWords("财政的").any { it.id == 626 })
+        check(WordRepository(context).searchWords("submit").any { it.id == 782 })
+        check(WordRepository(context).searchWords("地下室").any { it.id == 936 })
+        check(WordRepository(context).searchWords("mortal").any { it.id == 937 })
+        check(WordRepository(context).searchWords("slide").any { it.id == 1088 })
+        check(WordRepository(context).searchWords("spur").any { it.id == 1089 })
+        check(WordRepository(context).searchWords("trace").any { it.id == 1250 })
+        check(WordRepository(context).searchWords("testify").any { it.id == 1256 })
+        check(WordRepository(context).searchWords("intuition").any { it.id == 1500 })
+        check(WordRepository(context).searchWords("\u76f4\u89c9").any { it.id == 1500 })
     }
     private fun verifyStatistics(context: android.content.Context) {
         val wordIds = WordRepository(context).getAllWords().mapTo(mutableSetOf()) { it.id }
