@@ -128,7 +128,7 @@ A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack C
 ## 技术亮点
 
 - **零权限、零网络的离线架构**：词汇与学习数据全部落在 APK 资源与应用私有数据库里，没有 INTERNET 权限，也就没有隐私弹窗与服务端依赖。
-- **单一数据源驱动 UI**：词库由 `WordRepository` 一次加载并按 ID 排序，首页进度、统计分母、背诵与拼写的边界都取实际加载结果；固定的 1495 只出现在 IDE Preview 示例数据与 instrumentation 断言里，因此扩充词库不需要改动任何页面。
+- **单一数据源驱动 UI**：词库由 `WordRepository` 一次加载并按 ID 排序，首页进度、统计分母、背诵与拼写的边界都取实际加载结果，因此扩充词库不需要改动任何页面。`app/src/main/java` 里唯一出现过的固定词数是两处 IDE Preview 的示例数据，不参与运行时。
 - **严格的数据校验**：词汇 JSON 逐条校验 `id` / `word` / `phonetic` / `partOfSpeech` / `meaning`，字段缺失即抛错而不是静默跳过；真题 JSON 额外校验 `examId` 与 `questionId` 唯一性，重复直接报错。
 - **可持久化的学习状态**：`learning_records` 记录拼写与对错并推导出 0-3 级掌握度，`study_progress` 用 `progressKey` 分别保存顺序与随机模式下的 `currentIndex` 和整条随机序列，`word_book` 独立保存收藏，三者互不耦合。
 - **Room 手写迁移**：数据库 `version = 3`，`MIGRATION_1_2`、`MIGRATION_2_3` 显式迁移，不使用 `fallbackToDestructiveMigration`，老用户的学习数据在升级后仍然保留。
@@ -286,6 +286,7 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 - 克隆仓库后默认构建没有真题数据，真题列表进入错误态（设计如此，见[真题数据说明](#真题数据说明)）。
 - 未配置正式签名，没有可安装的 Release 构建；Release 资产是 Debug APK。
 - 没有 JVM 单元测试，也没有 CI。
+- 两处 IDE Preview 的示例数据仍沿用旧词库范围（`(1..781)`、`(1..936)`），只影响 Android Studio 里的预览画面，不影响运行时数据。
 - 词库 ID 存在 1251-1255 断档，任何依赖连续 ID 的逻辑都需要特别处理。
 - 动效的像素级观感未经主观验收。
 - 项目尚未选择开源许可证，默认法律状态是「保留所有权利」。
