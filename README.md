@@ -335,7 +335,7 @@ adb shell am broadcast -a com.example.cet6vocabulary.SEED_RECORDS `
 
 ### CI
 
-[`.github/workflows/android.yml`](.github/workflows/android.yml) 在推送到 `main` 与 Pull Request 时运行 `testDebugUnitTest`、`lintDebug`、`assembleDebug`，并上传测试报告、lint 报告与 debug APK。CI 不运行 Instrumentation（没有模拟器），也不构建 release（仓库里没有签名材料）。
+[`.github/workflows/android.yml`](.github/workflows/android.yml) 在推送到 `main` 与 Pull Request 时运行 `testDebugUnitTest`、`lintDebug`、`assembleDebug`，并上传测试报告、lint 报告与 debug APK。CI 不运行 Instrumentation（没有模拟器），也不构建 release（仓库里没有签名材料）。v1.2.0 推送后首次真实运行，三步全部通过（run `45113412790`，4m11s）。
 
 ## 版本与更新
 
