@@ -22,4 +22,7 @@ interface WordBookDao {
 
     @Query("SELECT COUNT(*) FROM word_book")
     suspend fun count(): Int
+
+    @Query("DELETE FROM word_book")
+    suspend fun deleteAll()
 }

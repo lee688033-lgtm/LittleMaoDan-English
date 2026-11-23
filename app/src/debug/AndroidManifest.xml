@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Debug-only: lets an end-to-end check reach a local mock AI server over plain http.
+         Release builds keep the platform default, so only https endpoints are reachable there. -->
+    <application android:usesCleartextTraffic="true">
+        <!-- Debug-only helper for driving the AI article flow from adb. It is exported on
+             purpose so `am broadcast` can trigger it; it never ships in a release build. -->
+        <receiver
+            android:name=".debug.SeedLearningRecordsReceiver"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.example.cet6vocabulary.SEED_RECORDS" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

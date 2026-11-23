@@ -17,6 +17,7 @@ local.properties
 /desktop-after-install.png
 
 # Signing credentials and private key material
+keystore.properties
 *.jks
 *.keystore
 *.pem

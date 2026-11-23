@@ -6,21 +6,32 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import com.example.cet6vocabulary.data.ai.AiAssistant
+import com.example.cet6vocabulary.data.ai.AiSettings
 import com.example.cet6vocabulary.data.local.database.AppDatabase
+import com.example.cet6vocabulary.data.repository.LearningDataRepository
 import com.example.cet6vocabulary.data.repository.LearningRecordRepository
 import com.example.cet6vocabulary.data.repository.ExamRepository
 import com.example.cet6vocabulary.data.repository.StudyProgressRepository
 import com.example.cet6vocabulary.data.repository.WordBookRepository
 import com.example.cet6vocabulary.data.repository.WordRepository
+import com.example.cet6vocabulary.data.settings.AppSettings
+import com.example.cet6vocabulary.data.settings.ThemeMode
 import com.example.cet6vocabulary.presentation.screens.*
 import com.example.cet6vocabulary.ui.theme.CET6VocabularyTheme
 import com.example.cet6vocabulary.ui.components.AnimatedPageContent
@@ -45,6 +56,36 @@ private enum class ExamRoute {
     READING_RESULT
 }
 
+// The answer map is mutated in place by the reading screens, so it is stored as a flat
+// key/value list that the saved-instance-state bundle can carry across recreation.
+private val ReadingAnswersSaver = listSaver<SnapshotStateMap<String, String>, String>(
+    save = { answers -> answers.flatMap { (questionId, answer) -> listOf(questionId, answer) } },
+    restore = { saved ->
+        mutableStateMapOf<String, String>().apply {
+            saved.chunked(2).forEach { pair ->
+                if (pair.size == 2) put(pair[0], pair[1])
+            }
+        }
+    }
+)
+
+// Question ids the learner has explicitly submitted. The answers map alone cannot tell a
+// submitted answer from one that was only selected before leaving through the answer sheet.
+private val SubmittedQuestionIdsSaver = listSaver<SnapshotStateList<String>, String>(
+    save = { submitted -> submitted.toList() },
+    restore = { saved -> mutableStateListOf<String>().apply { addAll(saved) } }
+)
+
+private val ExamRouteSaver = Saver<ExamRoute?, String>(
+    save = { route -> route?.name.orEmpty() },
+    restore = { name -> if (name.isEmpty()) null else ExamRoute.valueOf(name) }
+)
+
+private val NullableStringSaver = Saver<String?, String>(
+    save = { value -> value.orEmpty() },
+    restore = { value -> value.ifEmpty { null } }
+)
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,28 +107,57 @@ fun Cet6VocabularyApp() {
         NavItem("拼写", BrandSpellingIcon),
         NavItem("我的", BrandAvatarIcon)
     )
-    var selected by remember { mutableIntStateOf(0) }
-    var showWordBook by remember { mutableStateOf(false) }
-    var studyWordBook by remember { mutableStateOf(false) }
-    var examRoute by remember { mutableStateOf<ExamRoute?>(null) }
-    var selectedExamId by remember { mutableStateOf<String?>(null) }
-    val readingAnswers = remember { mutableStateMapOf<String, String>() }
+    var selected by rememberSaveable { mutableIntStateOf(0) }
+    var showWordBook by rememberSaveable { mutableStateOf(false) }
+    var showReview by rememberSaveable { mutableStateOf(false) }
+    var showSettings by rememberSaveable { mutableStateOf(false) }
+    var showAi by rememberSaveable { mutableStateOf(false) }
+    var aiInitialQuery by rememberSaveable { mutableStateOf("") }
+    var studyWordBook by rememberSaveable { mutableStateOf(false) }
+    var examRoute by rememberSaveable(stateSaver = ExamRouteSaver) { mutableStateOf<ExamRoute?>(null) }
+    var selectedExamId by rememberSaveable(stateSaver = NullableStringSaver) { mutableStateOf<String?>(null) }
+    val readingAnswers = rememberSaveable(saver = ReadingAnswersSaver) { mutableStateMapOf<String, String>() }
+    val readingSubmitted = rememberSaveable(saver = SubmittedQuestionIdsSaver) { mutableStateListOf<String>() }
     // Reading session state lives here so the practice screen and the answer sheet share one
     // in-memory copy; switching between the two routes cannot recreate it.
-    var readingQuestionIndex by remember { mutableIntStateOf(0) }
-    var readingAnsweredCount by remember { mutableIntStateOf(0) }
-    var placeholderTitle by remember { mutableStateOf("真题练习") }
+    var readingQuestionIndex by rememberSaveable { mutableIntStateOf(0) }
+    var placeholderTitle by rememberSaveable { mutableStateOf("真题练习") }
     var myRefreshKey by remember { mutableIntStateOf(0) }
+    var wordBookOrigin by rememberSaveable { mutableIntStateOf(4) }
     val wordRepository = remember { WordRepository(context) }
     val database = remember { AppDatabase.getInstance(context) }
     val learningRecords = remember { LearningRecordRepository(database.learningRecordDao()) }
     val studyProgress = remember { StudyProgressRepository(database.studyProgressDao()) }
     val wordBook = remember { WordBookRepository(database.wordBookDao()) }
     val examRepository = remember { ExamRepository(context) }
+    val learningData = remember {
+        LearningDataRepository(
+            records = database.learningRecordDao(),
+            wordBook = database.wordBookDao(),
+            progress = database.studyProgressDao()
+        )
+    }
+    val appSettings = remember { AppSettings(context) }
+    val aiSettings = remember { AiSettings(context) }
+    val aiAssistant = remember { AiAssistant(aiSettings) }
+    var themeModeName by rememberSaveable { mutableStateOf(appSettings.themeMode.name) }
+    val themeMode = ThemeMode.entries.firstOrNull { it.name == themeModeName } ?: ThemeMode.SYSTEM
     BackHandler(enabled = showWordBook) {
         showWordBook = false
-        selected = 4
+        selected = wordBookOrigin
         studyWordBook = false
+        myRefreshKey++
+    }
+    BackHandler(enabled = showSettings) {
+        showSettings = false
+        myRefreshKey++
+    }
+    BackHandler(enabled = showReview) {
+        showReview = false
+        myRefreshKey++
+    }
+    BackHandler(enabled = showAi) {
+        showAi = false
         myRefreshKey++
     }
     BackHandler(enabled = !showWordBook && studyWordBook) {
@@ -111,16 +181,26 @@ fun Cet6VocabularyApp() {
 
     // Identifies the visible destination so the page-enter animation replays on navigation only,
     // never on in-page reloads. Mirrors the precedence of the destination switch below.
-    val pageKey = when (val route = examRoute) {
-        null -> if (showWordBook) "wordBook" else "tab:$selected"
-        else -> if (showWordBook) "wordBook" else "exam:${route.name}:$selectedExamId"
+    val pageKey = when {
+        showAi -> "ai"
+        showSettings -> "settings"
+        showReview -> "review"
+        showWordBook -> "wordBook"
+        examRoute != null -> "exam:${examRoute!!.name}:$selectedExamId"
+        else -> "tab:$selected"
     }
 
-    CET6VocabularyTheme {
+    CET6VocabularyTheme(
+        darkTheme = when (themeMode) {
+            ThemeMode.SYSTEM -> isSystemInDarkTheme()
+            ThemeMode.LIGHT -> false
+            ThemeMode.DARK -> true
+        }
+    ) {
         Scaffold(
             contentWindowInsets = WindowInsets.safeDrawing,
             bottomBar = {
-            if (!showWordBook && examRoute == null) {
+            if (!showWordBook && !showReview && !showSettings && !showAi && examRoute == null) {
                 BrandBottomBar(
                     items = items.map { CET6NavigationItem(it.label, it.icon) },
                     selectedIndex = selected,
@@ -161,6 +241,7 @@ fun Cet6VocabularyApp() {
                                         }
                                         if (section == com.example.cet6vocabulary.data.model.ExamSection.READING) {
                                             readingAnswers.clear()
+                                            readingSubmitted.clear()
                                             readingQuestionIndex = 0
                                             examRoute = ExamRoute.READING
                                         } else {
@@ -176,10 +257,24 @@ fun Cet6VocabularyApp() {
                             else ReadingPracticeScreen(
                                 exam = exam,
                                 answers = readingAnswers,
+                                submitted = readingSubmitted.toSet(),
                                 questionIndex = readingQuestionIndex,
                                 onQuestionIndexChange = { readingQuestionIndex = it },
+                                onSubmit = { questionId ->
+                                    if (questionId !in readingSubmitted) readingSubmitted.add(questionId)
+                                },
+                                onRetry = { questionId ->
+                                    readingSubmitted.remove(questionId)
+                                    readingAnswers.remove(questionId)
+                                },
                                 onOpenAnswerSheet = { examRoute = ExamRoute.READING_SHEET },
-                                onComplete = { count -> readingAnsweredCount = count; examRoute = ExamRoute.READING_RESULT },
+                                onComplete = { examRoute = ExamRoute.READING_RESULT },
+                                onRestart = {
+                                    readingAnswers.clear()
+                                    readingSubmitted.clear()
+                                    readingQuestionIndex = 0
+                                    examRoute = ExamRoute.READING
+                                },
                                 onBack = { examRoute = ExamRoute.DETAIL }
                             )
                         }
@@ -191,25 +286,64 @@ fun Cet6VocabularyApp() {
                                 answers = readingAnswers,
                                 currentIndex = readingQuestionIndex,
                                 onSelectQuestion = { index -> readingQuestionIndex = index; examRoute = ExamRoute.READING },
-                                onFinish = { count -> readingAnsweredCount = count; examRoute = ExamRoute.READING_RESULT },
+                                onFinish = { examRoute = ExamRoute.READING_RESULT },
                                 onBack = { examRoute = ExamRoute.READING }
                             )
                         }
                         !showWordBook && examRoute == ExamRoute.READING_RESULT -> {
                             val exam = selectedExamId?.let(examRepository::getExam)
                             if (exam == null) ExamPlaceholderScreen(title = placeholderTitle, onBack = { examRoute = ExamRoute.DETAIL })
-                            else ReadingResultScreen(exam, readingAnsweredCount, { readingAnswers.clear(); readingQuestionIndex = 0; examRoute = ExamRoute.READING }, { examRoute = ExamRoute.DETAIL })
+                            else ReadingResultScreen(
+                                exam = exam,
+                                answers = readingAnswers,
+                                onRestart = {
+                                    readingAnswers.clear()
+                                    readingSubmitted.clear()
+                                    readingQuestionIndex = 0
+                                    examRoute = ExamRoute.READING
+                                },
+                                onBack = { examRoute = ExamRoute.DETAIL }
+                            )
                         }
                         !showWordBook && examRoute == ExamRoute.PLACEHOLDER -> ExamPlaceholderScreen(
                             title = placeholderTitle,
                             onBack = { examRoute = ExamRoute.DETAIL }
                         )
-                        showWordBook -> WordBookScreen(wordRepository, wordBook, onStartStudy = { showWordBook = false; selected = 2; studyWordBook = true }, onBack = { showWordBook = false; selected = 4; studyWordBook = false; myRefreshKey++ })
-                        selected == 0 -> HomeScreen(wordRepository, learningRecords, wordBook, refreshKey = myRefreshKey, onOpenStudy = { selected = 2; studyWordBook = false }, onOpenSpelling = { selected = 3; studyWordBook = false }, onOpenWordBook = { showWordBook = true }, onOpenExams = { selected = 0; examRoute = ExamRoute.LIST })
-                        selected == 1 -> WordScreen(wordRepository)
+                        showAi -> AiScreen(
+                            assistant = aiAssistant,
+                            words = wordRepository,
+                            records = learningRecords,
+                            initialQuery = aiInitialQuery,
+                            onOpenAiSettings = { showAi = false; showSettings = true },
+                            onBack = { showAi = false; myRefreshKey++ }
+                        )
+                        showSettings -> SettingsScreen(
+                            themeMode = themeMode,
+                            onThemeModeChange = { mode ->
+                                themeModeName = mode.name
+                                appSettings.themeMode = mode
+                            },
+                            learningData = learningData,
+                            aiSettings = aiSettings,
+                            assistant = aiAssistant,
+                            onBack = { showSettings = false; myRefreshKey++ }
+                        )
+                        showReview -> ReviewScreen(
+                            words = wordRepository,
+                            records = learningRecords,
+                            onBack = { showReview = false; myRefreshKey++ }
+                        )
+                        showWordBook -> WordBookScreen(wordRepository, wordBook, onStartStudy = { showWordBook = false; selected = 2; studyWordBook = true }, onBack = { showWordBook = false; selected = wordBookOrigin; studyWordBook = false; myRefreshKey++ })
+                        selected == 0 -> HomeScreen(wordRepository, learningRecords, wordBook, refreshKey = myRefreshKey, onOpenStudy = { selected = 2; studyWordBook = false }, onOpenSpelling = { selected = 3; studyWordBook = false }, onOpenWordBook = { wordBookOrigin = 0; showWordBook = true }, onOpenAi = { aiInitialQuery = ""; showAi = true })
+                        selected == 1 -> WordScreen(
+                            wordRepository,
+                            wordBook,
+                            learningRecords,
+                            onOpenAi = { keyword -> aiInitialQuery = keyword; showAi = true }
+                        )
                         selected == 2 -> StudyScreen(wordRepository, wordBook, studyProgress, studyWordBook)
                         selected == 3 -> SpellingScreen(wordRepository, learningRecords, studyProgress)
-                        selected == 4 -> MyScreen(wordRepository, learningRecords, wordBook, onOpenWordBook = { showWordBook = true }, refreshKey = myRefreshKey)
+                        selected == 4 -> MyScreen(wordRepository, learningRecords, wordBook, onOpenWordBook = { wordBookOrigin = 4; showWordBook = true }, onOpenReview = { showReview = true }, onOpenAi = { aiInitialQuery = ""; showAi = true }, onOpenSettings = { showSettings = true }, refreshKey = myRefreshKey)
                         else -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) { Text(items[selected].label, style = MaterialTheme.typography.headlineMedium); Spacer(Modifier.height(12.dp)); Text("功能将在后续阶段逐步加入") }
                     }
                 }

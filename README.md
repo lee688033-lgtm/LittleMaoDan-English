@@ -1,17 +1,18 @@
 # 小毛蛋背英语
 
-> 一款用 Kotlin 与 Jetpack Compose 编写的 CET-6 英语学习 Android 应用：本地词库、背诵、拼写、学习记录、单词本，加上 CET-6 真题的阅读答题卡。全部数据留在设备上。
+> 一款用 Kotlin 与 Jetpack Compose 编写的 CET-6 英语学习 Android 应用：本地词库、背诵、拼写、学习记录、单词本、待复习，加上可选的 AI 助手（查词库里没有的单词、把学过的词写成一篇文章）。除 AI 助手外不联网。
 
-A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack Compose. No account, no network requests, no analytics.
+A CET-6 vocabulary practice Android app built with Kotlin and Jetpack Compose. Offline by default; the optional AI assistant is the only feature that uses the network, with a model key the learner supplies.
 
-![Release](https://img.shields.io/badge/release-v1.1.0-2c6fdb?style=flat-square)
+![Release](https://img.shields.io/badge/release-v1.2.0-2c6fdb?style=flat-square)
+![CI](https://github.com/lee688033-lgtm/LittleMaoDan-English/actions/workflows/android.yml/badge.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7f52ff?style=flat-square)
 ![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose%20%C2%B7%20Material%203-4285f4?style=flat-square)
 ![Room](https://img.shields.io/badge/storage-Room%202.6.1-3ddc84?style=flat-square)
 ![SDK](https://img.shields.io/badge/minSdk%2024%20%C2%B7%20targetSdk%2035-Android-green?style=flat-square)
-![Permissions](https://img.shields.io/badge/Android%20permissions-none-lightgrey?style=flat-square)
+![Permissions](https://img.shields.io/badge/Android%20permissions-INTERNET%20only-lightgrey?style=flat-square)
 
-**下载**：[Releases](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases) ｜ [v1.1.0 Debug APK](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases/download/v1.1.0/LittleMaoDan-English-v1.1.0-debug.apk)
+**下载**：[Releases](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases) ｜ [v1.2.0 APK](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases/download/v1.2.0/LittleMaoDan-English-v1.2.0.apk)
 
 ## 目录
 
@@ -26,7 +27,7 @@ A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack C
 - [真题数据说明](#真题数据说明)
 - [本地运行](#本地运行)
 - [构建 APK](#构建-apk)
-- [测试](#测试)
+- [测试与 CI](#测试与-ci)
 - [版本与更新](#版本与更新)
 - [界面截图](#界面截图)
 - [已知限制](#已知限制)
@@ -41,28 +42,30 @@ A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack C
 
 - 词汇数据是仓库内的 JSON，运行时由 `WordRepository` 一次性加载，背诵、拼写、单词本、学习统计都围绕这同一份词库运转。
 - 学习行为（拼写对错、掌握度、背诵进度、随机序列、单词本收藏）写入本地 Room 数据库，进程重启后仍然一致。
-- 真题模块保留了完整的题目数据结构、解析逻辑与阅读答题卡流程；真题原始数据受版权限制不分发，详见[真题数据说明](#真题数据说明)。
+- 真题模块保留了完整的题目数据结构、解析逻辑与阅读作答、判分、答题卡流程；真题原始数据受版权限制不分发，详见[真题数据说明](#真题数据说明)。
 
-应用没有账号体系，没有网络请求，`AndroidManifest.xml` 未声明任何 `uses-permission`，所有状态都在本机。
+应用没有账号体系，`AndroidManifest.xml` 只声明了 `INTERNET` 一项权限，且只被 AI 助手使用：不打开 AI 时，全部功能与数据都在本机。
 
 ## 30 秒了解
 
 | 项目 | 说明 |
 | --- | --- |
-| 当前版本 | `v1.1.0`（`versionCode = 2`，`versionName = "1.1.0"`） |
-| 安装包 | [Releases](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases) 提供 Debug APK，未做正式签名 |
+| 当前版本 | `v1.2.0`（`versionCode = 3`，`versionName = "1.2.0"`） |
+| 安装包 | [Releases](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases) 提供 R8 压缩后的签名 APK，约 1.8 MB |
 | 词库 | 1495 个 CET-6 高频词汇，位于 `app/src/main/assets/cet6/` 的 10 个 JSON |
 | 运行环境 | Android 7.0（API 24）及以上，target SDK 35 |
 | 技术 | Kotlin 2.0.21 · Jetpack Compose · Material 3 · Room 2.6.1（KAPT） |
-| 数据 | 全部本地，无网络、无权限、无上报 |
+| 数据 | 学习数据全部本地；只有 AI 助手会联网，且需要自备 API Key |
 
 ## 核心功能
 
 ### 词汇学习
 
-- 首页展示学习进度（已学 / 总数）、背诵与拼写入口、单词本与真题入口、学习统计摘要。
+- 首页展示学习进度（已学 / 总数）、背诵与拼写入口、单词本与 AI 助手入口、学习统计摘要。
 - 单词页支持词库列表浏览，按英文单词或中文释义搜索。
 - 单词详情展示音标、词性、释义，以及该词在已加载词库中的位置。
+- 详情页可直接加入 / 移出单词本，并展示该词的学习记录（拼写次数、答对、答错、掌握度、最近学习时间）；未练习过的词会显式说明。
+- 详情页与搜索词都随旋转和进程回收保留，返回后仍停在原来的词。
 
 ### 背诵
 
@@ -80,23 +83,49 @@ A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack C
 ### 学习记录与掌握度
 
 - 每个单词一条记录：拼写次数、正确次数、错误次数、掌握度等级、最近学习时间。
-- 「我的」页汇总学习概览、学习统计（已学习 / 待学习 / 正确率 / 错误次数）、掌握情况分级，并给出单词本入口。
+- 「我的」页汇总学习概览、学习统计（已学习 / 待学习 / 正确率 / 错误次数）、掌握情况分级，并给出待复习与单词本入口。
 - 统计的分母来自实际加载的词库，不是写死的常量。
 
 ### 我的单词本
 
 - 收藏的单词列表、移出单词本、从单词本直接进入背诵，作为独立的复习入口。
 
+### 待复习
+
+- 「我的」页提供待复习入口，列出练习过但掌握度仍在 1 级及以下的单词，按掌握度、错误次数、最近复习时间排序。
+- 进入后逐题显示中文释义，输入英文拼写；答对一次把掌握度升到 2 级并自动移出列表，答错则继续保留。
+- 选词与计数是纯函数（`selectReviewWords` / `isDueForReview`），直接消费已有的学习记录，不新增数据表。
+
+### AI 助手
+
+- 独立入口：`我的 → AI 助手`；单词页搜不到词时，空态里的「用 AI 查「xxx」」也会带着关键词跳到同一页。
+- **AI 查词**：查询词库里没有的单词，返回音标、词性、1-3 条中文释义、2 条双语例句与常见搭配。查的词如果词库里已有，会先显示「词库中已有：…」并把这条释义一起交给模型，避免 AI 与内置释义打架。
+- **复习短文**：自己从「练过的单词」里勾选 3-12 个——列表按掌握度低、错误多、最久没复习排序并显示掌握度与错误次数，默认预选排在前面的单词，可逐个改、全选或清空；少于 3 个时生成按钮禁用并提示。标题栏标出用到的单词与实际词数，英文段落下方直接给出该段中文翻译（`translations` 与 `paragraphs` 一一对应，避免模型只翻一半），正文里的目标词按词形变化一起高亮（`fingers` 也算 `finger`）。
+- AI 结果只用于参考，不写数据库、不计入学习统计；学习记录本身不会上传，只有查询的单词或选中的单词会发送给所选服务商。
+- 服务商预设为两家提供免费额度的 OpenAI 兼容接口（智谱 GLM-4-Flash、硅基流动 Qwen2.5-7B），也可以填自定义地址与模型名。API Key 保存在本机应用私有存储，不进入导出文件；设置页提供「测试连接」直接验证地址、密钥与模型是否可用。
+
+### 设置与数据
+
+- 「我的 → 设置」提供外观、AI 助手、数据与关于四部分。
+- 主题支持跟随系统 / 浅色 / 深色，选择写入本地偏好，重启后保持；只影响本应用，不改系统设置。
+- AI 助手设置：选择服务商（或自定义），填 API Key、接口地址与模型名，保存后可一键测试连接。
+- 学习数据可导出为带版本号的 JSON（学习记录、单词本、背诵与拼写进度），通过系统文件选择器由用户决定保存位置，应用不申请存储权限。
+- 导入是覆盖式：先解析并校验格式与版本，确认后清空三张表再写入，避免同一 `wordId` 的旧记录与新数据混在一起。
+- 清除学习数据会删除全部学习记录、单词本与进度，词库与外观设置不受影响，操作前有二次确认。
+
 ### CET-6 真题
 
 - 历年真题列表与真题详情，详情按写作 / 听力 / 阅读 / 翻译四个部分组织。
-- 阅读专项提供作答与答题卡流程。
+- 阅读专项提供作答、单题判分、答题卡与整卷逐题回顾。
+- 提交单题后立即判对错并显示参考答案；可重做本题，重新选择后再次提交。
+- 完成阅读后显示得分、正确率、正确 / 错误 / 未作答数量，并按 Section 回顾每题的你的答案与正确答案。
 - **写作、听力、翻译以及整套练习目前仍是占位页**，进入后显示「该功能将在下一阶段实现」。
-- 阅读专项只负责作答与答题卡，**不判分**，没有正确率与错题统计。
+- 答案与判分只存在于内存，不写入数据库；错题尚未落库。
 
 ### 阅读答题卡
 
 - 按 Section 分组显示题号，区分已答 / 未答 / 当前三态，实时给出已答与未答数量。
+- 提交前不暴露对错，答题卡只反映作答状态。
 - 题目分组与题号范围由 JSON 结构推导，不在代码里硬编码题数；点击题号可直接跳到对应题目。
 - 答题卡状态是纯内存计算（`buildReadingSheet`），不写入数据库，避免中途退出留下半成品记录。
 
@@ -123,11 +152,12 @@ A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack C
 | SDK | compileSdk / targetSdk / minSdk | 35 / 35 / 24 |
 | JDK | 17 | |
 
-页面路由由 `MainActivity` 内的状态与枚举管理，**没有使用 Jetpack Navigation**；图标依赖只有 `material-icons-extended`，底部导航与五个主页面使用的图标是自建 Lucide 转换结果。
+页面路由由 `MainActivity` 内的状态与枚举管理，**没有使用 Jetpack Navigation**；图标依赖只有 `material-icons-extended`，底部导航与主要页面的图标是自建 Lucide 转换结果，设置页与 AI 入口使用该库里的少量图标。
 
 ## 技术亮点
 
-- **零权限、零网络的离线架构**：词汇与学习数据全部落在 APK 资源与应用私有数据库里，没有 INTERNET 权限，也就没有隐私弹窗与服务端依赖。
+- **离线优先的架构**：词汇与学习数据全部落在 APK 资源与应用私有数据库里；唯一联网的是可选的 AI 助手，且必须由用户自己填 Key，不填时整页只显示配置引导。
+- **可单测的 AI 层**：`AiClient` 只用 `java.net` 与 `org.json`，不依赖 Android 类型，因此请求构造、鉴权头、状态码映射与响应解析都能在 JVM 里对着一台本地 socket 服务断言；提示词与 JSON 解析（含 markdown 代码块、夹带解释文字、字段缺失）也是纯函数。
 - **单一数据源驱动 UI**：词库由 `WordRepository` 一次加载并按 ID 排序，首页进度、统计分母、背诵与拼写的边界都取实际加载结果，因此扩充词库不需要改动任何页面。`app/src/main/java` 里唯一出现过的固定词数是两处 IDE Preview 的示例数据，不参与运行时。
 - **严格的数据校验**：词汇 JSON 逐条校验 `id` / `word` / `phonetic` / `partOfSpeech` / `meaning`，字段缺失即抛错而不是静默跳过；真题 JSON 额外校验 `examId` 与 `questionId` 唯一性，重复直接报错。
 - **可持久化的学习状态**：`learning_records` 记录拼写与对错并推导出 0-3 级掌握度，`study_progress` 用 `progressKey` 分别保存顺序与随机模式下的 `currentIndex` 和整条随机序列，`word_book` 独立保存收藏，三者互不耦合。
@@ -145,20 +175,27 @@ A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack C
 │   ├── MainActivity.kt                    应用入口、底部导航、页面路由状态、全局背景
 │   ├── data/
 │   │   ├── model/                         Word / LearningRecord / Exam 等数据模型
+│   │   ├── ai/                            AiClient（HTTP）、AiPrompts（提示词与解析）、
+│   │   │                                  AiSettings（服务商与密钥）、AiAssistant
+│   │   ├── settings/AppSettings.kt        主题偏好
 │   │   ├── local/database/AppDatabase.kt  Room 数据库（version = 3）与手写迁移
 │   │   ├── local/dao/                     LearningRecordDao / StudyProgressDao / WordBookDao
 │   │   ├── local/entity/                  三张表对应的 Entity
 │   │   └── repository/                    WordRepository、LearningRecordRepository、
 │   │                                      StudyProgressRepository、WordBookRepository、
-│   │                                      ExamRepository、ExamJsonParser
+│   │                                      ExamRepository、ExamJsonParser、LearningDataTransfer
 │   ├── presentation/
-│   │   ├── model/                         LearningStatistics、ReadingAnswerSheet（纯函数，不依赖 Compose）
-│   │   └── screens/                       首页 / 单词 / 背诵 / 拼写 / 我的 / 单词本 / 真题 / 答题卡
+│   │   ├── model/                         LearningStatistics、ReadingAnswerSheet、
+│   │   │                                  ReviewWords、ArticleWords（纯函数，不依赖 Compose）
+│   │   └── screens/                       首页 / 单词 / 背诵 / 拼写 / 我的 / 单词本 / 待复习 /
+│   │                                      真题 / 作答判分 / 答题卡 / 设置 / AI 助手
 │   └── ui/
 │       ├── components/                    底部导航、动效组件、Lucide 图标、基础组件
 │       └── theme/                         Color / Dimens / Motion / Shape / Type / Theme
 ├── app/src/main/assets/cet6/              10 个 CET-6 词汇 JSON（运行时资源）
 ├── app/src/main/res/                      应用图标、主题样式、values-night
+├── app/src/test/                          JVM 单元测试（纯函数 + AI 客户端）
+├── app/src/debug/                         Debug 专属：明文 HTTP 开关与学习记录播种广播
 ├── app/src/androidTest/                   自定义 Instrumentation 校验程序
 ├── docs/                                  开发记录
 ├── build.gradle.kts / settings.gradle.kts / gradle.properties
@@ -181,7 +218,7 @@ A CET-6 vocabulary and exam-practice Android app built with Kotlin and Jetpack C
 
 - 公开仓库不包含 `真题json文件/` 目录，也没有任何真题 JSON、试卷 PDF 或听力音频。
 - 公开 Release 提供的 APK 同样不含真题数据：`app/build.gradle.kts` 默认不把该目录挂进 assets，只有本地显式开启开关时才会打进安装包。
-- 真题模块的源码（`ExamRepository`、`ExamJsonParser`、真题页面、阅读答题卡）完整保留，题目数据结构与解析逻辑可以直接参考。
+- 真题模块的源码（`ExamRepository`、`ExamJsonParser`、真题页面、阅读判分与答题卡）完整保留，题目数据结构与解析逻辑可以直接参考。
 - **从本仓库克隆后直接构建，真题列表会进入「真题数据加载失败」错误态并提供「重新加载」按钮**（安装包内没有题库数据，`ExamRepository` 抛出 `ExamDataException`），返回即可正常使用其余功能；词汇、背诵、拼写、单词本不受影响。
 - 本项目不提供绕过该限制获取真题数据的方式。
 
@@ -218,12 +255,28 @@ Debug 产物：
 app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Release 变体可以构建，但项目**尚未配置正式签名**，产物是未签名包，不能直接安装：
+Release 变体默认开启 R8 混淆与资源压缩。签名材料不提交进仓库，按下面两种方式之一提供：
+
+- 仓库根目录的 `keystore.properties`（已被 Git 忽略）：
+
+```properties
+storeFile=E:/path/to/release.jks
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
+- 环境变量 `CET6_KEYSTORE_FILE` / `CET6_KEYSTORE_PASSWORD` / `CET6_KEY_ALIAS` / `CET6_KEY_PASSWORD`（CI 用这种方式）。
+
+两者都没有时，`assembleRelease` 仍然可以构建，只是产物为未签名的 `app-release-unsigned.apk`，不能直接安装：
 
 ```powershell
 .\gradlew.bat assembleRelease --no-daemon --max-workers=1 --console=plain
-# app/build/outputs/apk/release/app-release-unsigned.apk
+# app/build/outputs/apk/release/app-release.apk        已签名（提供了签名材料时）
+# app/build/outputs/mapping/release/mapping.txt        混淆映射，按版本存档
 ```
+
+开启 R8 后 release 包约 1.8 MB；同版本 debug 包在 18-22 MB 之间浮动（是否带真题资源、是否增量构建都会影响体积）。
 
 安装到已连接的设备：
 
@@ -233,29 +286,72 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 
 说明：中文路径在部分环境下会触发 Android Gradle Plugin 的路径检查，`gradle.properties` 已包含 `android.overridePathCheck=true`；项目放在英文路径时该开关不影响构建。
 
-## 测试
+## 测试与 CI
 
-这里如实说明当前测试的真实情况。
+### JVM 单元测试
 
-- **没有 JVM 单元测试**：项目不存在 `app/src/test/`，`.\gradlew.bat test` 会以 NO-SOURCE 通过，这不代表任何断言被执行。
-- **有一个自定义 Instrumentation 校验程序**：`app/src/androidTest/.../LearningRecordPersistenceTest.kt` 中的 `PersistenceInstrumentation` 继承 `Instrumentation` 而不是 JUnit `@Test` 类，`app/build.gradle.kts` 已把 `testInstrumentationRunner` 指向它。它用一串 `check(...)` 断言跑完整条链路，任一断言失败即返回 `RESULT_CANCELED` 并打印堆栈。
-- **覆盖内容**：词汇加载（1495 条、ID 序列与 1251-1255 断档、字段非空、英文与中文释义搜索）、学习统计计算、Room 学习记录重启后一致、掌握度推导、单词本迁移、背诵进度持久化、真题 JSON 解析与阅读答题卡推导。
-- **运行方式**：
+`app/src/test/` 下有 68 个 JUnit 用例，覆盖纯函数模块与 AI 层：
+
+- `LearningStatistics`（5）：学习概览、正确率、掌握度分级。
+- `ReadingScoring`（13）：单题与整卷判分、答案回退、无答案题不计满分。
+- `ReviewWords`（8）：待复习口径、排序与计数。
+- `ArticleWords`（11）：候选词筛选与排序、勾选顺序不影响提示词、3-12 个的上下限。
+- `AiClient`（10）：对着本地 `ServerSocket` 起一个假服务，断言请求行、Bearer 头、模型名、响应解析，以及 401 / 429 / 非 JSON / 连接失败的错误文案；另有 URL 拼接与状态码文案。
+- `AiPrompts`（21）：markdown 代码块与夹带解释的 JSON 提取、字段缺失回退、短文段落与逐段翻译解析、单词高亮范围（大小写、词形变化、整词、重叠、正则元字符）与词数统计。
+
+```powershell
+.\gradlew.bat testDebugUnitTest --no-daemon --console=plain
+# 报告：app/build/reports/tests/testDebugUnitTest/index.html
+```
+
+AI 客户端的测试需要真实的 `org.json` 实现，因此 `testImplementation` 里额外加了 `org.json:json`（单元测试拿到的 `android.jar` 只有抛异常的桩）。
+
+### Instrumentation
+
+`app/src/androidTest/.../LearningRecordPersistenceTest.kt` 中的 `PersistenceInstrumentation` 继承 `Instrumentation` 而不是 JUnit `@Test` 类，`app/build.gradle.kts` 已把 `testInstrumentationRunner` 指向它。它用一串 `check(...)` 断言跑完整条链路，任一断言失败即返回 `RESULT_CANCELED` 并打印堆栈。
+
+覆盖内容：词汇加载（1495 条、ID 序列与 1251-1255 断档、字段非空、英文与中文释义搜索）、Room 学习记录重启后一致、掌握度推导、单词本迁移、背诵进度持久化、真题 JSON 解析、阅读答题卡推导、阅读判分（全对 / 错一题 / 未作答、正确答案回退到 `answerKey`、正确率与满分计算）、待复习选词（只收掌握度 ≤1、排序与计数），以及学习数据导出 / 导入（JSON 往返一致、格式与版本校验、覆盖式导入、清除后三表为空）。
 
 ```powershell
 .\gradlew.bat assembleDebugAndroidTest --no-daemon --max-workers=1 --console=plain
 .\gradlew.bat connectedDebugAndroidTest --no-daemon --max-workers=1 --console=plain
 ```
 
-- **两个必须知道的口径**：
-  1. 因为 runner 被替换成自定义 `Instrumentation`，`connectedDebugAndroidTest` 生成的 XML 永远是 `tests="0"`，结论来自 instrumentation 自身输出的 `result` 字段，不能表述成「N 个测试通过」。
-  2. 校验程序包含真题断言，因此**只在带 `-Pcet6.localExamAssets=true` 构建的包上才会通过**；公开仓库默认构建没有真题数据，直接运行会在真题解析这一步失败。另外 `connectedDebugAndroidTest` 结束后会卸载被测应用并清掉学习数据，回归期间可用 `adb install -r` 配合 `adb shell am instrument -w`（runner 为 `com.example.cet6vocabulary.data.PersistenceInstrumentation`）手动运行以避免清数据。
+三个必须知道的口径：
+1. 因为 runner 被替换成自定义 `Instrumentation`，`connectedDebugAndroidTest` 生成的 XML 永远是 `tests="0"`，结论来自 instrumentation 自身输出的 `result` 字段，不能表述成「N 个测试通过」。
+2. 校验程序包含真题断言，因此**只在带 `-Pcet6.localExamAssets=true` 构建的包上才会通过**；公开仓库默认构建没有真题数据，直接运行会在真题解析这一步失败。另外 `connectedDebugAndroidTest` 结束后会卸载被测应用并清掉学习数据，回归期间可用 `adb install -r` 配合 `adb shell am instrument -w`（runner 为 `com.example.cet6vocabulary.data.PersistenceInstrumentation`）手动运行以避免清数据。
+3. `gradle.properties` 里的 `org.gradle.jvmargs` 不要加 `-Dfile.encoding=UTF-8`：中文项目路径下，Gradle 用守护进程默认字符集写 worker 的 classpath `@argfile`，而 Windows 的 java 启动器按系统 ANSI 代码页读取，两者不一致会让 JVM 单测全部报 `ClassNotFoundException`。Java 源码编码已在 `app/build.gradle.kts` 里单独指定为 UTF-8。
 
-- **没有配置 CI/CD**，仓库内没有任何流水线定义。
+### AI 助手的端到端验证
+
+`app/src/debug/` 里有三样只在 debug 构建存在的东西：`usesCleartextTraffic="true"`、一个把前 N 个词标成已练习的广播接收器、以及明文 HTTP 能力。它们用于在没有真实密钥的情况下验证整条链路：
+
+```powershell
+adb shell am broadcast -a com.example.cet6vocabulary.SEED_RECORDS `
+    -n com.example.cet6vocabulary/.debug.SeedLearningRecordsReceiver --ei count 3
+```
+
+配合仓库外的一个本地假服务（监听 `127.0.0.1:8787`，模拟 OpenAI Chat Completions），把设置里的服务商选「自定义」、接口地址填 `http://10.0.2.2:8787/v1`，就能在模拟器里走完「测试连接 → 查词 → 生成短文 → 断网错误提示」全流程。release 构建没有这些开关，只接受 https 地址。
+
+### CI
+
+[`.github/workflows/android.yml`](.github/workflows/android.yml) 在推送到 `main` 与 Pull Request 时运行 `testDebugUnitTest`、`lintDebug`、`assembleDebug`，并上传测试报告、lint 报告与 debug APK。CI 不运行 Instrumentation（没有模拟器），也不构建 release（仓库里没有签名材料）。
 
 ## 版本与更新
 
-当前版本 `v1.1.0`（`versionCode = 2`），Tag `v1.1.0` 指向 `e6446f6`。
+当前版本 `v1.2.0`（`versionCode = 3`），Tag `v1.2.0` 指向本版的发布提交。这一版把 v1.1.0 之后的功能补齐并作为完整版发布。
+
+### v1.2.0
+
+- 新增 AI 助手（首页与「我的」两个入口）：查词库里没有的单词；从练过的单词里自己勾选 3-12 个，生成高亮目标词、带逐段中文翻译的复习短文。支持智谱 GLM-4-Flash、硅基流动等免费 OpenAI 兼容接口，自备 API Key。
+- 新增「待复习」：练习过但掌握度≤1 级的单词，答对一次即离开列表。
+- 单词详情页可直接加入 / 移出单词本，并显示该词的学习记录。
+- 新增设置页：跟随系统 / 浅色 / 深色主题、学习数据导出与覆盖式导入（带格式与版本校验）、清除学习数据。
+- 阅读专项支持单题判分、答题卡与整卷逐题回顾。
+- 词库改为异步加载，消除首帧阻塞与启动崩溃风险；「词库学习进度」按已加载列表中的位置计算，不再受 ID 断档影响。
+- 页面、阅读作答、AI 查词结果与选词在旋转和进程回收后不再丢失；单词本返回落在来源页。
+- 工程化：68 个 JVM 单测、GitHub Actions CI、release 签名与 R8（安装包从 17.5 MB 降到 1.8 MB）。
+- 真题模块自本版起从首页移除入口（代码保留，暂不继续开发）。
 
 ### v1.1.0
 
@@ -274,32 +370,41 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 
 首个完整版本：词汇浏览与搜索、顺序 / 随机背诵、拼写练习、学习记录与掌握度、我的单词本、自定义五项底部导航、Room 本地持久化，共 781 词。
 
-**APK 下载**：前往 [GitHub Releases](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases)。Release 提供的是用于项目展示与测试的 **Debug APK**，不是正式签名构建；APK 不提交进 Git 仓库。
+**APK 下载**：前往 [GitHub Releases](https://github.com/lee688033-lgtm/LittleMaoDan-English/releases)。v1.2.0 提供的是 R8 混淆 + 资源压缩后的**签名 release APK**（约 1.8 MB），由项目自己的发布密钥签名；该密钥保存在开发机本地、不进仓库，后续版本必须继续使用同一密钥才能覆盖安装。APK 不提交进 Git 仓库。
 
 ## 界面截图
 
-> 仓库内暂无截图，将在后续版本补充。可以安装 Release 中的 Debug APK 自行查看。
+> 仓库内暂无截图，将在后续版本补充。可以安装 Release 中的 APK 自行查看。
 
 ## 已知限制
 
-- 真题的写作、听力、翻译与整套练习是占位页；阅读专项不判分，没有正确率与错题统计。
-- 克隆仓库后默认构建没有真题数据，真题列表进入错误态（设计如此，见[真题数据说明](#真题数据说明)）。
-- 未配置正式签名，没有可安装的 Release 构建；Release 资产是 Debug APK。
-- 没有 JVM 单元测试，也没有 CI。
+- 真题的写作、听力、翻译与整套练习是占位页；阅读已有判分与正确率，但错题尚未落库，也没有逐题解析（真题 JSON 未提供 `explanation`）。
+- 真题模块自 1.2.0 起没有界面入口：首页的「真题训练」卡片已换成 AI 助手，相关代码与页面仍在仓库里，但没有可达路径。
+- 克隆仓库后默认构建没有真题数据；真题模块自 1.2.0 起也没有界面入口，列表页的错误态只会在 `-Pcet6.localExamAssets=true` 的本地调试包里通过代码路径访问到。
+- 仓库不包含签名密钥；未提供 `keystore.properties` 或 `CET6_*` 环境变量时，release 产物是未签名包，不能直接安装。已发布的 v1.2.0 APK 是用开发机本地密钥签名的，仓库里没有这份密钥。
 - 两处 IDE Preview 的示例数据仍沿用旧词库范围（`(1..781)`、`(1..936)`），只影响 Android Studio 里的预览画面，不影响运行时数据。
 - 词库 ID 存在 1251-1255 断档，任何依赖连续 ID 的逻辑都需要特别处理。
+- 导出的 JSON 是本应用专用格式（`cet6-learning` v1），不兼容其他应用或旧版本；导入只做格式与版本校验，不校验 `wordId` 是否存在于当前词库。
+- 强制浅色 / 深色时，系统窗口背景仍跟随系统资源，冷启动第一帧可能出现系统主题色，随后由 Compose 覆盖。
 - 动效的像素级观感未经主观验收。
+- AI 助手需要自备 API Key，仓库里没有任何内置密钥；免费额度、速率限制与模型可用性由服务商决定，「智谱 / 硅基流动」两个预设只是把地址与模型名填好，能否调用取决于账号额度。
+- 真实服务商只用智谱 GLM-4-Flash 免费档验收过（2026-11-23，release 包）：测试连接、查词、生成短文、404 错误文案、断网超时都通过；硅基流动预设与自定义接口没有实测。
+- 免费模型对长度的遵守不稳定：实测要求 180-220 词，模型给出 108 词；界面会标出实际词数，不做自动重试。
+- AI 结果不写入数据库，也没有历史记录；没有流式输出，模型慢时只能等整段返回（读超时 90 秒）。
+- 一篇短文一次最多选 12 个单词：再多会让模型把单词硬塞进句子，反而看不出复习效果；选词列表只包含练过的词，未练习的词不会出现。
+- API Key 以明文保存在应用私有 `SharedPreferences`，只保证不进入导出文件、不写入日志；没有使用 `EncryptedSharedPreferences`。
+- AI 生成内容可能有事实或语法错误，页面已注明「仅用于复习」。
+- debug 构建允许明文 HTTP（为了本地假服务），release 构建只允许 https 且没有 debug 的播种广播。
 - 项目尚未选择开源许可证，默认法律状态是「保留所有权利」。
 
 ## 后续规划
 
-1. 阅读专项的判分、错题与正确率统计。
-2. 听力、写作、翻译专项，或者收掉这几个占位页。
-3. 补齐词库 1251-1255 空档并继续扩充。
-4. 把自定义 Instrumentation 校验拆成可枚举的 JUnit 用例，并补 JVM 单元测试。
-5. 本地学习数据导出与恢复。
-6. 配置正式签名与可安装的 Release 构建。
-7. 补充应用截图与版本发布说明。
+1. 阅读错题本（真题模块暂缓）：把判分结果写入 Room，并与词汇待复习合并成同一个复习入口。
+2. AI 助手：流式输出、把 AI 查到的词保存为本地生词（需要新增数据表），以及按 Section 精读短文。
+3. 听力、写作、翻译专项，或者收掉这几个占位页。
+4. 补齐词库 1251-1255 空档并继续扩充。
+5. 把自定义 Instrumentation 校验拆成可枚举的 JUnit 用例。
+6. 补充应用截图与版本发布说明。
 
 ## 开发记录
 

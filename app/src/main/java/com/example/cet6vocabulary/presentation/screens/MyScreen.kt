@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,6 +47,7 @@ import com.example.cet6vocabulary.data.repository.WordBookRepository
 import com.example.cet6vocabulary.data.repository.WordRepository
 import com.example.cet6vocabulary.presentation.model.LearningStatistics
 import com.example.cet6vocabulary.presentation.model.calculateLearningStatistics
+import com.example.cet6vocabulary.presentation.model.countReviewWords
 import com.example.cet6vocabulary.ui.components.AnimatedEnterBox
 import com.example.cet6vocabulary.ui.components.CET6EmptyState
 import com.example.cet6vocabulary.ui.components.CET6ErrorState
@@ -51,6 +55,7 @@ import com.example.cet6vocabulary.ui.components.CET6LoadingState
 import com.example.cet6vocabulary.ui.components.CET6SectionTitle
 import com.example.cet6vocabulary.ui.components.LucideHomeIcons
 import com.example.cet6vocabulary.ui.components.LucideMineIcons
+import com.example.cet6vocabulary.ui.components.LucideSpellingIcons
 import com.example.cet6vocabulary.ui.components.MaoDanCard
 import com.example.cet6vocabulary.ui.components.MaoDanOutlinedCard
 import com.example.cet6vocabulary.ui.components.MaoDanProgressBar
@@ -74,11 +79,15 @@ fun MyScreen(
     records: LearningRecordRepository,
     wordBook: WordBookRepository,
     onOpenWordBook: () -> Unit,
-    refreshKey: Int = 0
+    onOpenReview: () -> Unit,
+    onOpenAi: () -> Unit,
+    onOpenSettings: () -> Unit,
+    refreshKey: Int = 0,
 ) {
     var state by remember { mutableStateOf<MyPageUiState>(MyPageUiState.Loading) }
     var reloadKey by remember { mutableIntStateOf(0) }
     var wordBookCount by remember { mutableIntStateOf(0) }
+    var reviewCount by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(reloadKey, refreshKey) {
         state = MyPageUiState.Loading
@@ -88,7 +97,9 @@ fun MyScreen(
             if (wordIds.isEmpty()) {
                 MyPageUiState.Empty
             } else {
-                MyPageUiState.Success(calculateLearningStatistics(wordIds, records.getAllRecords()))
+                val allRecords = records.getAllRecords()
+                reviewCount = countReviewWords(wordIds, allRecords)
+                MyPageUiState.Success(calculateLearningStatistics(wordIds, allRecords))
             }
         } catch (_: Exception) {
             MyPageUiState.Error
@@ -128,7 +139,11 @@ fun MyScreen(
             is MyPageUiState.Success -> MyContent(
                 statistics = current.statistics,
                 wordBookCount = wordBookCount,
+                reviewCount = reviewCount,
                 onOpenWordBook = onOpenWordBook,
+                onOpenReview = onOpenReview,
+                onOpenAi = onOpenAi,
+                onOpenSettings = onOpenSettings,
                 padding = padding
             )
         }
@@ -139,7 +154,11 @@ fun MyScreen(
 private fun MyContent(
     statistics: LearningStatistics,
     wordBookCount: Int,
+    reviewCount: Int,
     onOpenWordBook: () -> Unit,
+    onOpenReview: () -> Unit,
+    onOpenAi: () -> Unit,
+    onOpenSettings: () -> Unit,
     padding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -165,7 +184,14 @@ private fun MyContent(
             MyMasterySection(statistics)
         }
         AnimatedEnterBox(modifier = Modifier.fillMaxWidth(), delayMillis = laterDelay) {
-            MyToolsSection(wordBookCount, onOpenWordBook)
+            MyToolsSection(
+                wordBookCount = wordBookCount,
+                reviewCount = reviewCount,
+                onOpenWordBook = onOpenWordBook,
+                onOpenReview = onOpenReview,
+                onOpenAi = onOpenAi,
+                onOpenSettings = onOpenSettings
+            )
         }
         Spacer(Modifier.height(MaoDanDimens.space24))
     }
@@ -367,7 +393,11 @@ private fun MyMasteryBar(count: Int, totalWords: Int, modifier: Modifier = Modif
 @Composable
 private fun MyToolsSection(
     wordBookCount: Int,
+    reviewCount: Int,
     onOpenWordBook: () -> Unit,
+    onOpenReview: () -> Unit,
+    onOpenAi: () -> Unit,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -375,7 +405,169 @@ private fun MyToolsSection(
         verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
     ) {
         CET6SectionTitle("学习工具")
+        MyReviewCard(count = reviewCount, onClick = onOpenReview)
+        MyAiCard(onClick = onOpenAi)
         MyWordBookCard(count = wordBookCount, onClick = onOpenWordBook)
+        MySettingsCard(onClick = onOpenSettings)
+    }
+}
+
+@Composable
+private fun MyAiCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressScale = rememberPressScale(
+        interactionSource = interactionSource,
+        pressedScale = MaoDanMotion.CardPressedScale
+    )
+    MaoDanOutlinedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .pressScale(pressScale)
+            .clip(MaoDanShapes.large)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = onClick
+            )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = MaoDanDimens.iconButtonSize)
+                .padding(MaoDanDimens.cardContent),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            MyIconBadge(Icons.Default.AutoAwesome)
+            Spacer(Modifier.width(MaoDanDimens.space12))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
+            ) {
+                Text(
+                    "AI 助手",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    "查词库里没有的单词，把学过的词写成一篇文章",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.width(MaoDanDimens.space8))
+            Icon(
+                imageVector = LucideHomeIcons.ChevronRight,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun MySettingsCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressScale = rememberPressScale(
+        interactionSource = interactionSource,
+        pressedScale = MaoDanMotion.CardPressedScale
+    )
+    MaoDanOutlinedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .pressScale(pressScale)
+            .clip(MaoDanShapes.large)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = onClick
+            )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = MaoDanDimens.iconButtonSize)
+                .padding(MaoDanDimens.cardContent),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            MyIconBadge(Icons.Default.Settings)
+            Spacer(Modifier.width(MaoDanDimens.space12))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
+            ) {
+                Text(
+                    "设置",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    "外观、数据导出与关于",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.width(MaoDanDimens.space8))
+            Icon(
+                imageVector = LucideHomeIcons.ChevronRight,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun MyReviewCard(count: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressScale = rememberPressScale(
+        interactionSource = interactionSource,
+        pressedScale = MaoDanMotion.CardPressedScale
+    )
+    MaoDanOutlinedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .pressScale(pressScale)
+            .clip(MaoDanShapes.large)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = onClick
+            )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = MaoDanDimens.iconButtonSize)
+                .padding(MaoDanDimens.cardContent),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            MyIconBadge(LucideSpellingIcons.RotateCcw)
+            Spacer(Modifier.width(MaoDanDimens.space12))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space4)
+            ) {
+                Text(
+                    "待复习",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    if (count == 0) "暂时没有需要复习的单词" else "$count 个单词等待复习",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.width(MaoDanDimens.space8))
+            Icon(
+                imageVector = LucideHomeIcons.ChevronRight,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
@@ -458,7 +650,11 @@ private fun MyPreview() {
             statistics = calculateLearningStatistics((1..936).toSet(), emptyList())
                 .copy(learnedWords = 4, unlearnedWords = 932, mastery0Count = 932),
             wordBookCount = 1,
+            reviewCount = 3,
             onOpenWordBook = {},
+            onOpenReview = {},
+            onOpenAi = {},
+            onOpenSettings = {},
             padding = PaddingValues()
         )
     }

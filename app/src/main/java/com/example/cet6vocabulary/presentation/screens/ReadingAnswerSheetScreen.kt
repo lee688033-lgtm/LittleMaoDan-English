@@ -64,7 +64,7 @@ fun ReadingAnswerSheetScreen(
     answers: Map<String, String>,
     currentIndex: Int,
     onSelectQuestion: (Int) -> Unit,
-    onFinish: (Int) -> Unit,
+    onFinish: () -> Unit,
     onBack: () -> Unit
 ) {
     val reading = exam.sections.firstOrNull { it.section == ExamSection.READING }
@@ -98,7 +98,7 @@ fun ReadingAnswerSheetScreen(
                 PrimaryButton(
                     text = "完成阅读",
                     onClick = {
-                        if (sheet.unanswered > 0) showFinishDialog = true else onFinish(sheet.answered)
+                        if (sheet.unanswered > 0) showFinishDialog = true else onFinish()
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -150,7 +150,7 @@ fun ReadingAnswerSheetScreen(
             confirmButton = {
                 TextButton(onClick = {
                     showFinishDialog = false
-                    onFinish(sheet.answered)
+                    onFinish()
                 }) { Text("完成阅读") }
             },
             dismissButton = { TextButton(onClick = { showFinishDialog = false }) { Text("返回答题") } }

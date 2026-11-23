@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +31,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,19 +45,29 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.cet6vocabulary.data.model.LearningRecord
 import com.example.cet6vocabulary.data.model.Word
+import com.example.cet6vocabulary.data.repository.LearningRecordRepository
+import com.example.cet6vocabulary.data.repository.WordBookRepository
 import com.example.cet6vocabulary.data.repository.WordRepository
+import com.example.cet6vocabulary.presentation.model.masteryLabel
 import com.example.cet6vocabulary.ui.components.CET6EmptyState
 import com.example.cet6vocabulary.ui.components.CET6ErrorState
 import com.example.cet6vocabulary.ui.components.CET6LoadingState
 import com.example.cet6vocabulary.ui.components.LucideHomeIcons
+import com.example.cet6vocabulary.ui.components.LucideMineIcons
 import com.example.cet6vocabulary.ui.components.LucideWordIcons
 import com.example.cet6vocabulary.ui.components.MaoDanCard
 import com.example.cet6vocabulary.ui.components.MaoDanOutlinedCard
+import com.example.cet6vocabulary.ui.components.MaoDanSecondaryButton
 import com.example.cet6vocabulary.ui.theme.CET6VocabularyTheme
 import com.example.cet6vocabulary.ui.theme.MaoDanDimens
 import com.example.cet6vocabulary.ui.theme.MaoDanShapes
 import com.example.cet6vocabulary.ui.theme.MaoDanTypography
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlinx.coroutines.launch
 
 private sealed interface WordUiState {
     data object Loading : WordUiState
@@ -60,13 +75,25 @@ private sealed interface WordUiState {
     data class Error(val message: String) : WordUiState
 }
 
-@Composable
-fun WordScreen(repository: WordRepository) {
-    var state by remember { mutableStateOf<WordUiState>(WordUiState.Loading) }
-    var query by remember { mutableStateOf(TextFieldValue()) }
-    var selectedWord by remember { mutableStateOf<Word?>(null) }
+// -1 stands for "no detail open"; the Bundle cannot carry a null Int directly.
+private val NullableWordIdSaver = Saver<Int?, Int>(
+    save = { value -> value ?: -1 },
+    restore = { saved -> if (saved < 0) null else saved }
+)
 
-    fun load() {
+@Composable
+fun WordScreen(
+    repository: WordRepository,
+    wordBook: WordBookRepository,
+    records: LearningRecordRepository,
+    onOpenAi: (String) -> Unit = {}
+) {
+    var state by remember { mutableStateOf<WordUiState>(WordUiState.Loading) }
+    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue()) }
+    var selectedWordId by rememberSaveable(stateSaver = NullableWordIdSaver) { mutableStateOf<Int?>(null) }
+    val scope = rememberCoroutineScope()
+
+    suspend fun load() {
         state = WordUiState.Loading
         state = try {
             WordUiState.Success(repository.getAllWords())
@@ -79,20 +106,24 @@ fun WordScreen(repository: WordRepository) {
 
     // Only consume the system back event while a word detail is open; with
     // enabled = false the default Activity/Navigation back behavior is kept.
-    BackHandler(enabled = selectedWord != null) {
-        selectedWord = null
+    BackHandler(enabled = selectedWordId != null) {
+        selectedWordId = null
     }
 
     // Positions come from the loaded list, not from the id: ids have gaps
     // (1251-1255 are absent), so an id is never the reader-facing index.
     val loadedWords = (state as? WordUiState.Success)?.words.orEmpty()
 
+    val selectedWord = selectedWordId?.let { id -> loadedWords.firstOrNull { it.id == id } }
+
     selectedWord?.let { word ->
         WordDetailContent(
             word = word,
             totalWords = loadedWords.size,
             position = loadedWords.indexOfFirst { it.id == word.id } + 1,
-            onBack = { selectedWord = null }
+            wordBook = wordBook,
+            records = records,
+            onBack = { selectedWordId = null }
         )
         return
     }
@@ -111,14 +142,14 @@ fun WordScreen(repository: WordRepository) {
                 message = "\u8bcd\u6c47\u52a0\u8f7d\u5931\u8d25",
                 modifier = Modifier.padding(padding),
                 actionText = "\u91cd\u65b0\u52a0\u8f7d",
-                onActionClick = ::load
+                onActionClick = { scope.launch { load() } }
             )
             is WordUiState.Success -> WordListContent(
                 words = current.words,
                 query = query,
                 onQueryChange = { query = it },
-                onWordClick = { selectedWord = it },
-                repository = repository,
+                onWordClick = { selectedWordId = it.id },
+                onOpenAi = onOpenAi,
                 modifier = Modifier.padding(padding)
             )
         }
@@ -131,10 +162,19 @@ private fun WordListContent(
     query: TextFieldValue,
     onQueryChange: (TextFieldValue) -> Unit,
     onWordClick: (Word) -> Unit,
-    repository: WordRepository,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onOpenAi: (String) -> Unit = {}
 ) {
-    val filtered = if (query.text.isBlank()) words else repository.searchWords(query.text)
+    val filtered = remember(words, query.text) {
+        val keyword = query.text.trim()
+        if (keyword.isEmpty()) {
+            words
+        } else {
+            words.filter {
+                it.word.contains(keyword, ignoreCase = true) || it.meaning.contains(keyword, ignoreCase = true)
+            }
+        }
+    }
 
     Column(
         modifier = modifier
@@ -180,10 +220,17 @@ private fun WordListContent(
         Spacer(Modifier.height(MaoDanDimens.space12))
 
         if (filtered.isEmpty()) {
+            val keyword = query.text.trim()
             CET6EmptyState(
                 title = "\u6ca1\u6709\u627e\u5230\u76f8\u5173\u8bcd\u6c47",
-                description = "\u8bd5\u8bd5\u82f1\u6587\u5355\u8bcd\u6216\u4e2d\u6587\u91ca\u4e49\u3002",
-                modifier = Modifier.fillMaxWidth()
+                description = if (keyword.isEmpty()) {
+                    "\u8bd5\u8bd5\u82f1\u6587\u5355\u8bcd\u6216\u4e2d\u6587\u91ca\u4e49\u3002"
+                } else {
+                    "\u8bcd\u5e93\u91cc\u6ca1\u6709\u300c$keyword\u300d\uff0c\u53ef\u4ee5\u8ba9 AI \u67e5\u4e00\u4e0b\u3002"
+                },
+                modifier = Modifier.fillMaxWidth(),
+                actionText = if (keyword.isEmpty()) null else "\u7528 AI \u67e5\u300c$keyword\u300d",
+                onActionClick = if (keyword.isEmpty()) null else ({ onOpenAi(keyword) })
             )
         } else {
             LazyColumn(
@@ -320,9 +367,26 @@ private fun WordDetailContent(
     word: Word,
     totalWords: Int,
     position: Int,
+    wordBook: WordBookRepository,
+    records: LearningRecordRepository,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var isInWordBook by remember(word.id) { mutableStateOf<Boolean?>(null) }
+    var record by remember(word.id) { mutableStateOf<LearningRecord?>(null) }
+    var recordLoaded by remember(word.id) { mutableStateOf(false) }
+    var saving by remember(word.id) { mutableStateOf(false) }
+    var actionFailed by remember(word.id) { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    // Both reads are independent and cheap; a failure leaves the corresponding block in its
+    // "unknown / not practised" state instead of breaking the page.
+    LaunchedEffect(word.id) {
+        isInWordBook = runCatching { wordBook.isInWordBook(word.id) }.getOrNull()
+        record = runCatching { records.getRecord(word.id) }.getOrNull()
+        recordLoaded = true
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = Color.Transparent, // the root scaffold owns the background and the ambient light
@@ -332,6 +396,7 @@ private fun WordDetailContent(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = MaoDanDimens.pageHorizontal)
         ) {
             Spacer(Modifier.height(MaoDanDimens.space8))
@@ -429,6 +494,55 @@ private fun WordDetailContent(
                 }
             }
 
+            Spacer(Modifier.height(MaoDanDimens.space16))
+
+            MaoDanSecondaryButton(
+                text = "加入单词本",
+                onClick = {
+                    if (!saving) {
+                        val target = isInWordBook != true
+                        saving = true
+                        actionFailed = false
+                        scope.launch {
+                            val ok = runCatching {
+                                if (target) wordBook.addWord(word.id) else wordBook.removeWord(word.id)
+                            }.isSuccess
+                            if (ok) isInWordBook = target else actionFailed = true
+                            saving = false
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isInWordBook != null && !saving
+            ) {
+                Icon(
+                    imageVector = LucideHomeIcons.Bookmark,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(MaoDanDimens.space8))
+                Text(
+                    when (isInWordBook) {
+                        true -> "移出单词本"
+                        false -> "加入单词本"
+                        null -> "单词本状态加载中"
+                    },
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            if (actionFailed) {
+                Spacer(Modifier.height(MaoDanDimens.space4))
+                Text(
+                    "单词本操作失败，请重试",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            Spacer(Modifier.height(MaoDanDimens.space16))
+
+            WordRecordCard(record = record, loaded = recordLoaded)
+
             if (position in 1..totalWords) {
                 Spacer(Modifier.height(MaoDanDimens.space16))
                 Text(
@@ -439,6 +553,88 @@ private fun WordDetailContent(
             }
         }
     }
+}
+
+@Composable
+private fun WordRecordCard(
+    record: LearningRecord?,
+    loaded: Boolean,
+    modifier: Modifier = Modifier
+) {
+    MaoDanOutlinedCard(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaoDanDimens.space20),
+            verticalArrangement = Arrangement.spacedBy(MaoDanDimens.space12)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                WordIconBadge(LucideMineIcons.ChartNoAxesColumn)
+                Spacer(Modifier.width(MaoDanDimens.space8))
+                Text(
+                    "学习记录",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            when {
+                !loaded -> Text(
+                    "正在加载学习记录",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                record == null -> Text(
+                    "还没有练习过这个单词，去拼写或待复习里练一次就会记录下来。",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                else -> {
+                    Row(Modifier.fillMaxWidth()) {
+                        WordRecordStat("拼写", record.spellCount, Modifier.weight(1f))
+                        WordRecordStat("答对", record.correctCount, Modifier.weight(1f))
+                        WordRecordStat("答错", record.wrongCount, Modifier.weight(1f))
+                    }
+                    Text(
+                        "掌握度 ${masteryLabel(record.mastery)}",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    formatStudyTime(record.lastStudyTime)?.let { time ->
+                        Text(
+                            "最近学习 $time",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun WordRecordStat(label: String, value: Int, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Text(
+            value.toString(),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+private fun formatStudyTime(millis: Long?): String? {
+    if (millis == null || millis <= 0L) return null
+    return SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(millis))
 }
 
 @Composable
@@ -472,7 +668,6 @@ private fun WordListPreview() {
             query = TextFieldValue(),
             onQueryChange = {},
             onWordClick = {},
-            repository = throw UnsupportedOperationException("Preview only"),
             modifier = Modifier
         )
     }

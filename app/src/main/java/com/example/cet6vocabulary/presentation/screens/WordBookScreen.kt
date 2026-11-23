@@ -20,17 +20,42 @@ import com.example.cet6vocabulary.data.repository.WordRepository
 @Composable
 fun WordBookScreen(words: WordRepository, wordBook: WordBookRepository, onStartStudy: () -> Unit, onBack: () -> Unit) {
     var records by remember { mutableStateOf(emptyList<WordBookEntity>()) }
+    var wordById by remember { mutableStateOf(emptyMap<Int, Word>()) }
+    var loadFailed by remember { mutableStateOf(false) }
     var reloadKey by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
     BackHandler(onBack = onBack)
-    LaunchedEffect(reloadKey) { records = wordBook.getAllWordBookRecords() }
-    val items = records.mapNotNull { record -> words.getWordById(record.wordId)?.let { record to it } }
+    LaunchedEffect(reloadKey) {
+        try {
+            val loadedWords = words.getAllWords().associateBy { it.id }
+            val loadedRecords = wordBook.getAllWordBookRecords()
+            wordById = loadedWords
+            records = loadedRecords
+            loadFailed = false
+        } catch (_: Exception) {
+            loadFailed = true
+        }
+    }
+    val items = remember(records, wordById) {
+        records.mapNotNull { record -> wordById[record.wordId]?.let { record to it } }
+    }
     Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回") }
             Text("我的单词本", style = MaterialTheme.typography.headlineMedium)
         }
         Text("${items.size} 个单词", style = MaterialTheme.typography.bodyLarge)
+        if (loadFailed) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "单词本加载失败",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = { reloadKey++ }) { Text("重试") }
+            }
+        }
         Spacer(Modifier.height(12.dp))
         Button(onClick = onStartStudy, enabled = items.isNotEmpty(), modifier = Modifier.fillMaxWidth()) { Text("开始背诵") }
         Spacer(Modifier.height(12.dp))

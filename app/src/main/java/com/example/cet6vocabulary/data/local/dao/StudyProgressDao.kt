@@ -19,4 +19,7 @@ interface StudyProgressDao {
 
     @Query("DELETE FROM study_progress")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM study_progress ORDER BY progressKey")
+    suspend fun getAll(): List<StudyProgressEntity>
 }

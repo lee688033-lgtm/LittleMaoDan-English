@@ -132,31 +132,27 @@ fun StudyScreen(
         scope.launch { saveProgress(progress) }
     }
 
-    fun loadWords() {
+    suspend fun loadWords() {
         state = StudyUiState.Loading
         try {
             val allWords = repository.getAllWords().sortedBy { it.id }
-            scope.launch {
-                runCatching {
-                    val records = wordBookRepository.getAllWordBookRecords()
-                    wordBookIds = records.mapTo(mutableSetOf()) { it.wordId }
-                    val words = if (wordBookMode) records.mapNotNull { record -> allWords.firstOrNull { it.id == record.wordId } } else allWords
-                    if (words.isEmpty()) {
-                        state = StudyUiState.Empty
-                        return@runCatching
-                    }
-                    val progressKey = StudyProgressKeys.forMode(wordBookMode, false)
-                    val progress = studyProgressRepository.getProgress(progressKey)
-                    val restored = restoreStudyProgress(words.map { it.id }, progress, random = false)
-                    state = StudyUiState.Success(words)
-                    currentIndex = restored.currentIndex
-                    randomWords = emptyList()
-                    mode = StudyMode.SEQUENTIAL
-                    showMeaning = false
-                    initialized = true
-                    if (restored.needsSave) saveProgress(createProgressSnapshot(restored.currentIndex, StudyMode.SEQUENTIAL))
-                }.onFailure { state = StudyUiState.Error }
+            val records = wordBookRepository.getAllWordBookRecords()
+            wordBookIds = records.mapTo(mutableSetOf()) { it.wordId }
+            val words = if (wordBookMode) records.mapNotNull { record -> allWords.firstOrNull { it.id == record.wordId } } else allWords
+            if (words.isEmpty()) {
+                state = StudyUiState.Empty
+                return
             }
+            val progressKey = StudyProgressKeys.forMode(wordBookMode, false)
+            val progress = studyProgressRepository.getProgress(progressKey)
+            val restored = restoreStudyProgress(words.map { it.id }, progress, random = false)
+            state = StudyUiState.Success(words)
+            currentIndex = restored.currentIndex
+            randomWords = emptyList()
+            mode = StudyMode.SEQUENTIAL
+            showMeaning = false
+            initialized = true
+            if (restored.needsSave) saveProgress(createProgressSnapshot(restored.currentIndex, StudyMode.SEQUENTIAL))
         } catch (_: Exception) {
             state = StudyUiState.Error
         }
@@ -196,7 +192,7 @@ fun StudyScreen(
                 message = "词汇加载失败",
                 modifier = Modifier.fillMaxSize().padding(padding),
                 actionText = "重新加载",
-                onActionClick = ::loadWords
+                onActionClick = { scope.launch { loadWords() } }
             )
             is StudyUiState.Success -> {
                 val activeWords = if (mode == StudyMode.SEQUENTIAL) currentState.words else randomWords

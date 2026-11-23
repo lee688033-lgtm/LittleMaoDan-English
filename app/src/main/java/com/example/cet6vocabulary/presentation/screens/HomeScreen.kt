@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -77,7 +79,7 @@ fun HomeScreen(
     onOpenStudy: () -> Unit,
     onOpenSpelling: () -> Unit,
     onOpenWordBook: () -> Unit,
-    onOpenExams: () -> Unit
+    onOpenAi: () -> Unit
 ) {
     var state by remember { mutableStateOf<HomeUiState>(HomeUiState.Loading) }
     var reloadKey by remember { mutableStateOf(0) }
@@ -109,7 +111,7 @@ fun HomeScreen(
             onOpenStudy = onOpenStudy,
             onOpenSpelling = onOpenSpelling,
             onOpenWordBook = onOpenWordBook,
-            onOpenExams = onOpenExams
+            onOpenAi = onOpenAi
         )
     }
 }
@@ -121,7 +123,7 @@ private fun HomeContent(
     onOpenStudy: () -> Unit,
     onOpenSpelling: () -> Unit,
     onOpenWordBook: () -> Unit,
-    onOpenExams: () -> Unit,
+    onOpenAi: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -151,10 +153,10 @@ private fun HomeContent(
                     onClick = onOpenWordBook
                 )
                 HomeEntryCard(
-                    title = "真题训练",
-                    description = "CET-6 历年真题",
-                    icon = LucideHomeIcons.FileText,
-                    onClick = onOpenExams
+                    title = "AI 助手",
+                    description = "查词与复习短文",
+                    icon = Icons.Default.AutoAwesome,
+                    onClick = onOpenAi
                 )
             }
             HomeStatsSection(statistics)
@@ -473,7 +475,7 @@ private fun HomePreview() {
             onOpenStudy = {},
             onOpenSpelling = {},
             onOpenWordBook = {},
-            onOpenExams = {}
+            onOpenAi = {}
         )
     }
 }

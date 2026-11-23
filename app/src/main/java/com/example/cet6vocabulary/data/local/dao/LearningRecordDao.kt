@@ -23,4 +23,7 @@ interface LearningRecordDao {
 
     @Query("DELETE FROM learning_records WHERE wordId = :wordId")
     suspend fun deleteByWordId(wordId: Int)
+
+    @Query("DELETE FROM learning_records")
+    suspend fun deleteAll()
 }

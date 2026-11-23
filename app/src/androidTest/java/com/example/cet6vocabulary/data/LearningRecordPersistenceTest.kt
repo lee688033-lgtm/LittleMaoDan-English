@@ -8,19 +8,28 @@ import androidx.room.Room
 import com.example.cet6vocabulary.data.local.database.AppDatabase
 import com.example.cet6vocabulary.data.local.entity.LearningRecordEntity
 import com.example.cet6vocabulary.data.local.entity.StudyProgressEntity
+import com.example.cet6vocabulary.data.local.entity.WordBookEntity
 import com.example.cet6vocabulary.data.model.ExamSection
 import com.example.cet6vocabulary.data.model.LearningRecord
+import com.example.cet6vocabulary.data.model.Word
 import com.example.cet6vocabulary.data.repository.ExamDataException
 import com.example.cet6vocabulary.data.repository.ExamJsonParser
 import com.example.cet6vocabulary.data.repository.ExamRepository
+import com.example.cet6vocabulary.data.repository.LearningDataFormatException
+import com.example.cet6vocabulary.data.repository.LearningDataJson
+import com.example.cet6vocabulary.data.repository.LearningDataRepository
+import com.example.cet6vocabulary.data.repository.LearningDataSnapshot
 import com.example.cet6vocabulary.data.repository.LearningRecordRepository
 import com.example.cet6vocabulary.data.repository.WordRepository
 import com.example.cet6vocabulary.presentation.model.calculateLearningStatistics
+import com.example.cet6vocabulary.presentation.model.countReviewWords
+import com.example.cet6vocabulary.presentation.model.selectReviewWords
 import com.example.cet6vocabulary.presentation.model.ReadingSheet
 import com.example.cet6vocabulary.presentation.model.ReadingSheetItem
 import com.example.cet6vocabulary.presentation.model.ReadingSheetSection
 import com.example.cet6vocabulary.presentation.model.ReadingSheetStatus
 import com.example.cet6vocabulary.presentation.model.buildReadingSheet
+import com.example.cet6vocabulary.presentation.model.scoreReading
 import kotlinx.coroutines.runBlocking
 
 class PersistenceInstrumentation : Instrumentation() {
@@ -51,6 +60,8 @@ class PersistenceInstrumentation : Instrumentation() {
         verifyReadingStageHasNoPersistence(context)
         verifyVocabulary(context)
         verifyStatistics(context)
+        verifyReviewSelection()
+        verifyLearningDataTransfer(context)
         val databaseName = "learning_record_restart_test"
         verifyWordBookMigration(context)
         verifyStudyProgress(context)
@@ -149,6 +160,36 @@ class PersistenceInstrumentation : Instrumentation() {
         check(sectionC.questions.all { it.passageId != null && it.passageId in setOf("passage_1", "passage_2") })
         check(sectionC.questions.all { it.options.keys == setOf("A", "B", "C", "D") })
         check(sectionC.questions.all { it.correctAnswer != null && it.correctAnswer in setOf("A", "B", "C", "D") })
+
+        // Reading scoring: 30 questions, one point each in this paper's appConfig.
+        val correctAnswers = readingQuestions.associate { it.questionId to it.correctAnswer.orEmpty() }
+        val allCorrect = scoreReading(exam, correctAnswers)
+        check(allCorrect.total == 30 && allCorrect.maxPoints == 30)
+        check(allCorrect.correct == 30 && allCorrect.incorrect == 0 && allCorrect.unanswered == 0)
+        check(allCorrect.earnedPoints == 30 && allCorrect.correctRate == 100)
+        check(allCorrect.outcomes.map { it.subsectionLabel }.distinct() == listOf("Section A", "Section B", "Section C"))
+        check(allCorrect.outcomes.map { it.number } == (26..55).toList())
+
+        val oneWrong = scoreReading(exam, correctAnswers + ("reading_26" to "A"))
+        check(oneWrong.correct == 29 && oneWrong.incorrect == 1 && oneWrong.unanswered == 0)
+        check(oneWrong.earnedPoints == 29 && oneWrong.correctRate == 96)
+
+        val partial = scoreReading(exam, mapOf("reading_26" to "H"))
+        check(partial.answered == 1 && partial.unanswered == 29)
+        check(partial.correct == 1 && partial.correctRate == 3)
+
+        // The paper answer key alone must grade questions that carry no inline answer.
+        val keyOnlyExam = exam.copy(
+            sections = exam.sections.map { section ->
+                if (section.section == ExamSection.READING) {
+                    section.copy(questions = section.questions.map { it.copy(correctAnswer = null) })
+                } else {
+                    section
+                }
+            }
+        )
+        val keyOnly = scoreReading(keyOnlyExam, correctAnswers)
+        check(keyOnly.correct == 30 && keyOnly.maxPoints == 30 && keyOnly.correctRate == 100)
     }
 
     /** Stage 10.4: the answer sheet reports answered / unanswered / current, derived from real data. */
@@ -226,7 +267,7 @@ class PersistenceInstrumentation : Instrumentation() {
         check(sheet.answered == 30 && sheet.items.none { it.status == ReadingSheetStatus.CURRENT })
     }
 
-    /** Stage 10.4 keeps answers in memory only: no scoring surface and no Room change. */
+    /** Reading answers stay in memory: the sheet carries no correctness data and Room gains no exam tables. */
     private suspend fun verifyReadingStageHasNoPersistence(context: android.content.Context) {
         val sheetFields = listOf(
             ReadingSheet::class.java,
@@ -314,8 +355,9 @@ class PersistenceInstrumentation : Instrumentation() {
         database.close()
         context.deleteDatabase(databaseName)
     }
-    private fun verifyVocabulary(context: android.content.Context) {
-        val words = WordRepository(context).getAllWords()
+    private suspend fun verifyVocabulary(context: android.content.Context) {
+        val repository = WordRepository(context)
+        val words = repository.getAllWords()
         val retiredIds = listOf(1251, 1252, 1253, 1254, 1255)
         check(words.size == 1495)
         check(words.map { it.id } == ((1..1500).toList() - retiredIds))
@@ -333,19 +375,19 @@ class PersistenceInstrumentation : Instrumentation() {
         check(words.any { it.id == 1250 && it.word == "trace" })
         check(words.any { it.id == 1256 && it.word == "testify" })
         check(words.any { it.id == 1500 && it.word == "intuition" })
-        check(WordRepository(context).searchWords("fiscal").any { it.id == 626 })
-        check(WordRepository(context).searchWords("财政的").any { it.id == 626 })
-        check(WordRepository(context).searchWords("submit").any { it.id == 782 })
-        check(WordRepository(context).searchWords("地下室").any { it.id == 936 })
-        check(WordRepository(context).searchWords("mortal").any { it.id == 937 })
-        check(WordRepository(context).searchWords("slide").any { it.id == 1088 })
-        check(WordRepository(context).searchWords("spur").any { it.id == 1089 })
-        check(WordRepository(context).searchWords("trace").any { it.id == 1250 })
-        check(WordRepository(context).searchWords("testify").any { it.id == 1256 })
-        check(WordRepository(context).searchWords("intuition").any { it.id == 1500 })
-        check(WordRepository(context).searchWords("\u76f4\u89c9").any { it.id == 1500 })
+        check(repository.searchWords("fiscal").any { it.id == 626 })
+        check(repository.searchWords("财政的").any { it.id == 626 })
+        check(repository.searchWords("submit").any { it.id == 782 })
+        check(repository.searchWords("地下室").any { it.id == 936 })
+        check(repository.searchWords("mortal").any { it.id == 937 })
+        check(repository.searchWords("slide").any { it.id == 1088 })
+        check(repository.searchWords("spur").any { it.id == 1089 })
+        check(repository.searchWords("trace").any { it.id == 1250 })
+        check(repository.searchWords("testify").any { it.id == 1256 })
+        check(repository.searchWords("intuition").any { it.id == 1500 })
+        check(repository.searchWords("直觉").any { it.id == 1500 })
     }
-    private fun verifyStatistics(context: android.content.Context) {
+    private suspend fun verifyStatistics(context: android.content.Context) {
         val wordIds = WordRepository(context).getAllWords().mapTo(mutableSetOf()) { it.id }
         val totalWords = wordIds.size
 
@@ -371,6 +413,111 @@ class PersistenceInstrumentation : Instrumentation() {
         check(statistics.accuracyPercent == 70)
         check(statistics.mastery0Count == totalWords - 3)
         check(statistics.mastery1Count == 1 && statistics.mastery2Count == 1 && statistics.mastery3Count == 1)
+    }
+
+    /**
+     * 待复习是纯函数选词：只收练习过、且掌握度 ≤1 的词；
+     * 排序依次是掌握度升序、错误次数降序、最久未复习优先。
+     */
+    private fun verifyReviewSelection() {
+        val words = listOf(
+            Word(1, "alpha", "", "", "第一个"),
+            Word(2, "beta", "", "", "第二个"),
+            Word(3, "gamma", "", "", "第三个"),
+            Word(4, "delta", "", "", "第四个"),
+            Word(5, "epsilon", "", "", "第五个"),
+            Word(6, "zeta", "", "", "第六个")
+        )
+        val records = listOf(
+            LearningRecord(1, spellCount = 1, correctCount = 0, wrongCount = 1, mastery = 1, lastStudyTime = 300L),
+            LearningRecord(2, spellCount = 3, correctCount = 3, wrongCount = 0, mastery = 3, lastStudyTime = 100L),
+            LearningRecord(3, spellCount = 5, correctCount = 3, wrongCount = 2, mastery = 3, lastStudyTime = 200L),
+            LearningRecord(4, spellCount = 2, correctCount = 2, wrongCount = 0, mastery = 2, lastStudyTime = 100L),
+            LearningRecord(5, spellCount = 0, correctCount = 0, wrongCount = 0, mastery = 0, lastStudyTime = null),
+            LearningRecord(6, spellCount = 4, correctCount = 1, wrongCount = 3, mastery = 1, lastStudyTime = 50L)
+        )
+
+        // 6 与 1 同为 1 级，6 错得更多排在前面；3 已是 3 级，即使错过 2 次也不算待复习；5 从未练习，同样不算。
+        check(selectReviewWords(words, records).map { it.word.id } == listOf(6, 1))
+        check(countReviewWords(words.mapTo(mutableSetOf()) { it.id }, records) == 2)
+        check(countReviewWords(emptySet(), records) == 0)
+        check(countReviewWords(setOf(9), records) == 0)
+        check(selectReviewWords(words, emptyList()).isEmpty())
+    }
+
+    /**
+     * 导出格式与覆盖式导入：编码 → 解码必须原样还原，格式/版本不对要明确拒绝；
+     * 导入后再导出应得到同一份数据，清除后三张表都为空。
+     */
+    private suspend fun verifyLearningDataTransfer(context: android.content.Context) {
+        val records = listOf(
+            LearningRecordEntity(1, 3, 2, 1, 2, 111L, null),
+            LearningRecordEntity(2, 1, 0, 1, 1, null, 222L)
+        )
+        // DAO 按 addedTime DESC 返回，快照保持同一顺序，便于直接比较。
+        val wordBook = listOf(WordBookEntity(9, 2000L), WordBookEntity(1, 1000L))
+        val progress = listOf(
+            StudyProgressEntity("normal_random", 4, "1,2,3", 4000L),
+            StudyProgressEntity("spelling_sequential", 12, null, 3000L)
+        )
+        val snapshot = LearningDataSnapshot(records, wordBook, progress)
+
+        val encoded = LearningDataJson.encode(snapshot, 12_345L)
+        check(encoded.contains("\"format\": \"cet6-learning\""))
+
+        val decoded = LearningDataJson.decode(encoded)
+        check(decoded.records == records)
+        check(decoded.wordBook == wordBook)
+        check(decoded.studyProgress == progress)
+
+        check(
+            runCatching { LearningDataJson.decode("not json") }.exceptionOrNull()
+                is LearningDataFormatException
+        )
+        check(
+            runCatching { LearningDataJson.decode("""{"format":"other","version":1}""") }
+                .exceptionOrNull() is LearningDataFormatException
+        )
+        check(
+            runCatching { LearningDataJson.decode("""{"format":"cet6-learning","version":99}""") }
+                .exceptionOrNull() is LearningDataFormatException
+        )
+        check(
+            LearningDataJson.decode(
+                LearningDataJson.encode(LearningDataSnapshot(emptyList(), emptyList(), emptyList()), 1L)
+            ).isEmpty
+        )
+
+        val databaseName = "learning_data_transfer_test"
+        context.deleteDatabase(databaseName)
+        val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName).build()
+        val repository = LearningDataRepository(
+            records = database.learningRecordDao(),
+            wordBook = database.wordBookDao(),
+            progress = database.studyProgressDao()
+        )
+        // 先放入与快照冲突的旧数据，验证导入是覆盖而不是合并。
+        database.learningRecordDao().insert(LearningRecordEntity(7, 9, 9, 0, 3, 1L, null))
+        database.wordBookDao().insert(WordBookEntity(7, 1L))
+        database.studyProgressDao().insertOrReplace(StudyProgressEntity("stale", 5, null, 1L))
+
+        repository.replaceAll(decoded)
+        check(database.learningRecordDao().getAll() == records)
+        check(database.wordBookDao().getAll() == wordBook)
+        check(database.studyProgressDao().getAll() == progress)
+        check(database.studyProgressDao().getProgress("stale") == null)
+
+        val roundTrip = LearningDataJson.decode(repository.export(99L))
+        check(roundTrip.records == records && roundTrip.wordBook == wordBook)
+        check(roundTrip.studyProgress == progress)
+
+        repository.clearAll()
+        check(database.learningRecordDao().getAll().isEmpty())
+        check(database.wordBookDao().count() == 0)
+        check(database.studyProgressDao().getAll().isEmpty())
+
+        database.close()
+        context.deleteDatabase(databaseName)
     }
 }
 
